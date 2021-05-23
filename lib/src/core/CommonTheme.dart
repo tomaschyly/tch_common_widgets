@@ -3,11 +3,15 @@ import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class CommonTheme extends InheritedWidget {
   final CommonDimens commonDimens;
+  final String? fontFamily;
+  final FormStyle formStyle;
 
   /// CommonTheme initialization
-  CommonTheme({
+  const CommonTheme({
     required Widget child,
     this.commonDimens = const CommonDimens(),
+    this.fontFamily,
+    this.formStyle = const FormStyle(),
   }) : super(child: child);
 
   /// Access current CommonTheme anywhere from BuildContext
@@ -18,4 +22,16 @@ class CommonTheme extends InheritedWidget {
   /// Disable update notifications
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
+
+  /// PreProcess TextStyle before apply to widgets, used e.g. for global fontFamily
+  TextStyle preProcessTextStyle(TextStyle textStyle) {
+    TextStyle processedTextStyle = textStyle;
+
+    final theFontFamily = fontFamily;
+    if (theFontFamily != null) {
+      processedTextStyle = processedTextStyle.copyWith(fontFamily: theFontFamily);
+    }
+
+    return processedTextStyle;
+  }
 }

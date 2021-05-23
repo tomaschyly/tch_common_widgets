@@ -1,3 +1,9 @@
+## 0.0.2 - 23.5.2021
+
+* CommonTheme with CommonDimens, initial Styling
+* Common space widgets
+* PreferencesSwitchWidget
+
 ## 0.0.1 - 23.5.2021
 
 * Initial release
