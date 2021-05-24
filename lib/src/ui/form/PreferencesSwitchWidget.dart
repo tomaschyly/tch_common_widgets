@@ -3,6 +3,7 @@ import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
 
 class PreferencesSwitchWidget extends AbstractStatefulWidget {
+  final PreferencesSwitchStyle? style;
   final String label;
   final String prefsKey;
   final String? descriptionOn;
@@ -12,6 +13,7 @@ class PreferencesSwitchWidget extends AbstractStatefulWidget {
 
   /// PreferencesSwitchWidget initialization
   PreferencesSwitchWidget({
+    this.style,
     required this.label,
     required this.prefsKey,
     this.descriptionOn,
@@ -39,7 +41,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
   /// Create view layout from widgets
   @override
   Widget buildContent(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     String? description = _value ? widget.descriptionOn : widget.descriptionOff;
 
@@ -52,7 +54,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
             Expanded(
               child: Text(
                 widget.label,
-                style: commonTheme.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.labelStyle),
+                style: widget.style?.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.labelStyle),
               ),
             ),
             CommonSpaceH(),
@@ -61,7 +63,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
               onChanged: (bool newValue) {
                 prefsSetInt(widget.prefsKey, (widget.invert ? !newValue : newValue) ? 1 : 0);
 
-                setState(() {
+                setStateNotDisposed(() {
                   _value = newValue;
                 });
 
@@ -77,7 +79,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
         if (description != null)
           Text(
             description,
-            style: commonTheme.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.descriptionStyle),
+            style: widget.style?.descriptionStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.descriptionStyle),
           ),
         CommonSpaceV(),
       ],
