@@ -14,7 +14,7 @@ Flutter common widgets & theming package used by [Tomas Chyly](https://tomas-chy
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.0.2
+  tch_common_widgets: ^0.0.3
 ```
 
 ## Theme
