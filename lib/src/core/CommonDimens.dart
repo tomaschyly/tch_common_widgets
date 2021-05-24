@@ -12,6 +12,8 @@ const double kCommonVerticalMarginDouble = 32.0;
 const double kCommonVerticalMarginHalf = 8.0;
 const double kCommonVerticalMarginQuarter = 4.0;
 
+const double kPhoneStopBreakpoint = 576;
+
 class CommonDimens {
   final double primaryMargin;
   final double primaryMarginDouble;

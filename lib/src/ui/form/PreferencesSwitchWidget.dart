@@ -1,4 +1,5 @@
 import 'package:tch_appliable_core/tch_appliable_core.dart';
+import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
 
@@ -27,7 +28,7 @@ class PreferencesSwitchWidget extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => _PreferencesSwitchWidgetState();
 }
 
-class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<PreferencesSwitchWidget> {
+class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<PreferencesSwitchWidget> with SingleTickerProviderStateMixin {
   bool _value = false;
 
   /// State initialization
@@ -42,10 +43,12 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
   @override
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
+    final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
+    final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
     String? description = _value ? widget.descriptionOn : widget.descriptionOff;
 
-    return Column(
+    final Widget field = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(
@@ -84,6 +87,26 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
         CommonSpaceV(),
       ],
     );
+
+    Widget content = field;
+
+    if (fullWidthMobileOnly) {
+      content = Container(
+        width: kPhoneStopBreakpoint,
+        child: content,
+      );
+    }
+
+    if (animatedSizeChanges) {
+      content = AnimatedSize(
+        vsync: this,
+        duration: kThemeAnimationDuration,
+        alignment: Alignment.topCenter,
+        child: content,
+      );
+    }
+
+    return content;
   }
 }
 
