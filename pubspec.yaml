@@ -20,3 +20,19 @@ dependencies:
 #     sdk: flutter
 
 flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.tomaschyly.tch_common_widgets
+        pluginClass: TchCommonWidgetsPlugin
+      ios:
+        pluginClass: TchCommonWidgetsPlugin
+      linux:
+        pluginClass: TchCommonWidgetsPlugin
+      macos:
+        pluginClass: TchCommonWidgetsPlugin
+      windows:
+        pluginClass: TchCommonWidgetsPlugin
+      web:
+        pluginClass: TchCommonWidgetsWeb
+        fileName: tch_common_widgets_web.dart
