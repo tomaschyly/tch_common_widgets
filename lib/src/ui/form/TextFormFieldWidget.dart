@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
@@ -108,67 +112,85 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       );
     }
 
-    final Widget field = TextFormField(
-      autofocus: widget.autofocus,
-      controller: widget.controller,
-      focusNode: widget.focusNode,
-      onChanged: widget.onChanged,
-      onFieldSubmitted: (String value) {
-        if (theNextFocus != null) {
-          widget.focusNode!.unfocus();
+    if (!kIsWeb && Platform.isIOS) {
+      //TODO animatedSize???
+      //TODO containerWithWidth???
 
-          theNextFocus.requestFocus();
-        }
+      final Map<String, dynamic> creationParams = <String, dynamic>{}; //TODO my way as model toJson
 
-        if (theOnFieldSubmitted != null) {
-          theOnFieldSubmitted(value);
-        }
-      },
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      style: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
-      decoration: theDecoration.copyWith(labelText: widget.label),
-      textCapitalization: widget.textCapitalization,
-      minLines: widget.lines,
-      maxLines: widget.lines,
-      validator: (String? value) {
-        final theValidator = widget.validator;
-        if (theValidator != null) {
-          final validated = theValidator(value);
-
-          setStateNotDisposed(() {
-            _isError = validated != null;
-          });
-
-          return validated;
-        }
-
-        return null;
-      },
-      //TODO implement custom iOS fix for this!!!
-      autocorrect: widget.autocorrect,
-      enabled: widget.enabled,
-    );
-
-    Widget content = field;
-
-    if (fullWidthMobileOnly) {
-      content = Container(
-        width: kPhoneStopBreakpoint,
-        child: content,
+      return Container( //TODO this is a temp container, native view stretches to flutter limited size
+        width: 180,
+        height: 48,
+        child: UiKitView(
+          viewType: 'tch_common_widgets/TextFormFieldWidget',
+          layoutDirection: TextDirection.ltr,
+          creationParams: creationParams,
+          creationParamsCodec: const StandardMessageCodec(),
+        ),
       );
-    }
+    } else {
+      final Widget field = TextFormField(
+        autofocus: widget.autofocus,
+        controller: widget.controller,
+        focusNode: widget.focusNode,
+        onChanged: widget.onChanged,
+        onFieldSubmitted: (String value) {
+          if (theNextFocus != null) {
+            widget.focusNode!.unfocus();
 
-    if (animatedSizeChanges) {
-      content = AnimatedSize(
-        vsync: this,
-        duration: kThemeAnimationDuration,
-        alignment: Alignment.topCenter,
-        child: content,
+            theNextFocus.requestFocus();
+          }
+
+          if (theOnFieldSubmitted != null) {
+            theOnFieldSubmitted(value);
+          }
+        },
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        style: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
+        decoration: theDecoration.copyWith(labelText: widget.label),
+        textCapitalization: widget.textCapitalization,
+        minLines: widget.lines,
+        maxLines: widget.lines,
+        validator: (String? value) {
+          final theValidator = widget.validator;
+          if (theValidator != null) {
+            final validated = theValidator(value);
+
+            setStateNotDisposed(() {
+              _isError = validated != null;
+            });
+
+            return validated;
+          }
+
+          return null;
+        },
+        //TODO implement custom iOS fix for this!!!
+        autocorrect: widget.autocorrect,
+        enabled: widget.enabled,
       );
-    }
 
-    return content;
+      Widget content = field;
+
+      if (fullWidthMobileOnly) {
+        content = Container(
+          width: kPhoneStopBreakpoint,
+          child: content,
+        );
+      }
+
+      if (animatedSizeChanges) {
+        content = AnimatedSize(
+          vsync: this,
+          duration: kThemeAnimationDuration,
+          alignment: Alignment.topCenter,
+          child: content,
+        );
+      }
+
+      return content;
+    }
   }
 }
 
