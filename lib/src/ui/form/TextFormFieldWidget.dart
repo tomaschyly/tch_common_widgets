@@ -51,11 +51,20 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
 
 class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> with SingleTickerProviderStateMixin {
   bool _isError = false;
+  MethodChannel? _methodChannel;
 
   /// Create view layout from widgets
   @override
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
+
+    bool iOSUseNativeTextField = true;
+    if (widget.style != null) {
+      iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
+    } else if (commonTheme != null) {
+      iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
+    }
+
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
@@ -112,24 +121,27 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       );
     }
 
-    if (!kIsWeb && Platform.isIOS) {
-      //TODO animatedSize???
-      //TODO containerWithWidth???
+    late Widget field;
 
-      final Map<String, dynamic> creationParams = <String, dynamic>{}; //TODO my way as model toJson
+    if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
+      final creationParams = _IOSUseNativeTextFieldParams.fromJson(<String, dynamic>{});
 
-      return Container( //TODO this is a temp container, native view stretches to flutter limited size
-        width: 180,
-        height: 48,
+      field = Container(
+        height: 48, //TODO height by lines (+ border/padding?)
         child: UiKitView(
           viewType: 'tch_common_widgets/TextFormFieldWidget',
           layoutDirection: TextDirection.ltr,
-          creationParams: creationParams,
+          creationParams: creationParams.toJson(),
           creationParamsCodec: const StandardMessageCodec(),
+          onPlatformViewCreated: (int viewId) {
+            print('TCH_d onPlatformViewCreated $viewId'); //TODO remove
+            _methodChannel = MethodChannel('tch_common_widgets/TextFormFieldWidget$viewId');
+            //TODO onMethodCall cb
+          },
         ),
       );
     } else {
-      final Widget field = TextFormField(
+      field = TextFormField(
         autofocus: widget.autofocus,
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -166,35 +178,35 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
           return null;
         },
-        //TODO implement custom iOS fix for this!!!
         autocorrect: widget.autocorrect,
         enabled: widget.enabled,
       );
-
-      Widget content = field;
-
-      if (fullWidthMobileOnly) {
-        content = Container(
-          width: kPhoneStopBreakpoint,
-          child: content,
-        );
-      }
-
-      if (animatedSizeChanges) {
-        content = AnimatedSize(
-          vsync: this,
-          duration: kThemeAnimationDuration,
-          alignment: Alignment.topCenter,
-          child: content,
-        );
-      }
-
-      return content;
     }
+
+    Widget content = field;
+
+    if (fullWidthMobileOnly) {
+      content = Container(
+        width: kPhoneStopBreakpoint,
+        child: content,
+      );
+    }
+
+    if (animatedSizeChanges) {
+      content = AnimatedSize(
+        vsync: this,
+        duration: kThemeAnimationDuration,
+        alignment: Alignment.topCenter,
+        child: content,
+      );
+    }
+
+    return content;
   }
 }
 
 class TextFormFieldStyle {
+  final bool iOSUseNativeTextField;
   final TextStyle inputStyle;
   final InputDecoration inputDecoration;
   final Color borderColor;
@@ -204,6 +216,7 @@ class TextFormFieldStyle {
 
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
+    this.iOSUseNativeTextField = true,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
     this.inputDecoration = const InputDecoration(
       isDense: true,
@@ -251,4 +264,15 @@ class TextFormFieldStyle {
     this.disabledBorderColor = Colors.grey,
     this.errorColor = Colors.red,
   });
+}
+
+class _IOSUseNativeTextFieldParams extends DataModel {
+  /// IOSUseNativeTextFieldParams initialization from JSON map
+  _IOSUseNativeTextFieldParams.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+
+  /// Convert into JSON map
+  @override
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{};
+  }
 }

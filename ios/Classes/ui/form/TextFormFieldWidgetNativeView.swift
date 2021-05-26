@@ -1,18 +1,23 @@
 import Flutter
 import UIKit
+import MaterialComponents.MaterialTextControls_OutlinedTextAreas
+import MaterialComponents.MaterialTextControls_OutlinedTextFields
 
 class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView {
-    private var _view: UIView
+    private var _view: UIView!
 
     /**
      * TextFormFieldWidgetNativeView initialization with frame and other params.
      */
     init(frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?, messenger: FlutterBinaryMessenger) {
-        _view = UIView()
-
         super.init()
-
-        createTextField()
+        
+        if args is NSDictionary {
+            print("TCH_d_ios frame \(frame) viewId \(viewId) args \(args!)") //TODO remove
+            createTextField(frame: frame, arguments: args as! NSDictionary)
+        } else {
+            _view = UIView(frame: frame)
+        }
     }
 
     /**
@@ -25,11 +30,19 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView {
     /**
      * Create the TextField for input of Flutter TextFormFieldWidget.
      */
-    func createTextField() {
-        let textField = UITextField(frame: CGRect(x: 0, y: 0, width: 180, height: 48)); //TODO frame???
-
-        textField.text = "Native UITextField"
-
-        _view.addSubview(textField)
+    fileprivate func createTextField(frame: CGRect, arguments args: NSDictionary) {
+//        let textField = UITextField(frame: frame)
+//
+//        textField.text = "Native UITextField"
+//        textField.backgroundColor = UIColor.red
+//
+//        _view = textField
+        
+        let textField = MDCOutlinedTextField(frame: frame)
+        
+        textField.label.text = "Label" //TODO
+        textField.placeholder = "Placeholder" //TODO
+        
+        _view = textField
     }
 }

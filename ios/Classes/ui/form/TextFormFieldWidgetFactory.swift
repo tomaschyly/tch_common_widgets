@@ -19,4 +19,11 @@ class TextFormFieldWidgetFactory: NSObject, FlutterPlatformViewFactory {
     func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
         return TextFormFieldWidgetNativeView(frame: frame, viewIdentifier: viewId, arguments: args, messenger: messenger)
     }
+    
+    /**
+     * Return default Flutter messagner codec for communication with Flutter to work.
+     */
+    func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
+        return FlutterStandardMessageCodec.sharedInstance()
+    }
 }
