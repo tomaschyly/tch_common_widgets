@@ -23,6 +23,16 @@ dependencies:
 
 ## Widgets
 
+### CommonSpaces
+
+*Coming soon...*
+
+### PreferencesSwitchWidget
+
+*Coming soon...*
+
+### TextFormFieldWidget
+
 *Coming soon...*
 
 ## Roadmap

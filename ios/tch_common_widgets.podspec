@@ -17,8 +17,10 @@ Flutter common widgets & theming package used by tomaschyly.
   s.dependency 'Flutter'
   s.platform = :ios, '10.0'
 
-  s.dependency 'MaterialComponents/TextControls+OutlinedTextAreas'
-  s.dependency 'MaterialComponents/TextControls+OutlinedTextFields'
+#   s.dependency 'MaterialComponents/TextControls+OutlinedTextAreas'
+#   s.dependency 'MaterialComponents/TextControls+OutlinedTextFields'
+#   s.dependency 'MaterialComponents/TextControls+OutlinedTextAreasTheming'
+#   s.dependency 'MaterialComponents/TextControls+OutlinedTextFieldsTheming'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

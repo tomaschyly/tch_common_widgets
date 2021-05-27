@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
+import 'package:tch_appliable_core/utils/Color.dart';
 
 class TextFormFieldWidget extends AbstractStatefulWidget {
   final TextFormFieldStyle? style;
@@ -124,7 +125,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     late Widget field;
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
-      final creationParams = _IOSUseNativeTextFieldParams.fromJson(<String, dynamic>{});
+      // final creationParams = _IOSUseNativeTextFieldParams(
+      //   labelText: widget.label,
+      //   labelStyle:
+      //       widget.style?.inputDecoration.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputDecoration.labelStyle!),
+      // );
+      final creationParams = _IOSUseNativeTextFieldParams(text: widget.controller.text);
+
+      //TODO default Flutter widget has padding/margin top/bottom (isDense?)
 
       field = Container(
         height: 48, //TODO height by lines (+ border/padding?)
@@ -267,12 +275,33 @@ class TextFormFieldStyle {
 }
 
 class _IOSUseNativeTextFieldParams extends DataModel {
-  /// IOSUseNativeTextFieldParams initialization from JSON map
-  _IOSUseNativeTextFieldParams.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  // String? labelText;
+  // TextStyle? labelStyle;
+  String text;
+
+  /// IOSUseNativeTextFieldParams initialization
+  _IOSUseNativeTextFieldParams({
+    // this.labelText,
+    // this.labelStyle,
+    required this.text,
+  }) : super.fromJson(<String, dynamic>{});
 
   /// Convert into JSON map
   @override
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{};
+    // Map<String, dynamic>? _labelStyle;
+    // if (labelStyle != null) {
+    //   _labelStyle = <String, dynamic>{
+    //     'color': labelStyle!.color?.toHex(),
+    //     'fontSize': labelStyle!.fontSize,
+    //     'fontWeightBold': labelStyle!.fontWeight == FontWeight.bold,
+    //   };
+    // }
+
+    return <String, dynamic>{
+      // 'labelText': labelText,
+      // 'labelStyle': _labelStyle,
+      'text': text,
+    };
   }
 }
