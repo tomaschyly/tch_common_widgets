@@ -2,6 +2,8 @@
 
 Flutter common widgets & theming package used by [Tomas Chyly](https://tomas-chyly.com/en/). Contains custom widgets that are used on multiple projects. as well as global theming capability.
 
+This package is made to work with and some features require my package [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core). However you can use this package without it, you will just not be able to use some of the widgets.
+
 ## Contents
 
 1. [Installation](#installation)
@@ -25,13 +27,20 @@ dependencies:
 
 ### CommonSpaces
 
-*Coming soon...*
+* requires CommonTheme
+
+This is a set of widgets that can be used for easy and standard spaces between other widgets.
 
 ### PreferencesSwitchWidget
 
-*Coming soon...*
+* works with CommonTheme and standalone
+* requires [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core) for preferences
+
+Simple settings toggle/switch which gets and toggles int in preferences, uses it as a bool.
 
 ### TextFormFieldWidget
+
+* works with CommonTheme and standalone
 
 *Coming soon...*
 
