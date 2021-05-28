@@ -1,6 +1,6 @@
 # tch_common_widgets
 
-Flutter common widgets & theming package used by [Tomas Chyly](https://tomas-chyly.com/en/). Contains custom widgets that are used on multiple projects. as well as global theming capability.
+Flutter common widgets & theming package used by [Tomas Chyly](https://tomas-chyly.com/en/). Contains custom widgets that are used on multiple projects. As well as global theming capability.
 
 This package is made to work with and some features require my package [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core). However you can use this package without it, you will just not be able to use some of the widgets.
 

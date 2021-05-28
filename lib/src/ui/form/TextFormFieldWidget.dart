@@ -50,9 +50,46 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => _TextFormFieldWidgetState();
 }
 
-class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> with SingleTickerProviderStateMixin {
+class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> with TickerProviderStateMixin {
+  late FocusNode _focusNode;
   bool _isError = false;
+  GlobalKey? _uiKitKey;
   MethodChannel? _methodChannel;
+
+  /// State initialization
+  @override
+  void initState() {
+    super.initState();
+
+    _focusNode = widget.focusNode ?? FocusNode();
+  }
+
+  /// Manually dispose of resources
+  @override
+  void dispose() {
+    _methodChannel = null;
+
+    super.dispose();
+  }
+
+  /// Run initializations of screen on first build only
+  @override
+  firstBuildOnly(BuildContext context) {
+    super.firstBuildOnly(context);
+
+    final commonTheme = CommonTheme.of(context);
+
+    bool iOSUseNativeTextField = true;
+    if (widget.style != null) {
+      iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
+    } else if (commonTheme != null) {
+      iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
+    }
+
+    if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
+      _uiKitKey = GlobalKey();
+    }
+  }
 
   /// Create view layout from widgets
   @override
@@ -122,41 +159,49 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       );
     }
 
+    final theLines = widget.lines > 0 ? widget.lines : 1;
+
     late Widget field;
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
-      // final creationParams = _IOSUseNativeTextFieldParams(
-      //   labelText: widget.label,
-      //   labelStyle:
-      //       widget.style?.inputDecoration.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputDecoration.labelStyle!),
-      // );
-      final creationParams = _IOSUseNativeTextFieldParams(text: widget.controller.text);
+      final creationParams = _IOSUseNativeTextFieldParams(
+        text: widget.controller.text,
+        inputStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
+      );
 
-      //TODO default Flutter widget has padding/margin top/bottom (isDense?)
-
-      field = Container(
-        height: 48, //TODO height by lines (+ border/padding?)
-        child: UiKitView(
-          viewType: 'tch_common_widgets/TextFormFieldWidget',
-          layoutDirection: TextDirection.ltr,
-          creationParams: creationParams.toJson(),
-          creationParamsCodec: const StandardMessageCodec(),
-          onPlatformViewCreated: (int viewId) {
-            print('TCH_d onPlatformViewCreated $viewId'); //TODO remove
-            _methodChannel = MethodChannel('tch_common_widgets/TextFormFieldWidget$viewId');
-            //TODO onMethodCall cb
-          },
+      field = IgnorePointer(
+        ignoring: !widget.enabled,
+        child: InputDecorator(
+          decoration: theDecoration.copyWith(labelText: widget.label),
+          baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
+          isFocused: _focusNode.hasFocus, //TODO integrate with integration of comm with iOS
+          isEmpty: widget.controller.value.text.isEmpty,
+          expands: false,
+          child: Container(
+            height: theLines * 24, //48, //TODO height by lines, isDense = false does not seem to work right now, check later
+            child: UiKitView(
+              key: _uiKitKey,
+              viewType: 'tch_common_widgets/TextFormFieldWidget',
+              layoutDirection: TextDirection.ltr,
+              creationParams: creationParams.toJson(),
+              creationParamsCodec: const StandardMessageCodec(),
+              onPlatformViewCreated: (int viewId) {
+                _methodChannel = MethodChannel('tch_common_widgets/TextFormFieldWidget$viewId');
+                _methodChannel!.setMethodCallHandler(_onMethodCall);
+              },
+            ),
+          ),
         ),
       );
     } else {
       field = TextFormField(
         autofocus: widget.autofocus,
         controller: widget.controller,
-        focusNode: widget.focusNode,
+        focusNode: _focusNode,
         onChanged: widget.onChanged,
         onFieldSubmitted: (String value) {
           if (theNextFocus != null) {
-            widget.focusNode!.unfocus();
+            _focusNode.unfocus();
 
             theNextFocus.requestFocus();
           }
@@ -170,8 +215,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         style: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
         decoration: theDecoration.copyWith(labelText: widget.label),
         textCapitalization: widget.textCapitalization,
-        minLines: widget.lines,
-        maxLines: widget.lines,
+        minLines: theLines,
+        maxLines: theLines,
         validator: (String? value) {
           final theValidator = widget.validator;
           if (theValidator != null) {
@@ -210,6 +255,16 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     return content;
+  }
+
+  /// Response to message from platform
+  Future<dynamic> _onMethodCall(MethodCall call) async {
+    print('TCH_d onMethodCall ${call.method}'); //TODO remove
+    switch (call.method) {
+      case "focused":
+        //TODO make sure _focusNode changes to focused state + animate the decoration
+        break;
+    }
   }
 }
 
@@ -275,33 +330,31 @@ class TextFormFieldStyle {
 }
 
 class _IOSUseNativeTextFieldParams extends DataModel {
-  // String? labelText;
-  // TextStyle? labelStyle;
   String text;
+  TextStyle? inputStyle;
 
   /// IOSUseNativeTextFieldParams initialization
   _IOSUseNativeTextFieldParams({
-    // this.labelText,
-    // this.labelStyle,
     required this.text,
+    this.inputStyle,
   }) : super.fromJson(<String, dynamic>{});
 
   /// Convert into JSON map
   @override
   Map<String, dynamic> toJson() {
-    // Map<String, dynamic>? _labelStyle;
-    // if (labelStyle != null) {
-    //   _labelStyle = <String, dynamic>{
-    //     'color': labelStyle!.color?.toHex(),
-    //     'fontSize': labelStyle!.fontSize,
-    //     'fontWeightBold': labelStyle!.fontWeight == FontWeight.bold,
-    //   };
-    // }
+    Map<String, dynamic>? _inputStyle;
+    if (inputStyle != null) {
+      _inputStyle = <String, dynamic>{
+        'color': inputStyle!.color?.toHex(),
+        'fontSize': inputStyle!.fontSize,
+        'fontWeightBold': inputStyle!.fontWeight == FontWeight.bold,
+        'fontFamily': inputStyle!.fontFamily,
+      };
+    }
 
     return <String, dynamic>{
-      // 'labelText': labelText,
-      // 'labelStyle': _labelStyle,
       'text': text,
+      'inputStyle': _inputStyle,
     };
   }
 }

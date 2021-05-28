@@ -1,17 +1,16 @@
 import Flutter
 import UIKit
-//import MaterialComponents.MaterialTextControls_OutlinedTextAreas
-//import MaterialComponents.MaterialTextControls_OutlinedTextFields
-//import MaterialComponents.MaterialTextControls_OutlinedTextAreasTheming
-//import MaterialComponents.MaterialTextControls_OutlinedTextFieldsTheming
 
-class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView {
+class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldDelegate {
+    private let _channel: FlutterMethodChannel
     private var _view: UIView!
 
     /**
      * TextFormFieldWidgetNativeView initialization with frame and other params.
      */
     init(frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?, messenger: FlutterBinaryMessenger) {
+        _channel = FlutterMethodChannel(name: "tch_common_widgets/TextFormFieldWidget\(viewId)", binaryMessenger: messenger)
+        
         super.init()
         
         if args is NSDictionary {
@@ -35,8 +34,6 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView {
     fileprivate func createTextField(frame: CGRect, arguments args: NSDictionary) -> UIView {
         let params = IOSUseNativeTextFieldParams.fromJson(dictionary: args)
         
-        //TODO do not use IOS Material components, they do not have the same options, use just UITextField for pure text, everything else in Flutter
-        
         let textField = UITextField(frame: frame)
         
         textField.backgroundColor = .clear
@@ -45,58 +42,43 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView {
         
         textField.text = params.text
         
+        if let theInputStyle = params.inputStyle {
+            var color: UIColor?
+            
+            if let theColor = theInputStyle["color"] as? String {
+                color = UIColor(flutterColorHex: theColor)
+            }
+            
+            textField.textColor = color
+            
+            //TODO handle fontWeight and fontFamily
+        }
+        
+        weak var theDelegate: UITextFieldDelegate? = self
+        textField.delegate = theDelegate
+        
         return textField
-        
-//        let textField = UITextField(frame: frame)
-//
-//        textField.text = "Native UITextField"
-//        textField.backgroundColor = UIColor.red
-//
-//        _view = textField
-        
-//        let containerScheme = MDCContainerScheme()
-//
-////        containerScheme.colorScheme.primaryColor = .blue
-//        containerScheme.typographyScheme.subtitle1 = UIFont.systemFont(ofSize: 16, weight: .bold) //TODO this works, but it is shared by input and label
-//
-//        let textField = MDCOutlinedTextField(frame: frame)
-//        textField.applyTheme(withScheme: containerScheme)
-//        textField.applyErrorTheme(withScheme: containerScheme)
-//        textField.verticalDensity = 1 //TODO from params
-//
-//        textField.label.text = params.labelText ?? ""
-//
-////        if let theLabelStyle = params.labelStyle {
-////            if let theLabelColor = theLabelStyle["color"] as? String {
-////                let textColor = UIColor(flutterColorHex: theLabelColor)!
-////
-////                textField.setNormalLabelColor(textColor, for: .normal)
-////                textField.setNormalLabelColor(textColor, for: .editing)
-////                textField.setFloatingLabelColor(textColor, for: .normal)
-////                textField.setFloatingLabelColor(textColor, for: .editing)
-////            }
-////
-////            //TODO default font is not needed to include, but custom is going to be
-////            textField.label.font = UIFont.systemFont(ofSize: 10, weight: .bold)
-////        }
-//
-//        return textField
+    }
+    
+    /**
+     * Editing started on the UITextField, inform Flutter.
+     */
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        _channel.invokeMethod("focused", arguments: nil)
     }
 }
 
 struct IOSUseNativeTextFieldParams {
-//    var labelText: String?
-//    var labelStyle: NSDictionary?
     var text: String
+    var inputStyle: NSDictionary?
     
     /**
      * Convert JSON map into IOSUseNativeTextFieldParams.
      */
     static func fromJson(dictionary: NSDictionary) -> IOSUseNativeTextFieldParams {
         return IOSUseNativeTextFieldParams(
-//            labelText: dictionary["labelText"] as? String,
-//            labelStyle: dictionary["labelStyle"] as? NSDictionary
-            text: dictionary["text"] as! String
+            text: dictionary["text"] as! String,
+            inputStyle: dictionary["inputStyle"] as? NSDictionary
         )
     }
 }
