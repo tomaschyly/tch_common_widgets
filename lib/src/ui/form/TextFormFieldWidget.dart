@@ -70,6 +70,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   void dispose() {
     _methodChannel = null;
 
+    widget.controller.removeListener(_controllerTextChangedForIOSNativeTextField);
+
     _focusNode.removeListener(_focusChangedForIOSNativeTextField);
 
     super.dispose();
@@ -91,6 +93,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
       _uiKitKey = GlobalKey();
+
+      widget.controller.addListener(_controllerTextChangedForIOSNativeTextField);
 
       _focusNode.addListener(_focusChangedForIOSNativeTextField);
     }
@@ -208,9 +212,11 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         onChanged: widget.onChanged,
         onFieldSubmitted: (String value) {
           if (theNextFocus != null) {
-            _focusNode.unfocus();
+            final focusScope = FocusScope.of(context);
 
-            FocusScope.of(context).requestFocus(theNextFocus);
+            focusScope.unfocus();
+
+            focusScope.requestFocus(theNextFocus);
           }
 
           if (theOnFieldSubmitted != null) {
@@ -271,7 +277,19 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       case "focused":
         _focusIOSNativeTextField();
         break;
+      case "didEndEditing":
+        _didEndEditingIOSNativeTextField(call.arguments as String);
+        break;
     }
+  }
+
+  /// On TextEditingController change text update Widget text
+  void _controllerTextChangedForIOSNativeTextField() {
+    print("TCH_d _controllerTextChangedForIOSNativeTextField"); //TODO remove
+
+    _methodChannel!.invokeMethod("setText", widget.controller.text);
+
+    setStateNotDisposed(() {});
   }
 
   /// On FocusNode focus changed update Widget state
@@ -281,6 +299,12 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       _methodChannel!.invokeMethod('focus');
     } else {
       _methodChannel!.invokeMethod('unFocus');
+
+      _methodChannel!.invokeMethod<String>('getText').then((String? text) {
+        setStateNotDisposed(() {
+          widget.controller.text = text ?? "";
+        });
+      });
     }
 
     setStateNotDisposed(() {});
@@ -297,7 +321,33 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       }
     });
 
-    FocusScope.of(context).requestFocus(_focusNode);
+    if (!_focusNode.hasFocus) {
+      final focusScope = FocusScope.of(context);
+
+      focusScope.unfocus();
+
+      focusScope.requestFocus(_focusNode);
+    }
+  }
+
+  /// Widget ended text editing, update controller and emulate onFieldSubmitted
+  void _didEndEditingIOSNativeTextField(String text) {
+    widget.controller.text = text;
+
+    final theNextFocus = widget.nextFocus;
+    final theOnFieldSubmitted = widget.onFieldSubmitted;
+
+    if (theNextFocus != null) {
+      _focusNode.unfocus();
+
+      FocusScope.of(context).requestFocus(theNextFocus);
+    }
+
+    if (theOnFieldSubmitted != null) {
+      theOnFieldSubmitted(text);
+    }
+
+    setStateNotDisposed(() {});
   }
 }
 

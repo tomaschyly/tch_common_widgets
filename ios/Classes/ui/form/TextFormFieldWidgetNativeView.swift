@@ -4,6 +4,7 @@ import UIKit
 class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldDelegate {
     private let _channel: FlutterMethodChannel
     private var _view: UIView!
+    private var _params: IOSUseNativeTextFieldParams!
 
     /**
      * TextFormFieldWidgetNativeView initialization with frame and other params.
@@ -37,6 +38,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
      */
     fileprivate func createTextField(frame: CGRect, arguments args: NSDictionary) -> UIView {
         let params = IOSUseNativeTextFieldParams.fromJson(dictionary: args)
+        _params = params
         
         let textField = UITextField(frame: frame)
         
@@ -57,8 +59,6 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             
             //TODO handle fontWeight and fontFamily
         }
-        
-        //TODO maxLines 1 or 0
         
         weak var theDelegate: UITextFieldDelegate? = self
         textField.delegate = theDelegate
@@ -81,6 +81,13 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             textField.resignFirstResponder()
             result(nil)
             break
+        case "getText":
+            result(textField.text ?? "")
+            break
+        case "setText":
+            textField.text = (call.arguments as? String) ?? ""
+            result(nil)
+            break
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -91,6 +98,19 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
      */
     func textFieldDidBeginEditing(_ textField: UITextField) {
         _channel.invokeMethod("focused", arguments: nil)
+    }
+    
+    /**
+     * TextField return key pressed, on single line end ediding, on multilne let new line.
+     */
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        print("TCH_d_ios \(_params.text) textFieldShouldReturn \(_params.maxLines == 1)") //TODO remove
+        
+        if _params.maxLines == 1 {
+            _channel.invokeMethod("didEndEditing", arguments: textField.text ?? "")
+        }
+        
+        return _params.maxLines == 1
     }
 }
 
