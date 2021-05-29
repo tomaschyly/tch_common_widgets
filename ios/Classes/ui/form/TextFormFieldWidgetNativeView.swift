@@ -19,6 +19,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
         } else {
             _view = UIView(frame: frame)
         }
+        
+        _channel.setMethodCallHandler { methodCall, result in
+            self.onMethodCall(call: methodCall, result: result)
+        }
     }
 
     /**
@@ -54,10 +58,32 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             //TODO handle fontWeight and fontFamily
         }
         
+        //TODO maxLines 1 or 0
+        
         weak var theDelegate: UITextFieldDelegate? = self
         textField.delegate = theDelegate
         
         return textField
+    }
+    
+    /**
+     * On method called from Flutter do action.
+     */
+    func onMethodCall(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let textField = _view as! UITextField
+        
+        switch call.method {
+        case "focus":
+            textField.becomeFirstResponder()
+            result(nil)
+            break
+        case "unFocus":
+            textField.resignFirstResponder()
+            result(nil)
+            break
+        default:
+            result(FlutterMethodNotImplemented)
+        }
     }
     
     /**
@@ -71,6 +97,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
 struct IOSUseNativeTextFieldParams {
     var text: String
     var inputStyle: NSDictionary?
+    var maxLines: Int
     
     /**
      * Convert JSON map into IOSUseNativeTextFieldParams.
@@ -78,7 +105,8 @@ struct IOSUseNativeTextFieldParams {
     static func fromJson(dictionary: NSDictionary) -> IOSUseNativeTextFieldParams {
         return IOSUseNativeTextFieldParams(
             text: dictionary["text"] as! String,
-            inputStyle: dictionary["inputStyle"] as? NSDictionary
+            inputStyle: dictionary["inputStyle"] as? NSDictionary,
+            maxLines: dictionary["maxLines"] as! Int
         )
     }
 }

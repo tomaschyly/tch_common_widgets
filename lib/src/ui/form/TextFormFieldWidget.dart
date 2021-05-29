@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
@@ -69,6 +70,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   void dispose() {
     _methodChannel = null;
 
+    _focusNode.removeListener(_focusChangedForIOSNativeTextField);
+
     super.dispose();
   }
 
@@ -88,6 +91,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
       _uiKitKey = GlobalKey();
+
+      _focusNode.addListener(_focusChangedForIOSNativeTextField);
     }
   }
 
@@ -167,6 +172,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       final creationParams = _IOSUseNativeTextFieldParams(
         text: widget.controller.text,
         inputStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
+        maxLines: theLines,
       );
 
       field = IgnorePointer(
@@ -174,7 +180,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         child: InputDecorator(
           decoration: theDecoration.copyWith(labelText: widget.label),
           baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
-          isFocused: _focusNode.hasFocus, //TODO integrate with integration of comm with iOS
+          //TODO WIP only autoNextFocus, others work
+          isFocused: _focusNode.hasFocus,
           isEmpty: widget.controller.value.text.isEmpty,
           expands: false,
           child: Container(
@@ -203,7 +210,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
           if (theNextFocus != null) {
             _focusNode.unfocus();
 
-            theNextFocus.requestFocus();
+            FocusScope.of(context).requestFocus(theNextFocus);
           }
 
           if (theOnFieldSubmitted != null) {
@@ -262,9 +269,35 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     print('TCH_d onMethodCall ${call.method}'); //TODO remove
     switch (call.method) {
       case "focused":
-        //TODO make sure _focusNode changes to focused state + animate the decoration
+        _focusIOSNativeTextField();
         break;
     }
+  }
+
+  /// On FocusNode focus changed update Widget state
+  void _focusChangedForIOSNativeTextField() {
+    print('TCH_d _focusChangedForIOSNativeTextField ${_focusNode.hasFocus}'); //TODO remove
+    if (_focusNode.hasFocus) {
+      _methodChannel!.invokeMethod('focus');
+    } else {
+      _methodChannel!.invokeMethod('unFocus');
+    }
+
+    setStateNotDisposed(() {});
+  }
+
+  /// Make sure Widget is visible on screen and set focus
+  void _focusIOSNativeTextField() {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      if (mounted) {
+        context.findRenderObject()!.showOnScreen(
+              duration: kThemeAnimationDuration,
+              curve: Curves.linear,
+            );
+      }
+    });
+
+    FocusScope.of(context).requestFocus(_focusNode);
   }
 }
 
@@ -332,11 +365,13 @@ class TextFormFieldStyle {
 class _IOSUseNativeTextFieldParams extends DataModel {
   String text;
   TextStyle? inputStyle;
+  int maxLines;
 
   /// IOSUseNativeTextFieldParams initialization
   _IOSUseNativeTextFieldParams({
     required this.text,
     this.inputStyle,
+    required this.maxLines,
   }) : super.fromJson(<String, dynamic>{});
 
   /// Convert into JSON map
@@ -355,6 +390,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
     return <String, dynamic>{
       'text': text,
       'inputStyle': _inputStyle,
+      'maxLines': maxLines,
     };
   }
 }
