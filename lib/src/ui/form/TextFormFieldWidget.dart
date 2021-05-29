@@ -177,6 +177,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         text: widget.controller.text,
         inputStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
         maxLines: theLines,
+        keyboardType: widget.keyboardType,
       );
 
       field = IgnorePointer(
@@ -416,12 +417,14 @@ class _IOSUseNativeTextFieldParams extends DataModel {
   String text;
   TextStyle? inputStyle;
   int maxLines;
+  TextInputType? keyboardType;
 
   /// IOSUseNativeTextFieldParams initialization
   _IOSUseNativeTextFieldParams({
     required this.text,
     this.inputStyle,
     required this.maxLines,
+    this.keyboardType,
   }) : super.fromJson(<String, dynamic>{});
 
   /// Convert into JSON map
@@ -441,6 +444,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
       'text': text,
       'inputStyle': _inputStyle,
       'maxLines': maxLines,
+      'keyboardType': keyboardType?.toJson()['name'],
     };
   }
 }

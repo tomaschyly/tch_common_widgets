@@ -57,7 +57,26 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             
             textField.textColor = color
             
-            //TODO handle fontWeight and fontFamily
+            var fontSize: Double = 16
+            if let theFontSize = theInputStyle["fontSize"] as? Double {
+                fontSize = theFontSize
+            }
+            
+            var isBold = false;
+            if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
+                isBold = theFontWeightBold
+            }
+            
+            if let theFontFamily = theInputStyle["fontFamily"] as? String {
+                textField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
+            } else {
+                textField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+            }
+        }
+        
+        if let theKeyboardType = params.keyboardType {
+            print("TCH_d_is theKeyboardType \(theKeyboardType) \(keyboardTypeForFlutterInputType(inputType: theKeyboardType).rawValue)") //TODO remove
+            textField.keyboardType = keyboardTypeForFlutterInputType(inputType: theKeyboardType)
         }
         
         weak var theDelegate: UITextFieldDelegate? = self
@@ -112,12 +131,43 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
         
         return _params.maxLines == 1
     }
+    
+    /**
+     * Get iOS UIKeyboardType for Flutter TextInputType.
+     */
+    fileprivate func keyboardTypeForFlutterInputType(inputType: String) -> UIKeyboardType {
+        switch inputType {
+        case "TextInputType.text":
+            return .default
+        case "TextInputType.multiline": //TODO this is supposed to accept new lines?!?!
+            return .default
+        case "TextInputType.number":
+            return .numbersAndPunctuation
+        case "TextInputType.phone":
+            return .phonePad
+        case "TextInputType.datetime":
+            return .default
+        case "TextInputType.emailAddress":
+            return .emailAddress
+        case "TextInputType.url":
+            return .URL
+        case "TextInputType.visiblePassword":
+            return .default
+        case "TextInputType.name":
+            return .namePhonePad
+        case "TextInputType.address":
+            return .default
+        default:
+            return .default
+        }
+    }
 }
 
 struct IOSUseNativeTextFieldParams {
     var text: String
     var inputStyle: NSDictionary?
     var maxLines: Int
+    var keyboardType: String?
     
     /**
      * Convert JSON map into IOSUseNativeTextFieldParams.
@@ -126,7 +176,8 @@ struct IOSUseNativeTextFieldParams {
         return IOSUseNativeTextFieldParams(
             text: dictionary["text"] as! String,
             inputStyle: dictionary["inputStyle"] as? NSDictionary,
-            maxLines: dictionary["maxLines"] as! Int
+            maxLines: dictionary["maxLines"] as! Int,
+            keyboardType: dictionary["keyboardType"] as? String
         )
     }
 }
