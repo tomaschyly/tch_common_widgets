@@ -79,6 +79,11 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             textField.keyboardType = keyboardTypeForFlutterInputType(inputType: theKeyboardType)
         }
         
+        if let theTextInputAction = params.textInputAction {
+            print("TCH_d_is returnKeyType \(theTextInputAction) \(keyboardReturnKeyTypeForFlutterInputAction(inputAction: theTextInputAction).rawValue)") //TODO remove
+            textField.returnKeyType = keyboardReturnKeyTypeForFlutterInputAction(inputAction: theTextInputAction)
+        }
+        
         weak var theDelegate: UITextFieldDelegate? = self
         textField.delegate = theDelegate
         
@@ -139,7 +144,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
         switch inputType {
         case "TextInputType.text":
             return .default
-        case "TextInputType.multiline": //TODO this is supposed to accept new lines?!?!
+        case "TextInputType.multiline": //TODO this is supposed to accept new lines
             return .default
         case "TextInputType.number":
             return .numbersAndPunctuation
@@ -161,6 +166,40 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             return .default
         }
     }
+    
+    /**
+     * Get iOS UIReturnKeyType for Flutter TextInputAction.
+     */
+    fileprivate func keyboardReturnKeyTypeForFlutterInputAction(inputAction: String) -> UIReturnKeyType {
+        switch inputAction {
+        case "TextInputAction.none", "TextInputAction.unspecified":
+            return .default
+        case "TextInputAction.done":
+            return .done
+        case "TextInputAction.go":
+            return .go
+        case "TextInputAction.search":
+            return .search
+        case "TextInputAction.send":
+            return .send
+        case "TextInputAction.next":
+            return .next
+        case "TextInputAction.previous":
+            return .default
+        case "TextInputAction.continueAction":
+            return .continue
+        case "TextInputAction.join":
+            return .join
+        case "TextInputAction.route":
+            return .route
+        case "TextInputAction.emergencyCall":
+            return .emergencyCall
+        case "TextInputAction.newline":  //TODO this is supposed to accept new lines
+            return .default
+        default:
+            return .default
+        }
+    }
 }
 
 struct IOSUseNativeTextFieldParams {
@@ -168,6 +207,7 @@ struct IOSUseNativeTextFieldParams {
     var inputStyle: NSDictionary?
     var maxLines: Int
     var keyboardType: String?
+    var textInputAction: String?
     
     /**
      * Convert JSON map into IOSUseNativeTextFieldParams.
@@ -177,7 +217,8 @@ struct IOSUseNativeTextFieldParams {
             text: dictionary["text"] as! String,
             inputStyle: dictionary["inputStyle"] as? NSDictionary,
             maxLines: dictionary["maxLines"] as! Int,
-            keyboardType: dictionary["keyboardType"] as? String
+            keyboardType: dictionary["keyboardType"] as? String,
+            textInputAction: dictionary["textInputAction"] as? String
         )
     }
 }

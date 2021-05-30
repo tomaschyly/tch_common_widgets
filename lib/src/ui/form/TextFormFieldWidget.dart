@@ -178,6 +178,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         inputStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
         maxLines: theLines,
         keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
       );
 
       field = IgnorePointer(
@@ -339,9 +340,11 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final theOnFieldSubmitted = widget.onFieldSubmitted;
 
     if (theNextFocus != null) {
-      _focusNode.unfocus();
+      final focusScope = FocusScope.of(context);
 
-      FocusScope.of(context).requestFocus(theNextFocus);
+      focusScope.unfocus();
+
+      focusScope.requestFocus(theNextFocus);
     }
 
     if (theOnFieldSubmitted != null) {
@@ -418,6 +421,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
   TextStyle? inputStyle;
   int maxLines;
   TextInputType? keyboardType;
+  TextInputAction? textInputAction;
 
   /// IOSUseNativeTextFieldParams initialization
   _IOSUseNativeTextFieldParams({
@@ -425,6 +429,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
     this.inputStyle,
     required this.maxLines,
     this.keyboardType,
+    this.textInputAction,
   }) : super.fromJson(<String, dynamic>{});
 
   /// Convert into JSON map
@@ -445,6 +450,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
       'inputStyle': _inputStyle,
       'maxLines': maxLines,
       'keyboardType': keyboardType?.toJson()['name'],
+      'textInputAction': textInputAction?.toString(),
     };
   }
 }
