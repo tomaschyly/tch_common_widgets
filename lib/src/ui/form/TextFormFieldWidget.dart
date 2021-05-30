@@ -169,6 +169,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     final theLines = widget.lines > 0 ? widget.lines : 1;
+    final theKeyboardType = widget.keyboardType ?? (theLines > 1 ? TextInputType.multiline : null);
+    final theTextInputAction = widget.textInputAction ?? (theLines > 1 ? TextInputAction.newline : null);
 
     late Widget field;
 
@@ -177,8 +179,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         text: widget.controller.text,
         inputStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
         maxLines: theLines,
-        keyboardType: widget.keyboardType,
-        textInputAction: widget.textInputAction,
+        keyboardType: theKeyboardType,
+        textInputAction: theTextInputAction,
         textCapitalization: widget.textCapitalization,
         autocorrect: widget.autocorrect,
       );
@@ -188,7 +190,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         child: InputDecorator(
           decoration: theDecoration.copyWith(labelText: widget.label),
           baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
-          //TODO WIP only autoNextFocus, others work
           isFocused: _focusNode.hasFocus,
           isEmpty: widget.controller.value.text.isEmpty,
           expands: false,
@@ -227,8 +228,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
             theOnFieldSubmitted(value);
           }
         },
-        keyboardType: widget.keyboardType,
-        textInputAction: widget.textInputAction,
+        keyboardType: theKeyboardType,
+        textInputAction: theTextInputAction,
         style: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
         decoration: theDecoration.copyWith(labelText: widget.label),
         textCapitalization: widget.textCapitalization,

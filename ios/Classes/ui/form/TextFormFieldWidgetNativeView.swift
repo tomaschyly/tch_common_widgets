@@ -1,7 +1,7 @@
 import Flutter
 import UIKit
 
-class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldDelegate {
+class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDelegate, UITextFieldDelegate {
     private let _channel: FlutterMethodChannel
     private var _view: UIView!
     private var _params: IOSUseNativeTextFieldParams!
@@ -40,84 +40,156 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
         let params = IOSUseNativeTextFieldParams.fromJson(dictionary: args)
         _params = params
         
-        let textField = UITextField(frame: frame)
-        
-        textField.backgroundColor = .clear
-        textField.layer.borderColor = UIColor.clear.cgColor
-        textField.layer.borderWidth = 0
-        
-        textField.text = params.text
-        
-        if let theInputStyle = params.inputStyle {
-            var color: UIColor?
+        if params.maxLines == 1 {
+            let textField = UITextField(frame: frame)
             
-            if let theColor = theInputStyle["color"] as? String {
-                color = UIColor(flutterColorHex: theColor)
+            textField.backgroundColor = .clear
+            textField.layer.borderColor = UIColor.clear.cgColor
+            textField.layer.borderWidth = 0
+            
+            textField.text = params.text
+            
+            if let theInputStyle = params.inputStyle {
+                var color: UIColor?
+                
+                if let theColor = theInputStyle["color"] as? String {
+                    color = UIColor(flutterColorHex: theColor)
+                }
+                
+                textField.textColor = color
+                
+                var fontSize: Double = 16
+                if let theFontSize = theInputStyle["fontSize"] as? Double {
+                    fontSize = theFontSize
+                }
+                
+                var isBold = false;
+                if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
+                    isBold = theFontWeightBold
+                }
+                
+                if let theFontFamily = theInputStyle["fontFamily"] as? String {
+                    textField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
+                } else {
+                    textField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                }
             }
             
-            textField.textColor = color
-            
-            var fontSize: Double = 16
-            if let theFontSize = theInputStyle["fontSize"] as? Double {
-                fontSize = theFontSize
+            if let theKeyboardType = params.keyboardType {
+                textField.keyboardType = keyboardTypeForFlutterInputType(inputType: theKeyboardType)
             }
             
-            var isBold = false;
-            if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
-                isBold = theFontWeightBold
+            if let theTextInputAction = params.textInputAction {
+                textField.returnKeyType = keyboardReturnKeyTypeForFlutterInputAction(inputAction: theTextInputAction)
             }
             
-            if let theFontFamily = theInputStyle["fontFamily"] as? String {
-                textField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
-            } else {
-                textField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+            textField.autocapitalizationType = autocapitalizationForFlutterTextCapitalization(textCapitalization: params.textCapitalization)
+            
+            textField.autocorrectionType = params.autocorrect ? .yes : .no
+            
+            weak var theDelegate: UITextFieldDelegate? = self
+            textField.delegate = theDelegate
+            
+            return textField
+        } else {
+            let textField = UITextView(frame: frame)
+            textField.isEditable = true
+            
+            textField.backgroundColor = .clear
+            textField.layer.borderColor = UIColor.clear.cgColor
+            textField.layer.borderWidth = 0
+            
+            textField.text = params.text
+            
+            if let theInputStyle = params.inputStyle {
+                var color: UIColor?
+                
+                if let theColor = theInputStyle["color"] as? String {
+                    color = UIColor(flutterColorHex: theColor)
+                }
+                
+                textField.textColor = color
+                
+                var fontSize: Double = 16
+                if let theFontSize = theInputStyle["fontSize"] as? Double {
+                    fontSize = theFontSize
+                }
+                
+                var isBold = false;
+                if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
+                    isBold = theFontWeightBold
+                }
+                
+                if let theFontFamily = theInputStyle["fontFamily"] as? String {
+                    textField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
+                } else {
+                    textField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                }
             }
+            
+            if let theKeyboardType = params.keyboardType {
+                textField.keyboardType = keyboardTypeForFlutterInputType(inputType: theKeyboardType)
+            }
+            
+            if let theTextInputAction = params.textInputAction {
+                textField.returnKeyType = keyboardReturnKeyTypeForFlutterInputAction(inputAction: theTextInputAction)
+            }
+            
+            textField.autocapitalizationType = autocapitalizationForFlutterTextCapitalization(textCapitalization: params.textCapitalization)
+            
+            textField.autocorrectionType = params.autocorrect ? .yes : .no
+            
+            weak var theDelegate: UITextViewDelegate? = self
+            textField.delegate = theDelegate
+            
+            return textField
         }
-        
-        if let theKeyboardType = params.keyboardType {
-            print("TCH_d_is theKeyboardType \(theKeyboardType) \(keyboardTypeForFlutterInputType(inputType: theKeyboardType).rawValue)") //TODO remove
-            textField.keyboardType = keyboardTypeForFlutterInputType(inputType: theKeyboardType)
-        }
-        
-        if let theTextInputAction = params.textInputAction {
-            print("TCH_d_is returnKeyType \(theTextInputAction) \(keyboardReturnKeyTypeForFlutterInputAction(inputAction: theTextInputAction).rawValue)") //TODO remove
-            textField.returnKeyType = keyboardReturnKeyTypeForFlutterInputAction(inputAction: theTextInputAction)
-        }
-        
-        textField.autocapitalizationType = autocapitalizationForFlutterTextCapitalization(textCapitalization: params.textCapitalization)
-        
-        textField.autocorrectionType = params.autocorrect ? .yes : .no
-        
-        weak var theDelegate: UITextFieldDelegate? = self
-        textField.delegate = theDelegate
-        
-        return textField
     }
     
     /**
      * On method called from Flutter do action.
      */
     func onMethodCall(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let textField = _view as! UITextField
-        
-        switch call.method {
-        case "focus":
-            textField.becomeFirstResponder()
-            result(nil)
-            break
-        case "unFocus":
-            textField.resignFirstResponder()
-            result(nil)
-            break
-        case "getText":
-            result(textField.text ?? "")
-            break
-        case "setText":
-            textField.text = (call.arguments as? String) ?? ""
-            result(nil)
-            break
-        default:
-            result(FlutterMethodNotImplemented)
+        if let theTextField = _view as? UITextField {
+            switch call.method {
+            case "focus":
+                theTextField.becomeFirstResponder()
+                result(nil)
+                break
+            case "unFocus":
+                theTextField.resignFirstResponder()
+                result(nil)
+                break
+            case "getText":
+                result(theTextField.text ?? "")
+                break
+            case "setText":
+                theTextField.text = (call.arguments as? String) ?? ""
+                result(nil)
+                break
+            default:
+                result(FlutterMethodNotImplemented)
+            }
+        } else if let theTextView = _view as? UITextView {
+            switch call.method {
+            case "focus":
+                theTextView.becomeFirstResponder()
+                result(nil)
+                break
+            case "unFocus":
+                theTextView.resignFirstResponder()
+                result(nil)
+                break
+            case "getText":
+                result(theTextView.text ?? "")
+                break
+            case "setText":
+                theTextView.text = (call.arguments as? String) ?? ""
+                result(nil)
+                break
+            default:
+                result(FlutterMethodNotImplemented)
+            }
         }
     }
     
@@ -125,6 +197,13 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
      * Editing started on the UITextField, inform Flutter.
      */
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        _channel.invokeMethod("focused", arguments: nil)
+    }
+    
+    /**
+     * Editing started on the UITextView, inform Flutter.
+     */
+    func textViewDidBeginEditing(_ textView: UITextView) {
         _channel.invokeMethod("focused", arguments: nil)
     }
     
@@ -148,7 +227,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
         switch inputType {
         case "TextInputType.text":
             return .default
-        case "TextInputType.multiline": //TODO this is supposed to accept new lines
+        case "TextInputType.multiline":
             return .default
         case "TextInputType.number":
             return .numbersAndPunctuation
@@ -198,7 +277,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             return .route
         case "TextInputAction.emergencyCall":
             return .emergencyCall
-        case "TextInputAction.newline":  //TODO this is supposed to accept new lines
+        case "TextInputAction.newline":
             return .default
         default:
             return .default
