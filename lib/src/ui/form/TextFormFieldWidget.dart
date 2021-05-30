@@ -107,6 +107,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
+    final TextFormFieldVariant theVariant = (widget.style?.variant ?? commonTheme?.formStyle.textFormFieldStyle.variant) ?? TextFormFieldVariant.Material;
+
     bool iOSUseNativeTextField = true;
     if (widget.style != null) {
       iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
@@ -197,7 +199,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InputDecorator(
-                  decoration: theDecoration.copyWith(labelText: widget.label),
+                  decoration: theDecoration.copyWith(labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null),
                   baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
                   isFocused: _focusNode.hasFocus,
                   isEmpty: widget.controller.value.text.isEmpty,
@@ -269,7 +271,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
         style: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
-        decoration: theDecoration.copyWith(labelText: widget.label),
+        decoration: theDecoration.copyWith(labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null),
         textCapitalization: widget.textCapitalization,
         minLines: theLines,
         maxLines: theLines,
@@ -293,6 +295,26 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     Widget content = field;
+
+    final theLabel = widget.label;
+    if (theVariant == TextFormFieldVariant.Cupertino && theLabel != null) {
+      content = Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: (widget.style?.cupertinoLabelPadding ?? commonTheme?.formStyle.textFormFieldStyle.cupertinoLabelPadding) ??
+                const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            child: Text(
+              theLabel,
+              style: theDecoration.labelStyle,
+            ),
+          ),
+          content,
+        ],
+      );
+    }
 
     if (fullWidthMobileOnly) {
       content = Container(
@@ -406,7 +428,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   }
 }
 
+enum TextFormFieldVariant {
+  None,
+  Material,
+  Cupertino,
+}
+
 class TextFormFieldStyle {
+  final TextFormFieldVariant variant;
   final bool iOSUseNativeTextField;
   final TextStyle inputStyle;
   final InputDecoration inputDecoration;
@@ -414,9 +443,11 @@ class TextFormFieldStyle {
   final Color fillColorDisabled;
   final Color disabledBorderColor;
   final Color errorColor;
+  final EdgeInsets cupertinoLabelPadding;
 
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
+    this.variant = TextFormFieldVariant.Material,
     this.iOSUseNativeTextField = false,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
     this.inputDecoration = const InputDecoration(
@@ -464,6 +495,7 @@ class TextFormFieldStyle {
     this.fillColorDisabled = Colors.grey,
     this.disabledBorderColor = Colors.grey,
     this.errorColor = Colors.red,
+    this.cupertinoLabelPadding = const EdgeInsets.only(left: 8, right: 8, bottom: 8),
   });
 }
 

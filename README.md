@@ -16,7 +16,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.0.4
+  tch_common_widgets: ^0.0.5
 ```
 
 ## Theme
@@ -43,7 +43,7 @@ Simple settings toggle/switch which gets and toggles int in preferences, uses it
 * works with **CommonTheme** and **standalone**
 * **Custom solution to fix Flutter iOS issue with autocorrect not working!**
 
-Wrapped TextFormField for extra styling, features mainly with CommonTheme.
+Wrapped TextFormField for extra styling, features mainly with CommonTheme. Has 2 variants Material, Cupertino style.
 
 Most importantly if you set in your CommonTheme or send styling direct to widget with:
 
