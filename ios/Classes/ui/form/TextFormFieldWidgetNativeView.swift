@@ -84,6 +84,8 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             textField.returnKeyType = keyboardReturnKeyTypeForFlutterInputAction(inputAction: theTextInputAction)
         }
         
+        textField.autocapitalizationType = autocapitalizationForFlutterTextCapitalization(textCapitalization: params.textCapitalization)
+        
         weak var theDelegate: UITextFieldDelegate? = self
         textField.delegate = theDelegate
         
@@ -200,6 +202,24 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
             return .default
         }
     }
+    
+    /**
+     * Get iOS UITextAutocorrectionType for Flutter TextCapitalization.
+     */
+    fileprivate func autocapitalizationForFlutterTextCapitalization(textCapitalization: String) -> UITextAutocapitalizationType {
+        switch textCapitalization {
+        case "TextCapitalization.words":
+            return .words
+        case "TextCapitalization.sentences":
+            return .sentences
+        case "TextCapitalization.characters":
+            return .allCharacters
+        case "TextCapitalization.none":
+            return .none
+        default:
+            return .none
+        }
+    }
 }
 
 struct IOSUseNativeTextFieldParams {
@@ -208,6 +228,7 @@ struct IOSUseNativeTextFieldParams {
     var maxLines: Int
     var keyboardType: String?
     var textInputAction: String?
+    var textCapitalization: String
     
     /**
      * Convert JSON map into IOSUseNativeTextFieldParams.
@@ -218,7 +239,8 @@ struct IOSUseNativeTextFieldParams {
             inputStyle: dictionary["inputStyle"] as? NSDictionary,
             maxLines: dictionary["maxLines"] as! Int,
             keyboardType: dictionary["keyboardType"] as? String,
-            textInputAction: dictionary["textInputAction"] as? String
+            textInputAction: dictionary["textInputAction"] as? String,
+            textCapitalization: dictionary["textCapitalization"] as! String
         )
     }
 }
