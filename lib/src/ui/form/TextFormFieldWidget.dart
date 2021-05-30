@@ -54,6 +54,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
 class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> with TickerProviderStateMixin {
   late FocusNode _focusNode;
   bool _isError = false;
+  String? _errorText;
   GlobalKey? _uiKitKey;
   MethodChannel? _methodChannel;
 
@@ -187,26 +188,62 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
       field = IgnorePointer(
         ignoring: !widget.enabled,
-        child: InputDecorator(
-          decoration: theDecoration.copyWith(labelText: widget.label),
-          baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
-          isFocused: _focusNode.hasFocus,
-          isEmpty: widget.controller.value.text.isEmpty,
-          expands: false,
-          child: Container(
-            height: theLines * 24, //48, //TODO height by lines, isDense = false does not seem to work right now, check later
-            child: UiKitView(
-              key: _uiKitKey,
-              viewType: 'tch_common_widgets/TextFormFieldWidget',
-              layoutDirection: TextDirection.ltr,
-              creationParams: creationParams.toJson(),
-              creationParamsCodec: const StandardMessageCodec(),
-              onPlatformViewCreated: (int viewId) {
-                _methodChannel = MethodChannel('tch_common_widgets/TextFormFieldWidget$viewId');
-                _methodChannel!.setMethodCallHandler(_onMethodCall);
-              },
-            ),
-          ),
+        child: FormField(
+          builder: (FormFieldState<String> field) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InputDecorator(
+                  decoration: theDecoration.copyWith(labelText: widget.label),
+                  baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
+                  isFocused: _focusNode.hasFocus,
+                  isEmpty: widget.controller.value.text.isEmpty,
+                  expands: false,
+                  child: Container(
+                    height: theLines * 24, //48, //TODO height by lines, isDense = false does not seem to work right now, check later
+                    child: UiKitView(
+                      key: _uiKitKey,
+                      viewType: 'tch_common_widgets/TextFormFieldWidget',
+                      layoutDirection: TextDirection.ltr,
+                      creationParams: creationParams.toJson(),
+                      creationParamsCodec: const StandardMessageCodec(),
+                      onPlatformViewCreated: (int viewId) {
+                        _methodChannel = MethodChannel('tch_common_widgets/TextFormFieldWidget$viewId');
+                        _methodChannel!.setMethodCallHandler(_onMethodCall);
+                      },
+                    ),
+                  ),
+                ),
+                if (_isError)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
+                    child: Text(
+                      _errorText!,
+                      style: theDecoration.errorStyle,
+                    ),
+                  ),
+              ],
+            );
+          },
+          validator: (String? value) {
+            value = widget.controller.value.text;
+
+            final theValidator = widget.validator;
+            if (theValidator != null) {
+              final validated = theValidator(value);
+
+              setStateNotDisposed(() {
+                _isError = validated != null;
+                _errorText = validated;
+              });
+
+              return validated;
+            }
+
+            return null;
+          },
         ),
       );
     } else {
@@ -277,10 +314,12 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// Response to message from platform
   Future<dynamic> _onMethodCall(MethodCall call) async {
-    print('TCH_d onMethodCall ${call.method}'); //TODO remove
     switch (call.method) {
       case "focused":
         _focusIOSNativeTextField();
+        break;
+      case "setText":
+        _setTextFromIOSNativeTextField(call.arguments as String);
         break;
       case "didEndEditing":
         _didEndEditingIOSNativeTextField(call.arguments as String);
@@ -290,8 +329,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// On TextEditingController change text update Widget text
   void _controllerTextChangedForIOSNativeTextField() {
-    print("TCH_d _controllerTextChangedForIOSNativeTextField"); //TODO remove
-
     _methodChannel!.invokeMethod("setText", widget.controller.text);
 
     setStateNotDisposed(() {});
@@ -299,7 +336,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// On FocusNode focus changed update Widget state
   void _focusChangedForIOSNativeTextField() {
-    print('TCH_d _focusChangedForIOSNativeTextField ${_focusNode.hasFocus}'); //TODO remove
     if (_focusNode.hasFocus) {
       _methodChannel!.invokeMethod('focus');
     } else {
@@ -333,6 +369,11 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
       focusScope.requestFocus(_focusNode);
     }
+  }
+
+  /// Make sure Widget text is synchronized
+  void _setTextFromIOSNativeTextField(String text) {
+    widget.controller.text = text;
   }
 
   /// Widget ended text editing, update controller and emulate onFieldSubmitted
@@ -369,7 +410,7 @@ class TextFormFieldStyle {
 
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
-    this.iOSUseNativeTextField = true,
+    this.iOSUseNativeTextField = false,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
     this.inputDecoration = const InputDecoration(
       isDense: true,

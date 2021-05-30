@@ -15,7 +15,6 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
         super.init()
         
         if args is NSDictionary {
-            print("TCH_d_ios frame \(frame) viewId \(viewId) args \(args!)") //TODO remove
             _view = createTextField(frame: frame, arguments: args as! NSDictionary)
         } else {
             _view = UIView(frame: frame)
@@ -208,11 +207,31 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
     }
     
     /**
+     * On realtime change text of UITextField, update Flutter.
+     */
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let text = textField.text?.replacingCharacters(in: Range(range, in: textField.text!)!, with: string) ?? ""
+        
+        _channel.invokeMethod("setText", arguments: text)
+        
+        return true
+    }
+    
+    /**
+     * On realtime change text of UITextView, update Flutter.
+     */
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let text = textView.text.replacingCharacters(in: Range(range, in: textView.text)!, with: text)
+        
+        _channel.invokeMethod("setText", arguments: text)
+        
+        return true
+    }
+    
+    /**
      * TextField return key pressed, on single line end ediding, on multilne let new line.
      */
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("TCH_d_ios \(_params.text) textFieldShouldReturn \(_params.maxLines == 1)") //TODO remove
-        
         if _params.maxLines == 1 {
             _channel.invokeMethod("didEndEditing", arguments: textField.text ?? "")
         }
