@@ -180,6 +180,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
         textCapitalization: widget.textCapitalization,
+        autocorrect: widget.autocorrect,
       );
 
       field = IgnorePointer(
@@ -424,6 +425,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
   TextInputType? keyboardType;
   TextInputAction? textInputAction;
   TextCapitalization textCapitalization;
+  bool autocorrect;
 
   /// IOSUseNativeTextFieldParams initialization
   _IOSUseNativeTextFieldParams({
@@ -433,6 +435,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
     this.keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
+    this.autocorrect = true,
   }) : super.fromJson(<String, dynamic>{});
 
   /// Convert into JSON map
@@ -455,6 +458,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
       'keyboardType': keyboardType?.toJson()['name'],
       'textInputAction': textInputAction?.toString(),
       'textCapitalization': textCapitalization.toString(),
+      'autocorrect': autocorrect,
     };
   }
 }

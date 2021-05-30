@@ -86,6 +86,8 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextFieldD
         
         textField.autocapitalizationType = autocapitalizationForFlutterTextCapitalization(textCapitalization: params.textCapitalization)
         
+        textField.autocorrectionType = params.autocorrect ? .yes : .no
+        
         weak var theDelegate: UITextFieldDelegate? = self
         textField.delegate = theDelegate
         
@@ -229,6 +231,7 @@ struct IOSUseNativeTextFieldParams {
     var keyboardType: String?
     var textInputAction: String?
     var textCapitalization: String
+    var autocorrect: Bool
     
     /**
      * Convert JSON map into IOSUseNativeTextFieldParams.
@@ -240,7 +243,8 @@ struct IOSUseNativeTextFieldParams {
             maxLines: dictionary["maxLines"] as! Int,
             keyboardType: dictionary["keyboardType"] as? String,
             textInputAction: dictionary["textInputAction"] as? String,
-            textCapitalization: dictionary["textCapitalization"] as! String
+            textCapitalization: dictionary["textCapitalization"] as! String,
+            autocorrect: dictionary["autocorrect"] as! Bool
         )
     }
 }
