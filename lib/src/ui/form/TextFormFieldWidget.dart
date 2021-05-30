@@ -57,6 +57,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   String? _errorText;
   GlobalKey? _uiKitKey;
   MethodChannel? _methodChannel;
+  String? _ignoreSetTextOnIOSNativeTextField;
 
   /// State initialization
   @override
@@ -329,9 +330,13 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// On TextEditingController change text update Widget text
   void _controllerTextChangedForIOSNativeTextField() {
-    _methodChannel!.invokeMethod("setText", widget.controller.text);
+    if (widget.controller.text != _ignoreSetTextOnIOSNativeTextField) {
+      _methodChannel!.invokeMethod("setText", widget.controller.text);
 
-    setStateNotDisposed(() {});
+      setStateNotDisposed(() {});
+    }
+
+    _ignoreSetTextOnIOSNativeTextField = null;
   }
 
   /// On FocusNode focus changed update Widget state
@@ -373,6 +378,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// Make sure Widget text is synchronized
   void _setTextFromIOSNativeTextField(String text) {
+    _ignoreSetTextOnIOSNativeTextField = text;
+
     widget.controller.text = text;
   }
 

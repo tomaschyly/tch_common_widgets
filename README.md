@@ -16,7 +16,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.0.3
+  tch_common_widgets: ^0.0.4
 ```
 
 ## Theme
@@ -27,22 +27,36 @@ dependencies:
 
 ### CommonSpaces
 
-* requires CommonTheme
+* requires **CommonTheme**
 
 This is a set of widgets that can be used for easy and standard spaces between other widgets.
 
 ### PreferencesSwitchWidget
 
-* works with CommonTheme and standalone
+* works with **CommonTheme** and **standalone**
 * requires [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core) for preferences
 
 Simple settings toggle/switch which gets and toggles int in preferences, uses it as a bool.
 
 ### TextFormFieldWidget
 
-* works with CommonTheme and standalone
+* works with **CommonTheme** and **standalone**
+* **Custom solution to fix Flutter iOS issue with autocorrect not working!**
 
-*Coming soon...*
+Wrapped TextFormField for extra styling, features mainly with CommonTheme.
+
+Most importantly if you set in your CommonTheme or send styling direct to widget with:
+
+```dart
+TextFormFieldStyle(
+  ...
+  iOSUseNativeTextField: true,
+  ...
+)
+```
+
+Then this widget will use custom hybrid solution to solve issue of default autcorrect not working with Flutter on iOS.
+There are some limitations, mainly if you want to use custom font family, you need to integrate it with iOS as you do on iOS apps.
 
 ## Roadmap
 
