@@ -14,4 +14,19 @@ class FormStyle {
     this.textFormFieldStyle = const TextFormFieldStyle(),
     this.preferencesSwitchStyle = const PreferencesSwitchStyle(),
   });
+
+  /// Create copy if this style with changes
+  FormStyle copyWith({
+    bool? animatedSizeChanges,
+    bool? fullWidthMobileOnly,
+    TextFormFieldStyle? textFormFieldStyle,
+    PreferencesSwitchStyle? preferencesSwitchStyle,
+  }) {
+    return FormStyle(
+      animatedSizeChanges: animatedSizeChanges ?? this.animatedSizeChanges,
+      fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
+      textFormFieldStyle: textFormFieldStyle ?? this.textFormFieldStyle,
+      preferencesSwitchStyle: preferencesSwitchStyle ?? this.preferencesSwitchStyle,
+    );
+  }
 }

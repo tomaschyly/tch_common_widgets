@@ -501,6 +501,35 @@ class TextFormFieldStyle {
     this.errorColor = Colors.red,
     this.cupertinoLabelPadding = const EdgeInsets.only(left: 8, right: 8, bottom: 8),
   });
+
+  /// Create copy if this style with changes
+  TextFormFieldStyle copyWith({
+    TextFormFieldVariant? variant,
+    bool? iOSUseNativeTextField,
+    TextStyle? inputStyle,
+    TextCapitalization? textCapitalization,
+    TextAlign? textAlign,
+    InputDecoration? inputDecoration,
+    Color? borderColor,
+    Color? fillColorDisabled,
+    Color? disabledBorderColor,
+    Color? errorColor,
+    EdgeInsets? cupertinoLabelPadding,
+  }) {
+    return TextFormFieldStyle(
+      variant: variant ?? this.variant,
+      iOSUseNativeTextField: iOSUseNativeTextField ?? this.iOSUseNativeTextField,
+      inputStyle: inputStyle ?? this.inputStyle,
+      textCapitalization: textCapitalization ?? this.textCapitalization,
+      textAlign: textAlign ?? this.textAlign,
+      inputDecoration: inputDecoration ?? this.inputDecoration,
+      borderColor: borderColor ?? this.borderColor,
+      fillColorDisabled: fillColorDisabled ?? this.fillColorDisabled,
+      disabledBorderColor: disabledBorderColor ?? this.disabledBorderColor,
+      errorColor: errorColor ?? this.errorColor,
+      cupertinoLabelPadding: cupertinoLabelPadding ?? this.cupertinoLabelPadding,
+    );
+  }
 }
 
 class _IOSUseNativeTextFieldParams extends DataModel {

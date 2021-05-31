@@ -1,3 +1,7 @@
+## 0.0.7 - 31.5.2021
+
+* Implement copyWith on styles for easier templating
+
 ## 0.0.6 - 31.5.2021
 
 * TextFormFieldWidget add TextAlign, change styling
