@@ -60,7 +60,7 @@ TextFormFieldStyle(
 Then this widget will use custom hybrid solution to solve issue of default autcorrect not working with Flutter on iOS.
 There are some limitations, mainly if you want to use custom font family, you need to integrate it with iOS as you do on iOS apps.
 
-**Tip:** if your custom font does not work, remeber that iOS does not use filenames, but actual font family name.
+**Tip:** if your custom font does not work, remember that iOS does not use filenames, but actual font family name.
 
 ## Roadmap
 
