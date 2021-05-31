@@ -84,6 +84,8 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             
             textField.autocapitalizationType = autocapitalizationForFlutterTextCapitalization(textCapitalization: params.textCapitalization)
             
+            textField.textAlignment = textAlignmentForFlutterTextAlign(textAlignment: params.textAlign, textField: textField)
+            
             textField.autocorrectionType = params.autocorrect ? .yes : .no
             
             weak var theDelegate: UITextFieldDelegate? = self
@@ -135,6 +137,8 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             }
             
             textField.autocapitalizationType = autocapitalizationForFlutterTextCapitalization(textCapitalization: params.textCapitalization)
+            
+            textField.textAlignment = textAlignmentForFlutterTextAlign(textAlignment: params.textAlign, textField: textField)
             
             textField.autocorrectionType = params.autocorrect ? .yes : .no
             
@@ -320,6 +324,36 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             return .none
         }
     }
+    
+    /**
+     * Get iOS NSTextAlignment for Flutter TextAlignment.
+     */
+    fileprivate func textAlignmentForFlutterTextAlign(textAlignment: String, textField: UIView) -> NSTextAlignment {
+        switch textAlignment {
+        case "TextAlign.left":
+            return .left
+        case "TextAlign.right":
+            return .right
+        case "TextAlign.center":
+            return .center
+        case "TextAlign.justify":
+            return .justified
+        case "TextAlign.start":
+            if UIView.userInterfaceLayoutDirection(for: textField.semanticContentAttribute) == .leftToRight {
+                return .left
+            } else {
+                return .right
+            }
+        case "TextAlign.end":
+            if UIView.userInterfaceLayoutDirection(for: textField.semanticContentAttribute) == .leftToRight {
+                return .right
+            } else {
+                return .left
+            }
+        default:
+            return .natural
+        }
+    }
 }
 
 struct IOSUseNativeTextFieldParams {
@@ -329,6 +363,7 @@ struct IOSUseNativeTextFieldParams {
     var keyboardType: String?
     var textInputAction: String?
     var textCapitalization: String
+    var textAlign: String
     var autocorrect: Bool
     
     /**
@@ -342,6 +377,7 @@ struct IOSUseNativeTextFieldParams {
             keyboardType: dictionary["keyboardType"] as? String,
             textInputAction: dictionary["textInputAction"] as? String,
             textCapitalization: dictionary["textCapitalization"] as! String,
+            textAlign: dictionary["textAlign"] as! String,
             autocorrect: dictionary["autocorrect"] as! Bool
         )
     }

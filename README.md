@@ -18,7 +18,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.0.5
+  tch_common_widgets: ^0.0.6
 ```
 
 ## Theme
@@ -59,6 +59,8 @@ TextFormFieldStyle(
 
 Then this widget will use custom hybrid solution to solve issue of default autcorrect not working with Flutter on iOS.
 There are some limitations, mainly if you want to use custom font family, you need to integrate it with iOS as you do on iOS apps.
+
+**Tip:** if your custom font does not work, remeber that iOS does not use filenames, but actual font family name.
 
 ## Roadmap
 

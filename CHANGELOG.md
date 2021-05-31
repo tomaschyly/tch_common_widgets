@@ -1,3 +1,9 @@
+## 0.0.6 - 31.5.2021
+
+* TextFormFieldWidget add TextAlign, change styling
+* Add tip for custom fonts
+* Update Core dependency
+
 ## 0.0.5 - 30.5.2021
 
 * TextFormFieldWidget add TextFormFieldVariants Material, Cupertino

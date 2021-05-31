@@ -18,7 +18,6 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
-  final TextCapitalization textCapitalization;
   final String? label;
   final int lines;
   final FormFieldValidator<String>? validator;
@@ -37,7 +36,6 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.onFieldSubmitted,
     this.keyboardType,
     this.textInputAction,
-    this.textCapitalization = TextCapitalization.none,
     this.label,
     this.lines = 1,
     this.validator,
@@ -185,7 +183,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         maxLines: theLines,
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
-        textCapitalization: widget.textCapitalization,
+        textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
+        textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
         autocorrect: widget.autocorrect,
       );
 
@@ -272,7 +271,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         textInputAction: theTextInputAction,
         style: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
         decoration: theDecoration.copyWith(labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null),
-        textCapitalization: widget.textCapitalization,
+        textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
+        textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
         minLines: theLines,
         maxLines: theLines,
         validator: (String? value) {
@@ -438,6 +438,8 @@ class TextFormFieldStyle {
   final TextFormFieldVariant variant;
   final bool iOSUseNativeTextField;
   final TextStyle inputStyle;
+  final TextCapitalization textCapitalization;
+  final TextAlign textAlign;
   final InputDecoration inputDecoration;
   final Color borderColor;
   final Color fillColorDisabled;
@@ -450,6 +452,8 @@ class TextFormFieldStyle {
     this.variant = TextFormFieldVariant.Material,
     this.iOSUseNativeTextField = false,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
+    this.textCapitalization = TextCapitalization.none,
+    this.textAlign = TextAlign.start,
     this.inputDecoration = const InputDecoration(
       isDense: true,
       labelStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
@@ -506,6 +510,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
   TextInputType? keyboardType;
   TextInputAction? textInputAction;
   TextCapitalization textCapitalization;
+  TextAlign textAlign;
   bool autocorrect;
 
   /// IOSUseNativeTextFieldParams initialization
@@ -516,6 +521,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
     this.keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
+    this.textAlign = TextAlign.start,
     this.autocorrect = true,
   }) : super.fromJson(<String, dynamic>{});
 
@@ -539,6 +545,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
       'keyboardType': keyboardType?.toJson()['name'],
       'textInputAction': textInputAction?.toString(),
       'textCapitalization': textCapitalization.toString(),
+      'textAlign': textAlign.toString(),
       'autocorrect': autocorrect,
     };
   }
