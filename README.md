@@ -4,6 +4,8 @@ Flutter common widgets & theming package used by [Tomas Chyly](https://tomas-chy
 
 This package is made to work with and some features require my package [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core). However you can use this package without it, you will just not be able to use some of the widgets.
 
+**Platforms notice:** I have worked on projects that use Flutter on all platforms, but my focus is on **Mobile** and **Desktop**. Therefore some widgets and features may not work on **Web**, but should work on other platforms. Personally I do not consider Flutter ready for web dev.
+
 ## Contents
 
 1. [Installation](#installation)
