@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tch_common_widgets/src/ui/buttons/Buttons.dart';
 import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class CommonTheme extends InheritedWidget {
   final CommonDimens commonDimens;
   final String? fontFamily;
+  final ButtonsStyle buttonsStyle;
   final FormStyle formStyle;
 
   /// CommonTheme initialization
@@ -11,6 +13,7 @@ class CommonTheme extends InheritedWidget {
     required Widget child,
     this.commonDimens = const CommonDimens(),
     this.fontFamily,
+    this.buttonsStyle = const ButtonsStyle(),
     this.formStyle = const FormStyle(),
   }) : super(child: child);
 

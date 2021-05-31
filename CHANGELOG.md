@@ -1,3 +1,7 @@
+## 0.0.9 - 31.5.2021
+
+* IconButtonWidget
+
 ## 0.0.8 - 31.5.2021
 
 * BugFixes for TextFormFieldWidget styling under certain situations

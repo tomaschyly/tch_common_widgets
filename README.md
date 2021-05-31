@@ -18,7 +18,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.0.8
+  tch_common_widgets: ^0.0.9
 ```
 
 ## Theme
@@ -61,6 +61,12 @@ Then this widget will use custom hybrid solution to solve issue of default autco
 There are some limitations, mainly if you want to use custom font family, you need to integrate it with iOS as you do on iOS apps.
 
 **Tip:** if your custom font does not work, remember that iOS does not use filenames, but actual font family name.
+
+### IconButtonWidget
+
+* works with **CommonTheme** and **standalone**
+
+InkWell based button widget for icons.
 
 ## Roadmap
 
