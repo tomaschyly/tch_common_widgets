@@ -28,7 +28,7 @@ class CommonTheme extends InheritedWidget {
     TextStyle processedTextStyle = textStyle;
 
     final theFontFamily = fontFamily;
-    if (theFontFamily != null) {
+    if (theFontFamily != null && processedTextStyle.fontFamily == null) {
       processedTextStyle = processedTextStyle.copyWith(fontFamily: theFontFamily);
     }
 

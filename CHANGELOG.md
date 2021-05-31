@@ -1,3 +1,7 @@
+## 0.0.8 - 31.5.2021
+
+* BugFixes for TextFormFieldWidget styling under certain situations
+
 ## 0.0.7 - 31.5.2021
 
 * Implement copyWith on styles for easier templating

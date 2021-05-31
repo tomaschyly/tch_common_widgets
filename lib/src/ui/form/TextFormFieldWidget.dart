@@ -122,38 +122,44 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     InputDecoration theDecoration = (widget.style?.inputDecoration ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration) ?? InputDecoration();
 
-    if (commonTheme != null && widget.style?.inputDecoration == null) {
+    if ((widget.style?.inputDecoration ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration) != null) {
       theDecoration = theDecoration.copyWith(
-        labelStyle: commonTheme.preProcessTextStyle(theDecoration.labelStyle!),
-        enabledBorder: commonTheme.formStyle.textFormFieldStyle.inputDecoration.enabledBorder!.copyWith(
-          borderSide: commonTheme.formStyle.textFormFieldStyle.inputDecoration.enabledBorder!.borderSide.copyWith(
-            color: commonTheme.formStyle.textFormFieldStyle.borderColor,
+        enabledBorder: theDecoration.enabledBorder?.copyWith(
+          borderSide: theDecoration.enabledBorder!.borderSide.copyWith(
+            color: widget.style?.borderColor ?? commonTheme?.formStyle.textFormFieldStyle.borderColor,
           ),
         ),
-        disabledBorder: commonTheme.formStyle.textFormFieldStyle.inputDecoration.disabledBorder!.copyWith(
-          borderSide: commonTheme.formStyle.textFormFieldStyle.inputDecoration.disabledBorder!.borderSide.copyWith(
-            color: commonTheme.formStyle.textFormFieldStyle.disabledBorderColor,
+        disabledBorder: theDecoration.disabledBorder?.copyWith(
+          borderSide: theDecoration.disabledBorder!.borderSide.copyWith(
+            color: widget.style?.disabledBorderColor ?? commonTheme?.formStyle.textFormFieldStyle.disabledBorderColor,
           ),
         ),
-        focusedBorder: commonTheme.formStyle.textFormFieldStyle.inputDecoration.focusedBorder!.copyWith(
-          borderSide: commonTheme.formStyle.textFormFieldStyle.inputDecoration.focusedBorder!.borderSide.copyWith(
-            color: commonTheme.formStyle.textFormFieldStyle.borderColor,
+        focusedBorder: theDecoration.focusedBorder?.copyWith(
+          borderSide: theDecoration.focusedBorder!.borderSide.copyWith(
+            color: widget.style?.borderColor ?? commonTheme?.formStyle.textFormFieldStyle.borderColor,
           ),
         ),
-        errorBorder: commonTheme.formStyle.textFormFieldStyle.inputDecoration.errorBorder!.copyWith(
-          borderSide: commonTheme.formStyle.textFormFieldStyle.inputDecoration.errorBorder!.borderSide.copyWith(
-            color: commonTheme.formStyle.textFormFieldStyle.errorColor,
+        errorBorder: theDecoration.errorBorder?.copyWith(
+          borderSide: theDecoration.errorBorder!.borderSide.copyWith(
+            color: widget.style?.errorColor ?? commonTheme?.formStyle.textFormFieldStyle.errorColor,
           ),
         ),
-        focusedErrorBorder: commonTheme.formStyle.textFormFieldStyle.inputDecoration.focusedErrorBorder!.copyWith(
-          borderSide: commonTheme.formStyle.textFormFieldStyle.inputDecoration.focusedErrorBorder!.borderSide.copyWith(
-            color: commonTheme.formStyle.textFormFieldStyle.errorColor,
+        focusedErrorBorder: theDecoration.focusedErrorBorder?.copyWith(
+          borderSide: theDecoration.focusedErrorBorder!.borderSide.copyWith(
+            color: widget.style?.errorColor ?? commonTheme?.formStyle.textFormFieldStyle.errorColor,
           ),
         ),
-        errorStyle: commonTheme.preProcessTextStyle(theDecoration.errorStyle!).copyWith(
-              color: commonTheme.formStyle.textFormFieldStyle.errorColor,
-            ),
+        errorStyle: theDecoration.errorStyle?.copyWith(
+          color: widget.style?.errorColor ?? commonTheme?.formStyle.textFormFieldStyle.errorColor,
+        ),
       );
+
+      if (commonTheme != null) {
+        theDecoration = theDecoration.copyWith(
+          labelStyle: theDecoration.labelStyle != null ? commonTheme.preProcessTextStyle(theDecoration.labelStyle!) : null,
+          errorStyle: theDecoration.errorStyle != null ? commonTheme.preProcessTextStyle(theDecoration.errorStyle!) : null,
+        );
+      }
     }
 
     if (!widget.enabled) {
@@ -165,7 +171,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     if (_isError) {
       theDecoration = theDecoration.copyWith(
         labelStyle: theDecoration.errorStyle?.copyWith(
-          color: widget.style?.errorColor ?? commonTheme?.formStyle.textFormFieldStyle.errorColor,
+          color: theDecoration.errorStyle?.color,
         ),
       );
     }
@@ -177,9 +183,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     late Widget field;
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
+      TextStyle? inputStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
+      if (inputStyle != null && commonTheme != null) {
+        inputStyle = commonTheme.preProcessTextStyle(inputStyle);
+      }
+
       final creationParams = _IOSUseNativeTextFieldParams(
         text: widget.controller.text,
-        inputStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
+        inputStyle: inputStyle,
         maxLines: theLines,
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
@@ -249,6 +260,11 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         ),
       );
     } else {
+      TextStyle? textStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
+      if (textStyle != null && commonTheme != null) {
+        textStyle = commonTheme.preProcessTextStyle(textStyle);
+      }
+
       field = TextFormField(
         autofocus: widget.autofocus,
         controller: widget.controller,
@@ -269,7 +285,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         },
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
-        style: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
+        style: textStyle,
         decoration: theDecoration.copyWith(labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null),
         textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
         textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
