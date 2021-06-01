@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 
 class IconButtonWidget extends StatelessWidget {
@@ -23,10 +24,10 @@ class IconButtonWidget extends StatelessWidget {
 
     final IconButtonVariant variant = (style?.variant ?? commonTheme?.buttonsStyle.iconButtonStyle.variant) ?? IconButtonVariant.Outlined;
 
-    final width = (style?.width ?? commonTheme?.buttonsStyle.iconButtonStyle.width) ?? 48;
-    final height = (style?.height ?? commonTheme?.buttonsStyle.iconButtonStyle.height) ?? 48;
-    final iconWidth = (style?.iconWidth ?? commonTheme?.buttonsStyle.iconButtonStyle.iconWidth) ?? 24;
-    final iconHeight = (style?.iconHeight ?? commonTheme?.buttonsStyle.iconButtonStyle.iconHeight) ?? 24;
+    final width = (style?.width ?? commonTheme?.buttonsStyle.iconButtonStyle.width) ?? kMinInteractiveSize;
+    final height = (style?.height ?? commonTheme?.buttonsStyle.iconButtonStyle.height) ?? kMinInteractiveSize;
+    final iconWidth = (style?.iconWidth ?? commonTheme?.buttonsStyle.iconButtonStyle.iconWidth) ?? kIconSize;
+    final iconHeight = (style?.iconHeight ?? commonTheme?.buttonsStyle.iconButtonStyle.iconHeight) ?? kIconSize;
 
     final color = (style?.color ?? commonTheme?.buttonsStyle.iconButtonStyle.color) ?? Colors.black;
 
@@ -80,7 +81,9 @@ class IconButtonWidget extends StatelessWidget {
       );
     }
 
-    return content;
+    return Container(
+      child: Center(child: content),
+    );
   }
 }
 
@@ -103,10 +106,10 @@ class IconButtonStyle {
   /// IconButtonStyle initialization
   const IconButtonStyle({
     this.variant = IconButtonVariant.Outlined,
-    this.width = 48,
-    this.height = 48,
-    this.iconWidth = 24,
-    this.iconHeight = 24,
+    this.width = kMinInteractiveSize,
+    this.height = kMinInteractiveSize,
+    this.iconWidth = kIconSize,
+    this.iconHeight = kIconSize,
     this.color = Colors.black,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
   });

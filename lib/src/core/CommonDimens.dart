@@ -16,6 +16,11 @@ const double kPhoneStopBreakpoint = 576;
 
 const double kDrawerWidth = 304;
 
+const double kMinInteractiveSize = 48;
+const double kMinInteractiveSizeNotTouch = 24;
+const double kIconSize = 24;
+const double kIconSizeNotTouch = 20;
+
 class CommonDimens {
   final double primaryMargin;
   final double primaryMarginDouble;
