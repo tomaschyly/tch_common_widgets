@@ -219,7 +219,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
                 InputDecorator(
                   decoration: theDecoration.copyWith(
                     labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null,
-                    //TODO verify if this will actually work here or not
                     prefixIcon:
                         widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
                     suffixIcon:

@@ -33,7 +33,7 @@ class FormStyle {
 }
 
 class FormFieldValidation<T> {
-  final FormFieldValidator<T> validator;
+  final bool Function(T? value) validator;
   final String errorText;
 
   /// FormFieldValidation initialization
@@ -43,7 +43,7 @@ class FormFieldValidation<T> {
   });
 
   /// Validate the value using validator
-  String? validate(T? value) => validator(value);
+  String? validate(T? value) => validator(value) ? null : errorText;
 }
 
 /// Validate all provided FormFieldValidations, stop on first error and return it
@@ -58,3 +58,11 @@ String? validateValidations<T>(List<FormFieldValidation<T>> validations, T? valu
 
   return null;
 }
+
+/// Validate String value is not empty
+bool validateRequired(String? value) => value != null && value.isNotEmpty;
+
+const kEmailPattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
+
+/// Validate String value is valid email
+bool validateEmail(String? value) => value == null || value.isEmpty || RegExp(kEmailPattern, caseSensitive: false).hasMatch(value);

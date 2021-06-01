@@ -30,6 +30,7 @@ class IconButtonWidget extends StatelessWidget {
     final iconHeight = (style?.iconHeight ?? commonTheme?.buttonsStyle.iconButtonStyle.iconHeight) ?? kIconSize;
 
     final color = (style?.color ?? commonTheme?.buttonsStyle.iconButtonStyle.color) ?? Colors.black;
+    final iconColor = style?.iconColor ?? commonTheme?.buttonsStyle.iconButtonStyle.iconColor ?? color;
 
     late Widget icon;
 
@@ -44,7 +45,7 @@ class IconButtonWidget extends StatelessWidget {
         svgAssetPath!,
         width: iconWidth,
         height: iconHeight,
-        color: color,
+        color: iconColor,
       );
     }
 
@@ -81,11 +82,16 @@ class IconButtonWidget extends StatelessWidget {
       );
     }
 
-    return Container(
-      width: width,
-      height: height,
-      child: Center(child: content),
-    );
+    final bool canBeStretched = style?.canBeStretched ?? commonTheme?.buttonsStyle.iconButtonStyle.canBeStretched ?? false;
+    if (!canBeStretched) {
+      content = Container(
+        width: width,
+        height: height,
+        child: Center(child: content),
+      );
+    }
+
+    return content;
   }
 }
 
@@ -103,7 +109,9 @@ class IconButtonStyle {
   final double iconWidth;
   final double iconHeight;
   final Color? color;
+  final Color? iconColor;
   final BorderRadius? borderRadius;
+  final bool? canBeStretched;
 
   /// IconButtonStyle initialization
   const IconButtonStyle({
@@ -113,7 +121,9 @@ class IconButtonStyle {
     this.iconWidth = kIconSize,
     this.iconHeight = kIconSize,
     this.color = Colors.black,
+    this.iconColor,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.canBeStretched,
   });
 
   /// Create copy if this style with changes
@@ -124,7 +134,9 @@ class IconButtonStyle {
     double? iconWidth,
     double? iconHeight,
     Color? color,
+    Color? iconColor,
     BorderRadius? borderRadius,
+    bool? canBeStretched,
   }) {
     return IconButtonStyle(
       variant: variant ?? this.variant,
@@ -133,7 +145,9 @@ class IconButtonStyle {
       iconWidth: iconWidth ?? this.iconWidth,
       iconHeight: iconHeight ?? this.iconHeight,
       color: color ?? this.color,
+      iconColor: iconColor ?? this.iconColor,
       borderRadius: borderRadius ?? this.borderRadius,
+      canBeStretched: canBeStretched ?? this.canBeStretched,
     );
   }
 }

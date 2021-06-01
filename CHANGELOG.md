@@ -1,3 +1,8 @@
+## 0.0.10 - 1.6.2021
+
+* Better validation system for Form fields
+* More styling options for IconButtonWidget & TextFormFieldWidget
+
 ## 0.0.9 - 31.5.2021
 
 * IconButtonWidget
