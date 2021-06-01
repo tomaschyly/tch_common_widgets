@@ -7,6 +7,7 @@ import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_appliable_core/utils/Color.dart';
+import 'package:tch_common_widgets/src/ui/form/Form.dart';
 
 class TextFormFieldWidget extends AbstractStatefulWidget {
   final TextFormFieldStyle? style;
@@ -19,8 +20,10 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final String? label;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
   final int lines;
-  final FormFieldValidator<String>? validator;
+  final List<FormFieldValidation<String>>? validations;
   final bool enabled;
   final bool autocorrect;
 
@@ -37,8 +40,10 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.keyboardType,
     this.textInputAction,
     this.label,
+    this.prefixIcon,
+    this.suffixIcon,
     this.lines = 1,
-    this.validator,
+    this.validations,
     this.enabled = true,
     this.autocorrect = true,
   })  : assert((focusNode == null && nextFocus == null) || focusNode != null),
@@ -180,6 +185,9 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final theKeyboardType = widget.keyboardType ?? (theLines > 1 ? TextInputType.multiline : null);
     final theTextInputAction = widget.textInputAction ?? (theLines > 1 ? TextInputAction.newline : null);
 
+    final List<FormFieldValidation<String>>? theValidations =
+        widget.validations ?? widget.style?.validations ?? commonTheme?.formStyle.textFormFieldStyle.validations;
+
     late Widget field;
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
@@ -209,7 +217,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InputDecorator(
-                  decoration: theDecoration.copyWith(labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null),
+                  decoration: theDecoration.copyWith(
+                    labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null,
+                    //TODO verify if this will actually work here or not
+                    prefixIcon:
+                        widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
+                    suffixIcon:
+                        widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
+                  ),
                   baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
                   isFocused: _focusNode.hasFocus,
                   isEmpty: widget.controller.value.text.isEmpty,
@@ -243,9 +258,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
           validator: (String? value) {
             value = widget.controller.value.text;
 
-            final theValidator = widget.validator;
-            if (theValidator != null) {
-              final validated = theValidator(value);
+            if (theValidations != null) {
+              final validated = validateValidations(theValidations, value);
 
               setStateNotDisposed(() {
                 _isError = validated != null;
@@ -286,15 +300,18 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
         style: textStyle,
-        decoration: theDecoration.copyWith(labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null),
+        decoration: theDecoration.copyWith(
+          labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null,
+          prefixIcon: widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
+          suffixIcon: widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
+        ),
         textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
         textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
         minLines: theLines,
         maxLines: theLines,
         validator: (String? value) {
-          final theValidator = widget.validator;
-          if (theValidator != null) {
-            final validated = theValidator(value);
+          if (theValidations != null) {
+            final validated = validateValidations(theValidations, value);
 
             setStateNotDisposed(() {
               _isError = validated != null;
@@ -462,6 +479,7 @@ class TextFormFieldStyle {
   final Color disabledBorderColor;
   final Color errorColor;
   final EdgeInsets cupertinoLabelPadding;
+  final List<FormFieldValidation<String>>? validations;
 
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
@@ -516,6 +534,7 @@ class TextFormFieldStyle {
     this.disabledBorderColor = Colors.grey,
     this.errorColor = Colors.red,
     this.cupertinoLabelPadding = const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+    this.validations = const <FormFieldValidation<String>>[],
   });
 
   /// Create copy if this style with changes

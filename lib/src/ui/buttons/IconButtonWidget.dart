@@ -82,6 +82,8 @@ class IconButtonWidget extends StatelessWidget {
     }
 
     return Container(
+      width: width,
+      height: height,
       child: Center(child: content),
     );
   }
