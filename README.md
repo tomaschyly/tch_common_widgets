@@ -219,7 +219,13 @@ There are some limitations, mainly if you want to use custom font family, you ne
 
 * works with **CommonTheme** and **standalone**
 
-InkWell based button widget for icons.
+InkWell based button widget for icons, 3 variants.
+
+### ButtonWidget
+
+* works with **CommonTheme** and **standalone**
+
+InkWell based button widget, 2 variants, content supports text or text and preffixIcon. Loading animatin built in.
 
 ## Roadmap
 
