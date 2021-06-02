@@ -1,3 +1,7 @@
+## 0.1.0 - 2.6.2021
+
+* Add more info to Readme and consider package to be beta ready
+
 ## 0.0.11 - 2.6.2021
 
 * TextFormFieldWidget bugfix & more styling options

@@ -18,12 +18,165 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.0.11
+  tch_common_widgets: ^0.1.0
+```
+
+If your IDE does not autoImport, add manually:
+
+```dart
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 ```
 
 ## Theme
 
-*Coming soon...*
+### CommonTheme setup and usage
+
+Create `lib/core/AppTheme.dart` and in this file create constants for your colors, TextStyles, dimensions. Then use them to CommonTheme compatible Styles.
+See the example code snippet:
+
+```dart
+const kColorPrimary = const Color(0xFF1a1a1a);
+const kColorPrimaryLight = const Color(0xFF404040);
+const kColorPrimaryDark = const Color(0xFF000000);
+const kColorSecondary = kColorGold;
+const kColorSecondaryLight = kColorGoldLight;
+const kColorSecondaryDark = kColorGoldDarker;
+
+const kColorTextPrimary = kColorSilver;
+
+const kFontFamily = 'Custom Font Family Name';
+
+const kText = const TextStyle(color: kColorTextPrimary, fontSize: 16);
+const kTextHeadline = const TextStyle(color: kColorTextPrimary, fontSize: 20);
+
+/// Style all IconButtonWidgets by default to be more desktop friendly
+const kIconButtonStyle = IconButtonStyle(
+  width: kMinInteractiveSizeNotTouch + kCommonHorizontalMarginHalf,
+  height: kMinInteractiveSizeNotTouch + kCommonVerticalMarginHalf,
+  iconWidth: kIconSizeNotTouch,
+  iconHeight: kIconSizeNotTouch,
+  color: kColorTextPrimary,
+);
+
+/// IconButtonWidgets inside AppBar have different style to default
+const kAppBarIconButtonStyle = const IconButtonStyle(
+  variant: IconButtonVariant.IconOnly,
+  color: kColorTextPrimary,
+);
+
+/// Default Style for all TextFormFieldWidgets
+const kTextFormFieldStyle = const TextFormFieldStyle(
+  iOSUseNativeTextField: true, // Use embedded UITextField or UITextView for autocorrect to work on iOS
+  borderColor: kColorGold,
+  fillColorDisabled: kColorSilver,
+  disabledBorderColor: kColorSilverDarker,
+  errorColor: kColorRed,
+);
+
+/// Modify the default Style to get style for email fields
+final TextFormFieldStyle kEmailTextFormFieldStyle = kTextFormFieldStyle.copyWith(
+  textCapitalization: TextCapitalization.none,
+  keyboardType: TextInputType.emailAddress,
+  validations: [
+    FormFieldValidation(
+      validator: validateEmail,
+      errorText: 'Please provide a valid email address', // Or tt('form.email.error'), if you use CoreApp Translator
+    ),
+  ],
+);
+
+/// Builder method that you provide to CoreApp or MaterialApp, it will wrap all pages inside CommonTheme
+/// Customize CommonTheme for the app
+Widget appThemeBuilder(BuildContext context, Widget child) {
+  return CommonTheme(
+    child: child,
+    fontFamily: prefsInt(PREFS_FANCY_FONT) == 1 ? kFontFamily : null,
+    buttonsStyle: ButtonsStyle(
+      iconButtonStyle: kIconButtonStyle,
+    ),
+    formStyle: FormStyle(
+      textFormFieldStyle: kTextFormFieldStyle,
+    ),
+  );
+}
+```
+
+To use non-default Styles that you have defined, simply provide them to widgets.
+
+```dart
+...
+/// Use kAppBarIconButtonStyle style for IconButtonWidgets in AppBar
+IconButtonWidget(
+  style: kAppBarIconButtonStyle,
+  svgAssetPath: 'images/back.svg',
+  onTap: () {
+    Navigator.pop(context);
+  },
+);
+...
+```
+
+```dart
+...
+/// kEmailTextFormFieldStyle make sure that this field looks and behaves as email field
+TextFormFieldWidget(
+  style: kEmailTextFormFieldStyle,
+  controller: _emailController,
+  focusNode: _emailFocus,
+  nextFocus: _subjectFocus,
+  label: 'Email',
+  textInputAction: TextInputAction.next,
+),
+...
+```
+
+If you want to access CommonTheme anywhere and maybe customize some style in place for some widget.
+
+```dart
+final commonTheme = CommonTheme.of(context)!;
+...
+/// Multiline text field that changes default Style in place to capitalize sentences
+TextFormFieldWidget(
+  style: commonTheme.formStyle.textFormFieldStyle.copyWith(
+    textCapitalization: TextCapitalization.sentences,
+  ),
+  controller: _messageController,
+  focusNode: _messageFocus,
+  label: tt('feedback.screen.message'),
+  lines: 3,
+  validations: [
+    FormFieldValidation(
+      validator: validateRequired,
+      errorText: tt('feedback.screen.message.error'),
+    ),
+  ],
+),
+...
+```
+
+### Apply your CommonTheme on whole app
+
+```dart
+...
+@override
+Widget build(BuildContext context) {
+  return CoreApp( // Or MaterialApp if you do not use my Core package
+    ...
+    builder: appThemeBuilder,
+    theme: ThemeData( /// You can combine CommonTheme with Material Theme
+      backgroundColor: kColorPrimaryLight,
+      primaryColor: kColorPrimary,
+      primaryColorLight: kColorPrimaryLight,
+      primaryColorDark: kColorPrimaryDark,
+      accentColor: kColorSecondary,
+      splashColor: kColorSecondary,
+      shadowColor: kColorShadow,
+    ),
+    ...
+  );
+}
+...
+```
 
 ## Widgets
 
