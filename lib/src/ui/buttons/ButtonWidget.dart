@@ -157,7 +157,10 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
       final prefixIconSpacing = widget.style?.prefixIconSpacing ?? commonTheme?.buttonsStyle.buttonStyle.prefixIconSpacing ?? kCommonHorizontalMargin;
 
-      final textStyle = widget.style?.textStyle ?? commonTheme?.buttonsStyle.buttonStyle.textStyle;
+      TextStyle? textStyle = widget.style?.textStyle ?? commonTheme?.buttonsStyle.buttonStyle.textStyle;
+      if (textStyle != null && commonTheme != null) {
+        textStyle = commonTheme.preProcessTextStyle(textStyle);
+      }
 
       inner = Row(
         mainAxisSize: MainAxisSize.min,

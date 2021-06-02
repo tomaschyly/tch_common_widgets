@@ -1,3 +1,7 @@
+## 0.2.1 - 2.6.2021
+
+* ButtonWidget apply global font family if CommonTheme is used
+
 ## 0.2.0 - 2.6.2021
 
 * ButtonWidget with variants, Style, loading animation built in
