@@ -29,7 +29,7 @@ class IconButtonWidget extends StatelessWidget {
     final iconWidth = (style?.iconWidth ?? commonTheme?.buttonsStyle.iconButtonStyle.iconWidth) ?? kIconSize;
     final iconHeight = (style?.iconHeight ?? commonTheme?.buttonsStyle.iconButtonStyle.iconHeight) ?? kIconSize;
 
-    final color = (style?.color ?? commonTheme?.buttonsStyle.iconButtonStyle.color) ?? Colors.black;
+    final color = style?.color ?? commonTheme?.buttonsStyle.iconButtonStyle.color ?? Colors.black;
     final iconColor = style?.iconColor ?? commonTheme?.buttonsStyle.iconButtonStyle.iconColor ?? color;
 
     late Widget icon;

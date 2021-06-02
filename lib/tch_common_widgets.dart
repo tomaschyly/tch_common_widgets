@@ -4,6 +4,7 @@ export 'src/core/CommonDimens.dart';
 export 'src/core/CommonTheme.dart';
 
 export 'src/ui/buttons/Buttons.dart';
+export 'src/ui/buttons/ButtonWidget.dart';
 export 'src/ui/buttons/IconButtonWidget.dart';
 
 export 'src/ui/form/Form.dart';

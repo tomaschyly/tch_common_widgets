@@ -1,3 +1,7 @@
+## 0.2.0 - 2.6.2021
+
+* ButtonWidget with variants, Style, loading animation built in
+
 ## 0.1.0 - 2.6.2021
 
 * Add more info to Readme and consider package to be beta ready
