@@ -1,3 +1,8 @@
+## 0.0.11 - 2.6.2021
+
+* TextFormFieldWidget bugfix & more styling options
+* TextFormFieldWidget custom hint/placehoder that works also on iOS NativeView
+
 ## 0.0.10 - 1.6.2021
 
 * Better validation system for Form fields

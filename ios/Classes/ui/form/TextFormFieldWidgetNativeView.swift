@@ -48,30 +48,12 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             
             textField.text = params.text
             
-            if let theInputStyle = params.inputStyle {
-                var color: UIColor?
+            if params.text.isEmpty, let theHintText = params.hintText, !theHintText.isEmpty {
+                textField.text = theHintText
                 
-                if let theColor = theInputStyle["color"] as? String {
-                    color = UIColor(flutterColorHex: theColor)
-                }
-                
-                textField.textColor = color
-                
-                var fontSize: Double = 16
-                if let theFontSize = theInputStyle["fontSize"] as? Double {
-                    fontSize = theFontSize
-                }
-                
-                var isBold = false;
-                if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
-                    isBold = theFontWeightBold
-                }
-                
-                if let theFontFamily = theInputStyle["fontFamily"] as? String {
-                    textField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
-                } else {
-                    textField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
-                }
+                styleTextField(textField: textField, params: params, requestingPlaceholder: true)
+            } else {
+                styleTextField(textField: textField, params: params, requestingPlaceholder: false)
             }
             
             if let theKeyboardType = params.keyboardType {
@@ -102,30 +84,12 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             
             textField.text = params.text
             
-            if let theInputStyle = params.inputStyle {
-                var color: UIColor?
+            if params.text.isEmpty, let theHintText = params.hintText, !theHintText.isEmpty {
+                textField.text = theHintText
                 
-                if let theColor = theInputStyle["color"] as? String {
-                    color = UIColor(flutterColorHex: theColor)
-                }
-                
-                textField.textColor = color
-                
-                var fontSize: Double = 16
-                if let theFontSize = theInputStyle["fontSize"] as? Double {
-                    fontSize = theFontSize
-                }
-                
-                var isBold = false;
-                if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
-                    isBold = theFontWeightBold
-                }
-                
-                if let theFontFamily = theInputStyle["fontFamily"] as? String {
-                    textField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
-                } else {
-                    textField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
-                }
+                styleTextField(textField: textField, params: params, requestingPlaceholder: true)
+            } else {
+                styleTextField(textField: textField, params: params, requestingPlaceholder: false)
             }
             
             if let theKeyboardType = params.keyboardType {
@@ -146,6 +110,71 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             textField.delegate = theDelegate
             
             return textField
+        }
+    }
+    
+    /**
+     * Style the text field depending on placeholder, focused, etc.
+     */
+    fileprivate func styleTextField(textField: UIView, params: IOSUseNativeTextFieldParams, requestingPlaceholder: Bool) {
+        var inputStyle: NSDictionary?
+        
+        if let theHintText = params.hintText, !theHintText.isEmpty, requestingPlaceholder, let theHintStyle = params.hintStyle {
+            inputStyle = theHintStyle
+        } else {
+            inputStyle = params.inputStyle
+        }
+        
+        if let theInputStyle = inputStyle {
+            if let theTextField = textField as? UITextField {
+                var color: UIColor?
+                
+                if let theColor = theInputStyle["color"] as? String {
+                    color = UIColor(flutterColorHex: theColor)
+                }
+                
+                theTextField.textColor = color
+                
+                var fontSize: Double = 16
+                if let theFontSize = theInputStyle["fontSize"] as? Double {
+                    fontSize = theFontSize
+                }
+                
+                var isBold = false;
+                if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
+                    isBold = theFontWeightBold
+                }
+                
+                if let theFontFamily = theInputStyle["fontFamily"] as? String {
+                    theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
+                } else {
+                    theTextField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                }
+            } else if let theTextField = textField as? UITextView {
+                var color: UIColor?
+                
+                if let theColor = theInputStyle["color"] as? String {
+                    color = UIColor(flutterColorHex: theColor)
+                }
+                
+                theTextField.textColor = color
+                
+                var fontSize: Double = 16
+                if let theFontSize = theInputStyle["fontSize"] as? Double {
+                    fontSize = theFontSize
+                }
+                
+                var isBold = false;
+                if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
+                    isBold = theFontWeightBold
+                }
+                
+                if let theFontFamily = theInputStyle["fontFamily"] as? String {
+                    theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
+                } else {
+                    theTextField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                }
+            }
         }
     }
     
@@ -198,16 +227,52 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
     
     /**
      * Editing started on the UITextField, inform Flutter.
+     * Handle custom placeholder.
      */
     func textFieldDidBeginEditing(_ textField: UITextField) {
         _channel.invokeMethod("focused", arguments: nil)
+        
+        if let theHintText = _params.hintText, !theHintText.isEmpty, textField.text == theHintText {
+            textField.text = ""
+            
+            styleTextField(textField: textField, params: _params, requestingPlaceholder: false)
+        }
     }
     
     /**
      * Editing started on the UITextView, inform Flutter.
+     * Handle custom placeholder.
      */
     func textViewDidBeginEditing(_ textView: UITextView) {
         _channel.invokeMethod("focused", arguments: nil)
+        
+        if let theHintText = _params.hintText, !theHintText.isEmpty, textView.text == theHintText {
+            textView.text = ""
+            
+            styleTextField(textField: textView, params: _params, requestingPlaceholder: false)
+        }
+    }
+    
+    /**
+     * Editing ended on the UITextField, handle custom placeholder.
+     */
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let theHintText = _params.hintText, !theHintText.isEmpty, textField.text!.isEmpty {
+            textField.text = theHintText
+            
+            styleTextField(textField: textField, params: _params, requestingPlaceholder: true)
+        }
+    }
+    
+    /**
+     * Editing ended on the UITextView, handle custom placeholder.
+     */
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if let theHintText = _params.hintText, !theHintText.isEmpty, textView.text.isEmpty {
+            textView.text = theHintText
+            
+            styleTextField(textField: textView, params: _params, requestingPlaceholder: true)
+        }
     }
     
     /**
@@ -359,6 +424,8 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
 struct IOSUseNativeTextFieldParams {
     var text: String
     var inputStyle: NSDictionary?
+    var hintText: String?
+    var hintStyle: NSDictionary?
     var maxLines: Int
     var keyboardType: String?
     var textInputAction: String?
@@ -373,6 +440,8 @@ struct IOSUseNativeTextFieldParams {
         return IOSUseNativeTextFieldParams(
             text: dictionary["text"] as! String,
             inputStyle: dictionary["inputStyle"] as? NSDictionary,
+            hintText: dictionary["hintText"] as? String,
+            hintStyle: dictionary["hintStyle"] as? NSDictionary,
             maxLines: dictionary["maxLines"] as! Int,
             keyboardType: dictionary["keyboardType"] as? String,
             textInputAction: dictionary["textInputAction"] as? String,

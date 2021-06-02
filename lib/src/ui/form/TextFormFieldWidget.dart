@@ -110,7 +110,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final TextFormFieldVariant theVariant = (widget.style?.variant ?? commonTheme?.formStyle.textFormFieldStyle.variant) ?? TextFormFieldVariant.Material;
+    final TextFormFieldVariant theVariant = widget.style?.variant ?? commonTheme?.formStyle.textFormFieldStyle.variant ?? TextFormFieldVariant.Material;
 
     bool iOSUseNativeTextField = true;
     if (widget.style != null) {
@@ -125,7 +125,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final theNextFocus = widget.nextFocus;
     final theOnFieldSubmitted = widget.onFieldSubmitted;
 
-    InputDecoration theDecoration = (widget.style?.inputDecoration ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration) ?? InputDecoration();
+    InputDecoration theDecoration = widget.style?.inputDecoration ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration ?? InputDecoration();
 
     if ((widget.style?.inputDecoration ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration) != null) {
       theDecoration = theDecoration.copyWith(
@@ -191,6 +191,13 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final List<FormFieldValidation<String>>? theValidations =
         widget.validations ?? widget.style?.validations ?? commonTheme?.formStyle.textFormFieldStyle.validations;
 
+    final theLabel = widget.label;
+    final theHintText = widget.style?.inputDecoration.hintText ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintText;
+
+    theDecoration = theDecoration.copyWith(
+      hintText: theLabel == null || theLabel.isEmpty ? theHintText : '',
+    );
+
     late Widget field;
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
@@ -202,6 +209,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       final creationParams = _IOSUseNativeTextFieldParams(
         text: widget.controller.text,
         inputStyle: inputStyle,
+        hintText: theDecoration.hintText,
+        hintStyle: widget.style?.inputDecoration.hintStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintStyle,
         maxLines: theLines,
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
@@ -221,11 +230,12 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
               children: [
                 InputDecorator(
                   decoration: theDecoration.copyWith(
-                    labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null,
+                    labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
                     prefixIcon:
                         widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
                     suffixIcon:
                         widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
+                    hintText: '',
                   ),
                   baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
                   isFocused: _focusNode.hasFocus,
@@ -303,7 +313,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         textInputAction: theTextInputAction,
         style: textStyle,
         decoration: theDecoration.copyWith(
-          labelText: theVariant != TextFormFieldVariant.Cupertino ? widget.label : null,
+          labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
           prefixIcon: widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
           suffixIcon: widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
         ),
@@ -331,7 +341,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     Widget content = field;
 
-    final theLabel = widget.label;
     if (theVariant == TextFormFieldVariant.Cupertino && theLabel != null) {
       content = Column(
         mainAxisSize: MainAxisSize.min,
@@ -578,6 +587,8 @@ class TextFormFieldStyle {
 class _IOSUseNativeTextFieldParams extends DataModel {
   String text;
   TextStyle? inputStyle;
+  String? hintText;
+  TextStyle? hintStyle;
   int maxLines;
   TextInputType? keyboardType;
   TextInputAction? textInputAction;
@@ -589,6 +600,8 @@ class _IOSUseNativeTextFieldParams extends DataModel {
   _IOSUseNativeTextFieldParams({
     required this.text,
     this.inputStyle,
+    this.hintText,
+    this.hintStyle,
     required this.maxLines,
     this.keyboardType,
     this.textInputAction,
@@ -610,9 +623,21 @@ class _IOSUseNativeTextFieldParams extends DataModel {
       };
     }
 
+    Map<String, dynamic>? _hintStyle;
+    if (hintStyle != null) {
+      _hintStyle = <String, dynamic>{
+        'color': hintStyle!.color?.toHex(),
+        'fontSize': hintStyle!.fontSize,
+        'fontWeightBold': hintStyle!.fontWeight == FontWeight.bold,
+        'fontFamily': hintStyle!.fontFamily,
+      };
+    }
+
     return <String, dynamic>{
       'text': text,
       'inputStyle': _inputStyle,
+      'hintText': hintText,
+      'hintStyle': _hintStyle,
       'maxLines': maxLines,
       'keyboardType': keyboardType?.toJson()['name'],
       'textInputAction': textInputAction?.toString(),
