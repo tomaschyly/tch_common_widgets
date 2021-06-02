@@ -182,7 +182,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     final theLines = widget.lines > 0 ? widget.lines : 1;
-    final theKeyboardType = widget.keyboardType ?? (theLines > 1 ? TextInputType.multiline : null);
+    final theKeyboardType = widget.keyboardType ??
+        widget.style?.keyboardType ??
+        commonTheme?.formStyle.textFormFieldStyle.keyboardType ??
+        (theLines > 1 ? TextInputType.multiline : null);
     final theTextInputAction = widget.textInputAction ?? (theLines > 1 ? TextInputAction.newline : null);
 
     final List<FormFieldValidation<String>>? theValidations =
@@ -472,6 +475,7 @@ class TextFormFieldStyle {
   final TextStyle inputStyle;
   final TextCapitalization textCapitalization;
   final TextAlign textAlign;
+  final TextInputType? keyboardType;
   final InputDecoration inputDecoration;
   final Color borderColor;
   final Color fillColorDisabled;
@@ -487,6 +491,7 @@ class TextFormFieldStyle {
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
     this.textCapitalization = TextCapitalization.none,
     this.textAlign = TextAlign.start,
+    this.keyboardType,
     this.inputDecoration = const InputDecoration(
       isDense: true,
       labelStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
@@ -543,12 +548,14 @@ class TextFormFieldStyle {
     TextStyle? inputStyle,
     TextCapitalization? textCapitalization,
     TextAlign? textAlign,
+    TextInputType? keyboardType,
     InputDecoration? inputDecoration,
     Color? borderColor,
     Color? fillColorDisabled,
     Color? disabledBorderColor,
     Color? errorColor,
     EdgeInsets? cupertinoLabelPadding,
+    List<FormFieldValidation<String>>? validations,
   }) {
     return TextFormFieldStyle(
       variant: variant ?? this.variant,
@@ -556,12 +563,14 @@ class TextFormFieldStyle {
       inputStyle: inputStyle ?? this.inputStyle,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       textAlign: textAlign ?? this.textAlign,
+      keyboardType: keyboardType ?? this.keyboardType,
       inputDecoration: inputDecoration ?? this.inputDecoration,
       borderColor: borderColor ?? this.borderColor,
       fillColorDisabled: fillColorDisabled ?? this.fillColorDisabled,
       disabledBorderColor: disabledBorderColor ?? this.disabledBorderColor,
       errorColor: errorColor ?? this.errorColor,
       cupertinoLabelPadding: cupertinoLabelPadding ?? this.cupertinoLabelPadding,
+      validations: validations ?? this.validations,
     );
   }
 }
