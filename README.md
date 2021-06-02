@@ -31,7 +31,7 @@ import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 ### CommonTheme setup and usage
 
-Create `lib/core/AppTheme.dart` and in this file create constants for your colors, TextStyles, dimensions. Then use them to CommonTheme compatible Styles.
+Create `lib/core/AppTheme.dart` and in this file create constants for your colors, TextStyles, dimensions. Then use them to create CommonTheme compatible Styles.
 See the example code snippet:
 
 ```dart
