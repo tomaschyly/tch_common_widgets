@@ -13,7 +13,7 @@ class ButtonsStyle {
     this.iconButtonStyle = const IconButtonStyle(),
   });
 
-  /// Create copy if this style with changes
+  /// Create copy of this style with changes
   ButtonsStyle copyWith({
     bool? fullWidthMobileOnly,
     ButtonStyle? buttonStyle,

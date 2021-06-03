@@ -157,7 +157,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
       final prefixIconSpacing = widget.style?.prefixIconSpacing ?? commonTheme?.buttonsStyle.buttonStyle.prefixIconSpacing ?? kCommonHorizontalMargin;
 
-      TextStyle? textStyle = widget.style?.textStyle ?? commonTheme?.buttonsStyle.buttonStyle.textStyle;
+      TextStyle? textStyle;
+      if (theVariant == ButtonVariant.Filled) {
+        textStyle = widget.style?.filledTextStyle ?? commonTheme?.buttonsStyle.buttonStyle.filledTextStyle;
+      } else {
+        textStyle = widget.style?.textStyle ?? commonTheme?.buttonsStyle.buttonStyle.textStyle;
+      }
       if (textStyle != null && commonTheme != null) {
         textStyle = commonTheme.preProcessTextStyle(textStyle);
       }
@@ -248,6 +253,7 @@ enum ButtonVariant {
 class ButtonStyle {
   final ButtonVariant variant;
   final TextStyle textStyle;
+  final TextStyle filledTextStyle;
   final bool widthWrapContent;
   final double width;
   final double height;
@@ -267,7 +273,8 @@ class ButtonStyle {
   /// ButtonStyle initialization
   const ButtonStyle({
     this.variant = ButtonVariant.Outlined,
-    this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5, fontWeight: FontWeight.bold),
+    this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+    this.filledTextStyle = const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
     this.widthWrapContent = false,
     this.width = double.infinity,
     this.height = kMinInteractiveSize,
@@ -285,10 +292,11 @@ class ButtonStyle {
     this.loadingAnimationDuration = const Duration(milliseconds: 1200),
   });
 
-  /// Create copy if this style with changes
+  /// Create copy of this style with changes
   ButtonStyle copyWith({
     ButtonVariant? variant,
     TextStyle? textStyle,
+    TextStyle? filledTextStyle,
     bool? widthWrapContent,
     double? width,
     double? height,
@@ -308,6 +316,7 @@ class ButtonStyle {
     return ButtonStyle(
       variant: variant ?? this.variant,
       textStyle: textStyle ?? this.textStyle,
+      filledTextStyle: filledTextStyle ?? this.filledTextStyle,
       widthWrapContent: widthWrapContent ?? this.widthWrapContent,
       width: width ?? this.width,
       height: height ?? this.height,
