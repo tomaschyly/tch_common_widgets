@@ -11,7 +11,8 @@ This package is made to work with and some features require my package [tch_appl
 1. [Installation](#installation)
 2. [Theme](#theme)
 3. [Widgets](#widgets)
-4. [Roadmap](#roadmap)
+4. [Dialogs](#dialogs)   
+5. [Roadmap](#roadmap)
 
 ## Installation
 
@@ -226,6 +227,14 @@ InkWell based button widget for icons, 3 variants.
 * works with **CommonTheme** and **standalone**
 
 InkWell based button widget, 2 variants, content supports text or text and preffixIcon. Loading animatin built in.
+
+## Dialogs
+
+### ConfirmDialogs
+
+* works with **CommonTheme** and **standalone**
+
+Simple dialog to get user confirmations (bool) with optional text description.
 
 ## Roadmap
 
