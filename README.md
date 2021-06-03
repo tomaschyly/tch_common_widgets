@@ -182,7 +182,7 @@ Widget build(BuildContext context) {
 
 ### CommonSpaces
 
-* requires **CommonTheme**
+* works with **CommonTheme** and **standalone**
 
 This is a set of widgets that can be used for easy and standard spaces between other widgets.
 

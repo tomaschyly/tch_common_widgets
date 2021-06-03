@@ -5,11 +5,11 @@ class CommonSpace extends StatelessWidget {
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     return Container(
-      width: commonTheme.commonDimens.horizontalMargin,
-      height: commonTheme.commonDimens.verticalMargin,
+      width: commonTheme?.commonDimens.horizontalMargin ?? kCommonHorizontalMargin,
+      height: commonTheme?.commonDimens.verticalMargin ?? kCommonVerticalMargin,
     );
   }
 }
@@ -18,10 +18,10 @@ class CommonSpaceH extends StatelessWidget {
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     return Container(
-      width: commonTheme.commonDimens.horizontalMargin,
+      width: commonTheme?.commonDimens.horizontalMargin ?? kCommonHorizontalMargin,
     );
   }
 }
@@ -30,10 +30,10 @@ class CommonSpaceHDouble extends StatelessWidget {
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     return Container(
-      width: commonTheme.commonDimens.horizontalMarginDouble,
+      width: commonTheme?.commonDimens.horizontalMarginDouble ?? kCommonHorizontalMarginDouble,
     );
   }
 }
@@ -42,10 +42,10 @@ class CommonSpaceHHalf extends StatelessWidget {
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     return Container(
-      width: commonTheme.commonDimens.horizontalMarginHalf,
+      width: commonTheme?.commonDimens.horizontalMarginHalf ?? kCommonHorizontalMarginHalf,
     );
   }
 }
@@ -54,10 +54,10 @@ class CommonSpaceV extends StatelessWidget {
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     return Container(
-      height: commonTheme.commonDimens.verticalMargin,
+      height: commonTheme?.commonDimens.verticalMargin ?? kCommonVerticalMargin,
     );
   }
 }
@@ -66,10 +66,10 @@ class CommonSpaceVDouble extends StatelessWidget {
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     return Container(
-      height: commonTheme.commonDimens.verticalMarginDouble,
+      height: commonTheme?.commonDimens.verticalMarginDouble ?? kCommonVerticalMarginDouble,
     );
   }
 }
@@ -78,10 +78,10 @@ class CommonSpaceVHalf extends StatelessWidget {
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context)!;
+    final commonTheme = CommonTheme.of(context);
 
     return Container(
-      height: commonTheme.commonDimens.verticalMarginHalf,
+      height: commonTheme?.commonDimens.verticalMarginHalf ?? kCommonVerticalMarginHalf,
     );
   }
 }
