@@ -497,7 +497,7 @@ class TextFormFieldStyle {
   const TextFormFieldStyle({
     this.variant = TextFormFieldVariant.Material,
     this.iOSUseNativeTextField = false,
-    this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
+    this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16),
     this.textCapitalization = TextCapitalization.none,
     this.textAlign = TextAlign.start,
     this.keyboardType,
@@ -550,7 +550,7 @@ class TextFormFieldStyle {
     this.validations = const <FormFieldValidation<String>>[],
   });
 
-  /// Create copy if this style with changes
+  /// Create copy of this style with changes
   TextFormFieldStyle copyWith({
     TextFormFieldVariant? variant,
     bool? iOSUseNativeTextField,

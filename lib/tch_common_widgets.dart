@@ -7,6 +7,9 @@ export 'src/ui/buttons/Buttons.dart';
 export 'src/ui/buttons/ButtonWidget.dart';
 export 'src/ui/buttons/IconButtonWidget.dart';
 
+export 'src/ui/dialogs/Dialogs.dart';
+export 'src/ui/dialogs/ConfirmDialog.dart';
+
 export 'src/ui/form/Form.dart';
 export 'src/ui/form/PreferencesSwitchWidget.dart';
 export 'src/ui/form/TextFormFieldWidget.dart';

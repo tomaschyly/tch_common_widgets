@@ -6,6 +6,7 @@ class CommonTheme extends InheritedWidget {
   final CommonDimens commonDimens;
   final String? fontFamily;
   final ButtonsStyle buttonsStyle;
+  final DialogsStyle dialogsStyle;
   final FormStyle formStyle;
 
   /// CommonTheme initialization
@@ -14,6 +15,7 @@ class CommonTheme extends InheritedWidget {
     this.commonDimens = const CommonDimens(),
     this.fontFamily,
     this.buttonsStyle = const ButtonsStyle(),
+    this.dialogsStyle = const DialogsStyle(),
     this.formStyle = const FormStyle(),
   }) : super(child: child);
 
