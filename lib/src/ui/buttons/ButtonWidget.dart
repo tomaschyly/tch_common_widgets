@@ -201,7 +201,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
           decoration: BoxDecoration(
             color: Colors.transparent,
             border: Border.all(
-              color: color,
+              color: theVariant == ButtonVariant.TextOnly ? Colors.transparent : color,
               width: 1,
             ),
             borderRadius: borderRadius,
@@ -248,6 +248,7 @@ enum ButtonVariant {
   None,
   Outlined,
   Filled,
+  TextOnly,
 }
 
 class ButtonStyle {
