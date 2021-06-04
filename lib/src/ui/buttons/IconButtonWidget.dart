@@ -50,6 +50,7 @@ class IconButtonWidget extends StatelessWidget {
     }
 
     final BorderRadius? borderRadius = style?.borderRadius ?? commonTheme?.buttonsStyle.iconButtonStyle.borderRadius;
+    final boxShadow = style?.boxShadow ?? commonTheme?.buttonsStyle.iconButtonStyle.boxShadow;
 
     Widget content = Material(
       color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
@@ -66,6 +67,7 @@ class IconButtonWidget extends StatelessWidget {
                     width: 1,
                   ),
                   borderRadius: borderRadius,
+                  boxShadow: boxShadow,
                 ),
           child: Center(
             child: icon,
@@ -78,6 +80,16 @@ class IconButtonWidget extends StatelessWidget {
     if (borderRadius != null) {
       content = ClipRRect(
         borderRadius: borderRadius,
+        child: content,
+      );
+    }
+
+    if (boxShadow != null) {
+      content = Container(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          boxShadow: boxShadow,
+        ),
         child: content,
       );
     }
@@ -111,6 +123,7 @@ class IconButtonStyle {
   final Color? color;
   final Color? iconColor;
   final BorderRadius? borderRadius;
+  final List<BoxShadow>? boxShadow;
   final bool? canBeStretched;
 
   /// IconButtonStyle initialization
@@ -123,6 +136,7 @@ class IconButtonStyle {
     this.color = Colors.black,
     this.iconColor,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.boxShadow,
     this.canBeStretched,
   });
 
@@ -136,6 +150,7 @@ class IconButtonStyle {
     Color? color,
     Color? iconColor,
     BorderRadius? borderRadius,
+    List<BoxShadow>? boxShadow,
     bool? canBeStretched,
   }) {
     return IconButtonStyle(
@@ -147,6 +162,7 @@ class IconButtonStyle {
       color: color ?? this.color,
       iconColor: iconColor ?? this.iconColor,
       borderRadius: borderRadius ?? this.borderRadius,
+      boxShadow: boxShadow ?? this.boxShadow,
       canBeStretched: canBeStretched ?? this.canBeStretched,
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tch_common_widgets/src/ui/buttons/ButtonWidget.dart' as Common;
+import 'package:tch_common_widgets/src/ui/buttons/ButtonWidget.dart';
 import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
 
 class DialogFooter extends StatelessWidget {
@@ -26,8 +26,8 @@ class DialogFooter extends StatelessWidget {
     final theNoText = noText;
     final theYesText = yesText;
 
-    Common.ButtonStyle yesButtonStyle = style.buttonStyle.copyWith(
-      variant: Common.ButtonVariant.Filled,
+    CommonButtonStyle yesButtonStyle = style.buttonStyle.copyWith(
+      variant: ButtonVariant.Filled,
       color: yesIsDanger ? style.dangerColor : style.buttonStyle.color,
     );
 
@@ -36,14 +36,14 @@ class DialogFooter extends StatelessWidget {
       mainAxisAlignment: style.mainAxisAlignment,
       children: [
         if (theNoText != null)
-          Common.ButtonWidget(
+          ButtonWidget(
             style: style.buttonStyle,
             text: theNoText,
             onTap: noOnTap,
           ),
         if (theNoText != null && theYesText != null) CommonSpaceHHalf(),
         if (theYesText != null)
-          Common.ButtonWidget(
+          ButtonWidget(
             style: yesButtonStyle,
             text: theYesText,
             onTap: yesOnTap,
@@ -55,13 +55,13 @@ class DialogFooter extends StatelessWidget {
 
 class DialogFooterStyle {
   final MainAxisAlignment mainAxisAlignment;
-  final Common.ButtonStyle buttonStyle;
+  final CommonButtonStyle buttonStyle;
   final Color dangerColor;
 
   /// DialogFooterStyle initialization
   const DialogFooterStyle({
     this.mainAxisAlignment = MainAxisAlignment.end,
-    this.buttonStyle = const Common.ButtonStyle(
+    this.buttonStyle = const CommonButtonStyle(
       widthWrapContent: true,
     ),
     this.dangerColor = Colors.red,
@@ -70,7 +70,7 @@ class DialogFooterStyle {
   /// Create copy of this tyle with changes
   DialogFooterStyle copyWith({
     MainAxisAlignment? mainAxisAlignment,
-    Common.ButtonStyle? buttonStyle,
+    CommonButtonStyle? buttonStyle,
     Color? dangerColor,
   }) {
     return DialogFooterStyle(

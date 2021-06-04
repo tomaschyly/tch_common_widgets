@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_common_widgets/src/ui/buttons/ButtonWidget.dart' as Common;
+import 'package:tch_common_widgets/src/ui/buttons/ButtonWidget.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/DialogHeader.dart';
 import 'package:tch_common_widgets/src/ui/form/TextFormFieldWidget.dart';
@@ -115,12 +115,12 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
     final filterStyle = widget.style?.filterStyle ?? commonTheme?.dialogsStyle.listDialogStyle.filterStyle ?? const TextFormFieldStyle();
 
     final optionHeight = widget.style?.optionHeight ?? commonTheme?.dialogsStyle.listDialogStyle.optionHeight ?? kMinInteractiveSize;
-    final optionStyle = widget.style?.optionStyle ?? commonTheme?.dialogsStyle.listDialogStyle.optionStyle ?? const Common.ButtonStyle();
+    final optionStyle = widget.style?.optionStyle ?? commonTheme?.dialogsStyle.listDialogStyle.optionStyle ?? const CommonButtonStyle();
     final optionsSpacing = widget.style?.optionsSpacing ?? commonTheme?.dialogsStyle.listDialogStyle.optionsSpacing ?? kCommonVerticalMarginQuarter;
     final selectedOptionStyle = widget.style?.selectedOptionStyle ??
         commonTheme?.dialogsStyle.listDialogStyle.selectedOptionStyle ??
-        const Common.ButtonStyle(
-          variant: Common.ButtonVariant.Filled,
+        const CommonButtonStyle(
+          variant: ButtonVariant.Filled,
         );
 
     Widget dialog = Container(
@@ -167,7 +167,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
                         children: _options.map((ListDialogOption option) {
                           return Padding(
                             padding: EdgeInsets.only(bottom: option == _options.last ? 0 : optionsSpacing),
-                            child: Common.ButtonWidget(
+                            child: ButtonWidget(
                               style: option.isSelected ? selectedOptionStyle : optionStyle,
                               text: option.text,
                               onTap: !option.isSelected
@@ -245,8 +245,8 @@ class ListDialogStyle {
   final DialogFooterStyle dialogFooterStyle;
   final TextFormFieldStyle filterStyle;
   final double optionHeight;
-  final Common.ButtonStyle optionStyle;
-  final Common.ButtonStyle selectedOptionStyle;
+  final CommonButtonStyle optionStyle;
+  final CommonButtonStyle selectedOptionStyle;
   final double optionsSpacing;
 
   /// ListDialogStyle initialization
@@ -261,11 +261,11 @@ class ListDialogStyle {
     this.dialogFooterStyle = const DialogFooterStyle(),
     this.filterStyle = const TextFormFieldStyle(),
     this.optionHeight = kMinInteractiveSize,
-    this.optionStyle = const Common.ButtonStyle(
-      variant: Common.ButtonVariant.TextOnly,
+    this.optionStyle = const CommonButtonStyle(
+      variant: ButtonVariant.TextOnly,
     ),
-    this.selectedOptionStyle = const Common.ButtonStyle(
-      variant: Common.ButtonVariant.Filled,
+    this.selectedOptionStyle = const CommonButtonStyle(
+      variant: ButtonVariant.Filled,
     ),
     this.optionsSpacing = kCommonVerticalMarginQuarter,
   });
@@ -282,8 +282,8 @@ class ListDialogStyle {
     DialogFooterStyle? dialogFooterStyle,
     TextFormFieldStyle? filterStyle,
     double? optionHeight,
-    Common.ButtonStyle? optionStyle,
-    Common.ButtonStyle? selectedOptionStyle,
+    CommonButtonStyle? optionStyle,
+    CommonButtonStyle? selectedOptionStyle,
     double? optionsSpacing,
   ) {
     return ListDialogStyle(

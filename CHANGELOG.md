@@ -1,3 +1,13 @@
+## 0.3.0 - 4.6.2021
+
+* CommonSpaces update to work also standalone
+* ButtonWidget styling improvement
+* ConfirmDialog
+* ListDialog
+* ButtonWidget add TextOnly variant
+* BoxShadow on buttons
+* **Warning:** changed ButtonStyle to CommonButtonStyle to avoid conflict with Flutter class
+
 ## 0.2.1 - 2.6.2021
 
 * ButtonWidget apply global font family if CommonTheme is used

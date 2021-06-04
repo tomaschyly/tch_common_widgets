@@ -6,7 +6,7 @@ import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 
 class ButtonWidget extends AbstractStatefulWidget {
-  final ButtonStyle? style;
+  final CommonButtonStyle? style;
   final String text;
   final String? prefixIconSvgAssetPath;
   final Widget? prefixIcon;
@@ -79,6 +79,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
     final iconColor = widget.style?.iconColor ?? commonTheme?.buttonsStyle.buttonStyle.iconColor ?? color;
 
     final BorderRadius? borderRadius = widget.style?.borderRadius ?? commonTheme?.buttonsStyle.buttonStyle.borderRadius;
+    final boxShadow = widget.style?.boxShadow ?? commonTheme?.buttonsStyle.buttonStyle.boxShadow;
 
     late Widget inner;
 
@@ -219,6 +220,16 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       );
     }
 
+    if (boxShadow != null) {
+      content = Container(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          boxShadow: boxShadow,
+        ),
+        child: content,
+      );
+    }
+
     return content;
   }
 
@@ -251,7 +262,7 @@ enum ButtonVariant {
   TextOnly,
 }
 
-class ButtonStyle {
+class CommonButtonStyle {
   final ButtonVariant variant;
   final TextStyle textStyle;
   final TextStyle filledTextStyle;
@@ -265,14 +276,15 @@ class ButtonStyle {
   final Color? iconColor;
   final double prefixIconSpacing;
   final BorderRadius? borderRadius;
+  final List<BoxShadow>? boxShadow;
   final String? loadingIconSvgAssetPath;
   final Widget? loadingIcon;
   final double loadingIconWidth;
   final double loadingIconHeight;
   final Duration loadingAnimationDuration;
 
-  /// ButtonStyle initialization
-  const ButtonStyle({
+  /// CommonButtonStyle initialization
+  const CommonButtonStyle({
     this.variant = ButtonVariant.Outlined,
     this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.filledTextStyle = const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
@@ -286,6 +298,7 @@ class ButtonStyle {
     this.iconColor,
     this.prefixIconSpacing = kCommonHorizontalMargin,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.boxShadow,
     this.loadingIconSvgAssetPath,
     this.loadingIcon,
     this.loadingIconWidth = kIconSize,
@@ -294,7 +307,7 @@ class ButtonStyle {
   });
 
   /// Create copy of this style with changes
-  ButtonStyle copyWith({
+  CommonButtonStyle copyWith({
     ButtonVariant? variant,
     TextStyle? textStyle,
     TextStyle? filledTextStyle,
@@ -308,13 +321,14 @@ class ButtonStyle {
     Color? iconColor,
     double? prefixIconSpacing,
     BorderRadius? borderRadius,
+    List<BoxShadow>? boxShadow,
     String? loadingIconSvgAssetPath,
     Widget? loadingIcon,
     double? loadingIconWidth,
     double? loadingIconHeight,
     Duration? loadingAnimationDuration,
   }) {
-    return ButtonStyle(
+    return CommonButtonStyle(
       variant: variant ?? this.variant,
       textStyle: textStyle ?? this.textStyle,
       filledTextStyle: filledTextStyle ?? this.filledTextStyle,
@@ -328,6 +342,7 @@ class ButtonStyle {
       iconColor: iconColor ?? this.iconColor,
       prefixIconSpacing: prefixIconSpacing ?? this.prefixIconSpacing,
       borderRadius: borderRadius ?? this.borderRadius,
+      boxShadow: boxShadow ?? this.boxShadow,
       loadingIconSvgAssetPath: loadingIconSvgAssetPath ?? this.loadingIconSvgAssetPath,
       loadingIcon: loadingIcon ?? this.loadingIcon,
       loadingIconWidth: loadingIconWidth ?? this.loadingIconWidth,

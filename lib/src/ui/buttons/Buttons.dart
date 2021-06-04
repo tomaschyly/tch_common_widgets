@@ -3,20 +3,20 @@ import 'package:tch_common_widgets/src/ui/buttons/IconButtonWidget.dart';
 
 class ButtonsStyle {
   final bool fullWidthMobileOnly;
-  final ButtonStyle buttonStyle;
+  final CommonButtonStyle buttonStyle;
   final IconButtonStyle iconButtonStyle;
 
   /// ButtonsStyle initialization
   const ButtonsStyle({
     this.fullWidthMobileOnly = true,
-    this.buttonStyle = const ButtonStyle(),
+    this.buttonStyle = const CommonButtonStyle(),
     this.iconButtonStyle = const IconButtonStyle(),
   });
 
   /// Create copy of this style with changes
   ButtonsStyle copyWith({
     bool? fullWidthMobileOnly,
-    ButtonStyle? buttonStyle,
+    CommonButtonStyle? buttonStyle,
     IconButtonStyle? iconButtonStyle,
   }) {
     return ButtonsStyle(
