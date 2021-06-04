@@ -9,6 +9,7 @@ export 'src/ui/buttons/IconButtonWidget.dart';
 
 export 'src/ui/dialogs/Dialogs.dart';
 export 'src/ui/dialogs/ConfirmDialog.dart';
+export 'src/ui/dialogs/ListDialog.dart';
 
 export 'src/ui/form/Form.dart';
 export 'src/ui/form/PreferencesSwitchWidget.dart';

@@ -230,11 +230,17 @@ InkWell based button widget, 2 variants, content supports text or text and preff
 
 ## Dialogs
 
-### ConfirmDialogs
+### ConfirmDialog
 
 * works with **CommonTheme** and **standalone**
 
 Simple dialog to get user confirmations (bool) with optional text description.
+
+### ListDialog
+
+* works with **CommonTheme** and **standalone**
+
+Dialog which displays list of options and allows user to select one.
 
 ## Roadmap
 
