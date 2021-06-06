@@ -125,6 +125,12 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             inputStyle = params.inputStyle
         }
         
+        if let theTextField = textField as? UITextField {
+            theTextField.isSecureTextEntry = params.obscureText && !requestingPlaceholder
+        } else if let theTextView = textField as? UITextView {
+            theTextView.isSecureTextEntry = params.obscureText && !requestingPlaceholder
+        }
+        
         if let theInputStyle = inputStyle {
             if let theTextField = textField as? UITextField {
                 var color: UIColor?
@@ -432,6 +438,7 @@ struct IOSUseNativeTextFieldParams {
     var textCapitalization: String
     var textAlign: String
     var autocorrect: Bool
+    var obscureText: Bool
     
     /**
      * Convert JSON map into IOSUseNativeTextFieldParams.
@@ -447,7 +454,8 @@ struct IOSUseNativeTextFieldParams {
             textInputAction: dictionary["textInputAction"] as? String,
             textCapitalization: dictionary["textCapitalization"] as! String,
             textAlign: dictionary["textAlign"] as! String,
-            autocorrect: dictionary["autocorrect"] as! Bool
+            autocorrect: dictionary["autocorrect"] as! Bool,
+            obscureText: dictionary["obscureText"] as! Bool
         )
     }
 }

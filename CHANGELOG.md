@@ -1,3 +1,7 @@
+## 0.4.1 - 6.6.2021
+
+* TextFormFieldWidget and Style support obscureText for password fields
+
 ## 0.4.0 - 6.6.2021
 
 * SelectionFormFieldWidget

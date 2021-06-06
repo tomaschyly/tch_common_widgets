@@ -26,6 +26,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final List<FormFieldValidation<String>>? validations;
   final bool enabled;
   final bool autocorrect;
+  final bool? obscureText;
 
   /// TextFormFieldWidget initialization
   TextFormFieldWidget({
@@ -46,6 +47,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.validations,
     this.enabled = true,
     this.autocorrect = true,
+    this.obscureText,
   })  : assert((focusNode == null && nextFocus == null) || focusNode != null),
         super(key: key);
 
@@ -198,6 +200,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       hintText: theLabel == null || theLabel.isEmpty ? theHintText : '',
     );
 
+    final theObscureText = widget.obscureText ?? widget.style?.obscureText ?? commonTheme?.formStyle.textFormFieldStyle.obscureText ?? false;
+
     late Widget field;
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
@@ -217,6 +221,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
         textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
         autocorrect: widget.autocorrect,
+        obscureText: theObscureText,
       );
 
       field = IgnorePointer(
@@ -336,6 +341,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         },
         autocorrect: widget.autocorrect,
         enabled: widget.enabled,
+        obscureText: theObscureText,
       );
     }
 
@@ -492,6 +498,7 @@ class TextFormFieldStyle {
   final Color errorColor;
   final EdgeInsets cupertinoLabelPadding;
   final List<FormFieldValidation<String>>? validations;
+  final bool? obscureText;
 
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
@@ -548,6 +555,7 @@ class TextFormFieldStyle {
     this.errorColor = Colors.red,
     this.cupertinoLabelPadding = const EdgeInsets.only(left: 8, right: 8, bottom: 8),
     this.validations = const <FormFieldValidation<String>>[],
+    this.obscureText,
   });
 
   /// Create copy of this style with changes
@@ -565,6 +573,7 @@ class TextFormFieldStyle {
     Color? errorColor,
     EdgeInsets? cupertinoLabelPadding,
     List<FormFieldValidation<String>>? validations,
+    bool? obscureText,
   }) {
     return TextFormFieldStyle(
       variant: variant ?? this.variant,
@@ -580,6 +589,7 @@ class TextFormFieldStyle {
       errorColor: errorColor ?? this.errorColor,
       cupertinoLabelPadding: cupertinoLabelPadding ?? this.cupertinoLabelPadding,
       validations: validations ?? this.validations,
+      obscureText: obscureText ?? this.obscureText,
     );
   }
 }
@@ -595,6 +605,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
   TextCapitalization textCapitalization;
   TextAlign textAlign;
   bool autocorrect;
+  bool obscureText;
 
   /// IOSUseNativeTextFieldParams initialization
   _IOSUseNativeTextFieldParams({
@@ -608,6 +619,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
     this.textCapitalization = TextCapitalization.none,
     this.textAlign = TextAlign.start,
     this.autocorrect = true,
+    this.obscureText = false,
   }) : super.fromJson(<String, dynamic>{});
 
   /// Convert into JSON map
@@ -644,6 +656,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
       'textCapitalization': textCapitalization.toString(),
       'textAlign': textAlign.toString(),
       'autocorrect': autocorrect,
+      'obscureText': obscureText,
     };
   }
 }
