@@ -1,33 +1,37 @@
-import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/ui/form/PreferencesSwitchWidget.dart';
+import 'package:tch_common_widgets/src/ui/form/SelectionFormFieldWidget.dart';
 import 'package:tch_common_widgets/src/ui/form/TextFormFieldWidget.dart';
 
 class FormStyle {
   final bool animatedSizeChanges;
   final bool fullWidthMobileOnly;
-  final TextFormFieldStyle textFormFieldStyle;
   final PreferencesSwitchStyle preferencesSwitchStyle;
+  final SelectionFormFieldStyle selectionFormFieldStyle;
+  final TextFormFieldStyle textFormFieldStyle;
 
   /// FormStyle initialization
   const FormStyle({
     this.animatedSizeChanges = true,
     this.fullWidthMobileOnly = true,
-    this.textFormFieldStyle = const TextFormFieldStyle(),
     this.preferencesSwitchStyle = const PreferencesSwitchStyle(),
+    this.selectionFormFieldStyle = const SelectionFormFieldStyle(),
+    this.textFormFieldStyle = const TextFormFieldStyle(),
   });
 
   /// Create copy if this style with changes
   FormStyle copyWith({
     bool? animatedSizeChanges,
     bool? fullWidthMobileOnly,
-    TextFormFieldStyle? textFormFieldStyle,
     PreferencesSwitchStyle? preferencesSwitchStyle,
+    SelectionFormFieldStyle? selectionFormFieldStyle,
+    TextFormFieldStyle? textFormFieldStyle,
   }) {
     return FormStyle(
       animatedSizeChanges: animatedSizeChanges ?? this.animatedSizeChanges,
       fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
-      textFormFieldStyle: textFormFieldStyle ?? this.textFormFieldStyle,
       preferencesSwitchStyle: preferencesSwitchStyle ?? this.preferencesSwitchStyle,
+      selectionFormFieldStyle: selectionFormFieldStyle ?? this.selectionFormFieldStyle,
+      textFormFieldStyle: textFormFieldStyle ?? this.textFormFieldStyle,
     );
   }
 }
@@ -35,15 +39,22 @@ class FormStyle {
 class FormFieldValidation<T> {
   final bool Function(T? value) validator;
   final String errorText;
+  late final String Function() dynamicErrorText;
 
   /// FormFieldValidation initialization
-  const FormFieldValidation({
+  FormFieldValidation({
     required this.validator,
     required this.errorText,
-  });
+    String Function()? dynamicErrorText,
+  }) {
+    this.dynamicErrorText = dynamicErrorText ?? _dynamicErrorText;
+  }
 
   /// Validate the value using validator
-  String? validate(T? value) => validator(value) ? null : errorText;
+  String? validate(T? value) => validator(value) ? null : dynamicErrorText();
+
+  /// Returns errorText dynamically, can be replaced by custom method when complex validations are required
+  String _dynamicErrorText() => errorText;
 }
 
 /// Validate all provided FormFieldValidations, stop on first error and return it

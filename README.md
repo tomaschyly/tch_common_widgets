@@ -19,7 +19,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.3.0
+  tch_common_widgets: ^0.4.0
 ```
 
 If your IDE does not autoImport, add manually:
@@ -215,6 +215,12 @@ Then this widget will use custom hybrid solution to solve issue of default autco
 There are some limitations, mainly if you want to use custom font family, you need to integrate it with iOS as you do on iOS apps.
 
 **Tip:** if your custom font does not work, remember that iOS does not use filenames, but actual font family name.
+
+### SelectionFormFieldWidget
+
+* works with **CommonTheme** and **standalone**
+
+Custom replacement for DropdownButton, looks like normal TextFormFieldWidget and supports Focus navigation and Form validation.
 
 ### IconButtonWidget
 

@@ -57,7 +57,7 @@ class ListDialog<T> extends AbstractStatefulWidget {
 
   /// Create state for widget
   @override
-  State<StatefulWidget> createState() => _ListDialogState();
+  State<StatefulWidget> createState() => _ListDialogState<T>();
 }
 
 class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {

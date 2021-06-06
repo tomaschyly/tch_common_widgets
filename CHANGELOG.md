@@ -1,3 +1,7 @@
+## 0.4.0 - 6.6.2021
+
+* SelectionFormFieldWidget
+
 ## 0.3.0 - 4.6.2021
 
 * CommonSpaces update to work also standalone
