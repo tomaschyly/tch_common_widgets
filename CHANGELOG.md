@@ -1,3 +1,7 @@
+## [0.4.4] - 7.6.2021
+
+* Buttons styling for border width
+
 ## [0.4.3] - 7.6.2021
 
 * Update Core dependency

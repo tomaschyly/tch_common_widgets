@@ -86,6 +86,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       iconColor = widget.style?.disabledIconColor ?? commonTheme?.buttonsStyle.buttonStyle.disabledIconColor ?? color;
     }
 
+    final theBorderWidth = widget.style?.borderWidth ?? commonTheme?.buttonsStyle.buttonStyle.borderWidth ?? 1;
     final BorderRadius? borderRadius = widget.style?.borderRadius ?? commonTheme?.buttonsStyle.buttonStyle.borderRadius;
     final boxShadow = widget.style?.boxShadow ?? commonTheme?.buttonsStyle.buttonStyle.boxShadow;
 
@@ -213,7 +214,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
             color: Colors.transparent,
             border: Border.all(
               color: theVariant == ButtonVariant.TextOnly ? Colors.transparent : color,
-              width: 1,
+              width: theBorderWidth,
             ),
             borderRadius: borderRadius,
           ),
@@ -288,6 +289,7 @@ class CommonButtonStyle {
   final Color? disabledColor;
   final Color? disabledIconColor;
   final double prefixIconSpacing;
+  final double borderWidth;
   final BorderRadius? borderRadius;
   final List<BoxShadow>? boxShadow;
   final String? loadingIconSvgAssetPath;
@@ -313,6 +315,7 @@ class CommonButtonStyle {
     this.disabledColor = Colors.grey,
     this.disabledIconColor,
     this.prefixIconSpacing = kCommonHorizontalMargin,
+    this.borderWidth = 1,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
     this.boxShadow,
     this.loadingIconSvgAssetPath,
@@ -339,6 +342,7 @@ class CommonButtonStyle {
     Color? disabledColor,
     Color? disabledIconColor,
     double? prefixIconSpacing,
+    double? borderWidth,
     BorderRadius? borderRadius,
     List<BoxShadow>? boxShadow,
     String? loadingIconSvgAssetPath,
@@ -363,6 +367,7 @@ class CommonButtonStyle {
       disabledColor: disabledColor ?? this.disabledColor,
       disabledIconColor: disabledIconColor ?? this.disabledIconColor,
       prefixIconSpacing: prefixIconSpacing ?? this.prefixIconSpacing,
+      borderWidth: borderWidth ?? this.borderWidth,
       borderRadius: borderRadius ?? this.borderRadius,
       boxShadow: boxShadow ?? this.boxShadow,
       loadingIconSvgAssetPath: loadingIconSvgAssetPath ?? this.loadingIconSvgAssetPath,

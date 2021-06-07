@@ -49,6 +49,7 @@ class IconButtonWidget extends StatelessWidget {
       );
     }
 
+    final theBorderWidth = style?.borderWidth ?? commonTheme?.buttonsStyle.buttonStyle.borderWidth ?? 1;
     final BorderRadius? borderRadius = style?.borderRadius ?? commonTheme?.buttonsStyle.iconButtonStyle.borderRadius;
     final boxShadow = style?.boxShadow ?? commonTheme?.buttonsStyle.iconButtonStyle.boxShadow;
 
@@ -64,7 +65,7 @@ class IconButtonWidget extends StatelessWidget {
                   color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
                   border: Border.all(
                     color: color,
-                    width: 1,
+                    width: theBorderWidth,
                   ),
                   borderRadius: borderRadius,
                   boxShadow: boxShadow,
@@ -122,6 +123,7 @@ class IconButtonStyle {
   final double iconHeight;
   final Color? color;
   final Color? iconColor;
+  final double borderWidth;
   final BorderRadius? borderRadius;
   final List<BoxShadow>? boxShadow;
   final bool? canBeStretched;
@@ -135,6 +137,7 @@ class IconButtonStyle {
     this.iconHeight = kIconSize,
     this.color = Colors.black,
     this.iconColor,
+    this.borderWidth = 1,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
     this.boxShadow,
     this.canBeStretched,
@@ -149,6 +152,7 @@ class IconButtonStyle {
     double? iconHeight,
     Color? color,
     Color? iconColor,
+    double? borderWidth,
     BorderRadius? borderRadius,
     List<BoxShadow>? boxShadow,
     bool? canBeStretched,
@@ -161,6 +165,7 @@ class IconButtonStyle {
       iconHeight: iconHeight ?? this.iconHeight,
       color: color ?? this.color,
       iconColor: iconColor ?? this.iconColor,
+      borderWidth: borderWidth ?? this.borderWidth,
       borderRadius: borderRadius ?? this.borderRadius,
       boxShadow: boxShadow ?? this.boxShadow,
       canBeStretched: canBeStretched ?? this.canBeStretched,
