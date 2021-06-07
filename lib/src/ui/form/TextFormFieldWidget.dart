@@ -143,7 +143,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         ),
         focusedBorder: theDecoration.focusedBorder?.copyWith(
           borderSide: theDecoration.focusedBorder!.borderSide.copyWith(
-            color: widget.style?.borderColor ?? commonTheme?.formStyle.textFormFieldStyle.borderColor,
+            color: widget.style?.focusedBorderColor ?? commonTheme?.formStyle.textFormFieldStyle.focusedBorderColor,
           ),
         ),
         errorBorder: theDecoration.errorBorder?.copyWith(
@@ -495,6 +495,7 @@ class TextFormFieldStyle {
   final Color borderColor;
   final Color fillColorDisabled;
   final Color disabledBorderColor;
+  final Color focusedBorderColor;
   final Color errorColor;
   final EdgeInsets cupertinoLabelPadding;
   final List<FormFieldValidation<String>>? validations;
@@ -552,6 +553,7 @@ class TextFormFieldStyle {
     this.borderColor = Colors.black,
     this.fillColorDisabled = Colors.grey,
     this.disabledBorderColor = Colors.grey,
+    this.focusedBorderColor = Colors.black,
     this.errorColor = Colors.red,
     this.cupertinoLabelPadding = const EdgeInsets.only(left: 8, right: 8, bottom: 8),
     this.validations = const <FormFieldValidation<String>>[],
@@ -570,6 +572,7 @@ class TextFormFieldStyle {
     Color? borderColor,
     Color? fillColorDisabled,
     Color? disabledBorderColor,
+    Color? focusedBorderColor,
     Color? errorColor,
     EdgeInsets? cupertinoLabelPadding,
     List<FormFieldValidation<String>>? validations,
@@ -586,6 +589,7 @@ class TextFormFieldStyle {
       borderColor: borderColor ?? this.borderColor,
       fillColorDisabled: fillColorDisabled ?? this.fillColorDisabled,
       disabledBorderColor: disabledBorderColor ?? this.disabledBorderColor,
+      focusedBorderColor: focusedBorderColor ?? this.focusedBorderColor,
       errorColor: errorColor ?? this.errorColor,
       cupertinoLabelPadding: cupertinoLabelPadding ?? this.cupertinoLabelPadding,
       validations: validations ?? this.validations,
