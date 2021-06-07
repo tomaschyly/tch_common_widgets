@@ -71,12 +71,20 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
+    final bool isDisabled = widget.onTap == null;
+
     final bool fullWidthMobileOnly = commonTheme?.buttonsStyle.fullWidthMobileOnly ?? true;
 
     final theVariant = widget.style?.variant ?? commonTheme?.buttonsStyle.buttonStyle.variant ?? ButtonVariant.Outlined;
 
-    final color = widget.style?.color ?? commonTheme?.buttonsStyle.buttonStyle.color ?? Colors.black;
-    final iconColor = widget.style?.iconColor ?? commonTheme?.buttonsStyle.buttonStyle.iconColor ?? color;
+    Color color = widget.style?.color ?? commonTheme?.buttonsStyle.buttonStyle.color ?? Colors.black;
+    if (isDisabled) {
+      color = widget.style?.disabledColor ?? commonTheme?.buttonsStyle.buttonStyle.disabledColor ?? Colors.grey;
+    }
+    Color iconColor = widget.style?.iconColor ?? commonTheme?.buttonsStyle.buttonStyle.iconColor ?? color;
+    if (isDisabled) {
+      iconColor = widget.style?.disabledIconColor ?? commonTheme?.buttonsStyle.buttonStyle.disabledIconColor ?? color;
+    }
 
     final BorderRadius? borderRadius = widget.style?.borderRadius ?? commonTheme?.buttonsStyle.buttonStyle.borderRadius;
     final boxShadow = widget.style?.boxShadow ?? commonTheme?.buttonsStyle.buttonStyle.boxShadow;
@@ -159,7 +167,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       final prefixIconSpacing = widget.style?.prefixIconSpacing ?? commonTheme?.buttonsStyle.buttonStyle.prefixIconSpacing ?? kCommonHorizontalMargin;
 
       TextStyle? textStyle;
-      if (theVariant == ButtonVariant.Filled) {
+      if (isDisabled) {
+        textStyle = widget.style?.disabledTextStyle ?? commonTheme?.buttonsStyle.buttonStyle.disabledTextStyle;
+      } else if (theVariant == ButtonVariant.Filled) {
         textStyle = widget.style?.filledTextStyle ?? commonTheme?.buttonsStyle.buttonStyle.filledTextStyle;
       } else {
         textStyle = widget.style?.textStyle ?? commonTheme?.buttonsStyle.buttonStyle.textStyle;
@@ -266,6 +276,7 @@ class CommonButtonStyle {
   final ButtonVariant variant;
   final TextStyle textStyle;
   final TextStyle filledTextStyle;
+  final TextStyle disabledTextStyle;
   final bool widthWrapContent;
   final double width;
   final double height;
@@ -274,6 +285,8 @@ class CommonButtonStyle {
   final double preffixIconHeight;
   final Color? color;
   final Color? iconColor;
+  final Color? disabledColor;
+  final Color? disabledIconColor;
   final double prefixIconSpacing;
   final BorderRadius? borderRadius;
   final List<BoxShadow>? boxShadow;
@@ -288,6 +301,7 @@ class CommonButtonStyle {
     this.variant = ButtonVariant.Outlined,
     this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.filledTextStyle = const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+    this.disabledTextStyle = const TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.bold),
     this.widthWrapContent = false,
     this.width = double.infinity,
     this.height = kMinInteractiveSize,
@@ -296,6 +310,8 @@ class CommonButtonStyle {
     this.preffixIconHeight = kIconSize,
     this.color = Colors.black,
     this.iconColor,
+    this.disabledColor = Colors.grey,
+    this.disabledIconColor,
     this.prefixIconSpacing = kCommonHorizontalMargin,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
     this.boxShadow,
@@ -311,6 +327,7 @@ class CommonButtonStyle {
     ButtonVariant? variant,
     TextStyle? textStyle,
     TextStyle? filledTextStyle,
+    TextStyle? disabledTextStyle,
     bool? widthWrapContent,
     double? width,
     double? height,
@@ -319,6 +336,8 @@ class CommonButtonStyle {
     double? preffixIconHeight,
     Color? color,
     Color? iconColor,
+    Color? disabledColor,
+    Color? disabledIconColor,
     double? prefixIconSpacing,
     BorderRadius? borderRadius,
     List<BoxShadow>? boxShadow,
@@ -332,6 +351,7 @@ class CommonButtonStyle {
       variant: variant ?? this.variant,
       textStyle: textStyle ?? this.textStyle,
       filledTextStyle: filledTextStyle ?? this.filledTextStyle,
+      disabledTextStyle: disabledTextStyle ?? this.disabledTextStyle,
       widthWrapContent: widthWrapContent ?? this.widthWrapContent,
       width: width ?? this.width,
       height: height ?? this.height,
@@ -340,6 +360,8 @@ class CommonButtonStyle {
       preffixIconHeight: preffixIconHeight ?? this.preffixIconHeight,
       color: color ?? this.color,
       iconColor: iconColor ?? this.iconColor,
+      disabledColor: disabledColor ?? this.disabledColor,
+      disabledIconColor: disabledIconColor ?? this.disabledIconColor,
       prefixIconSpacing: prefixIconSpacing ?? this.prefixIconSpacing,
       borderRadius: borderRadius ?? this.borderRadius,
       boxShadow: boxShadow ?? this.boxShadow,
