@@ -303,7 +303,7 @@ class CommonButtonStyle {
     this.variant = ButtonVariant.Outlined,
     this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.filledTextStyle = const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-    this.disabledTextStyle = const TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.bold),
+    this.disabledTextStyle = const TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
     this.widthWrapContent = false,
     this.width = double.infinity,
     this.height = kMinInteractiveSize,
