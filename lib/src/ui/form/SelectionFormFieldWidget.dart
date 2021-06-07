@@ -215,7 +215,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
   }
 
   /// Select option using ListDialog
-  Future selectOption(BuildContext context) async {
+  Future<void> selectOption(BuildContext context) async {
     final focusScope = FocusScope.of(context);
 
     focusScope.unfocus();
@@ -247,6 +247,19 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
     final theNextFocus = widget.nextFocus;
     if (newValue != null && theNextFocus != null) {
       focusScope.requestFocus(theNextFocus);
+    }
+  }
+
+  /// Set value to newValue if there is options for it
+  void setValue(T? newValue) {
+    final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == newValue);
+
+    if (newValue == null || option != null) {
+      _controller.text = option?.text ?? '';
+
+      setStateNotDisposed(() {
+        _value = newValue;
+      });
     }
   }
 }

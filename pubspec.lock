@@ -300,7 +300,7 @@ packages:
       name: tch_appliable_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.1"
+    version: "0.5.2"
   term_glyph:
     dependency: transitive
     description:

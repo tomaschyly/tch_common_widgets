@@ -1,3 +1,8 @@
+## [0.4.5] - 7.6.2021
+
+* ButtonWidget update default style
+* SelectionFormFieldWidget add setValue by GlobalKey
+
 ## [0.4.4] - 7.6.2021
 
 * Buttons styling for border width
