@@ -1,3 +1,7 @@
+## 0.4.2 - 7.6.2021
+
+* IconButtonWidget fix weird issue with Filled and BoxShadow
+
 ## 0.4.1 - 6.6.2021
 
 * TextFormFieldWidget and Style support obscureText for password fields

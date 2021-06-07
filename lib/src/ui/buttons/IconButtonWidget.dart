@@ -61,7 +61,7 @@ class IconButtonWidget extends StatelessWidget {
           decoration: variant == IconButtonVariant.IconOnly
               ? null
               : BoxDecoration(
-                  color: Colors.transparent,
+                  color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
                   border: Border.all(
                     color: color,
                     width: 1,
