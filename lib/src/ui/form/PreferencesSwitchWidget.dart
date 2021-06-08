@@ -50,6 +50,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
 
     final Widget field = Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: widget.style?.crossAxisAlignment ?? commonTheme?.formStyle.preferencesSwitchStyle.crossAxisAlignment ?? CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisSize: MainAxisSize.max,
@@ -113,10 +114,25 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
 class PreferencesSwitchStyle {
   final TextStyle labelStyle;
   final TextStyle descriptionStyle;
+  final CrossAxisAlignment crossAxisAlignment;
 
   /// PreferencesSwitchStyle initialization
   const PreferencesSwitchStyle({
     this.labelStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.descriptionStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
+    this.crossAxisAlignment = CrossAxisAlignment.start,
   });
+
+  /// Create copy of this style with changes
+  PreferencesSwitchStyle copyWith({
+    TextStyle? labelStyle,
+    TextStyle? descriptionStyle,
+    CrossAxisAlignment? crossAxisAlignment,
+  }) {
+    return PreferencesSwitchStyle(
+      labelStyle: labelStyle ?? this.labelStyle,
+      descriptionStyle: descriptionStyle ?? this.descriptionStyle,
+      crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
+    );
+  }
 }

@@ -1,3 +1,7 @@
+## [0.4.7] - 8.6.2021
+
+* PreferencesSwitchWidget styling improvements
+
 ## [0.4.6] - 8.6.2021
 
 * Usability improvements
