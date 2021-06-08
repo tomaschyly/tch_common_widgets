@@ -8,6 +8,8 @@ export 'src/ui/buttons/ButtonWidget.dart';
 export 'src/ui/buttons/IconButtonWidget.dart';
 
 export 'src/ui/dialogs/Dialogs.dart';
+export 'src/ui/dialogs/DialogFooter.dart';
+export 'src/ui/dialogs/DialogHeader.dart';
 export 'src/ui/dialogs/ConfirmDialog.dart';
 export 'src/ui/dialogs/ListDialog.dart';
 

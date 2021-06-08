@@ -114,7 +114,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
 
     final filterStyle = widget.style?.filterStyle ?? commonTheme?.dialogsStyle.listDialogStyle.filterStyle ?? const TextFormFieldStyle();
 
-    final optionHeight = widget.style?.optionHeight ?? commonTheme?.dialogsStyle.listDialogStyle.optionHeight ?? kMinInteractiveSize;
+    final optionHeight = widget.style?.optionStyle.height ?? commonTheme?.dialogsStyle.listDialogStyle.optionStyle.height ?? kMinInteractiveSize;
     final optionStyle = widget.style?.optionStyle ?? commonTheme?.dialogsStyle.listDialogStyle.optionStyle ?? const CommonButtonStyle();
     final optionsSpacing = widget.style?.optionsSpacing ?? commonTheme?.dialogsStyle.listDialogStyle.optionsSpacing ?? kCommonVerticalMarginQuarter;
     final selectedOptionStyle = widget.style?.selectedOptionStyle ??
@@ -244,7 +244,6 @@ class ListDialogStyle {
   final DialogHeaderStyle dialogHeaderStyle;
   final DialogFooterStyle dialogFooterStyle;
   final TextFormFieldStyle filterStyle;
-  final double optionHeight;
   final CommonButtonStyle optionStyle;
   final CommonButtonStyle selectedOptionStyle;
   final double optionsSpacing;
@@ -260,7 +259,6 @@ class ListDialogStyle {
     this.dialogHeaderStyle = const DialogHeaderStyle(),
     this.dialogFooterStyle = const DialogFooterStyle(),
     this.filterStyle = const TextFormFieldStyle(),
-    this.optionHeight = kMinInteractiveSize,
     this.optionStyle = const CommonButtonStyle(
       variant: ButtonVariant.TextOnly,
     ),
@@ -281,7 +279,6 @@ class ListDialogStyle {
     DialogHeaderStyle? dialogHeaderStyle,
     DialogFooterStyle? dialogFooterStyle,
     TextFormFieldStyle? filterStyle,
-    double? optionHeight,
     CommonButtonStyle? optionStyle,
     CommonButtonStyle? selectedOptionStyle,
     double? optionsSpacing,
@@ -296,7 +293,6 @@ class ListDialogStyle {
       dialogHeaderStyle: dialogHeaderStyle ?? this.dialogHeaderStyle,
       dialogFooterStyle: dialogFooterStyle ?? this.dialogFooterStyle,
       filterStyle: filterStyle ?? this.filterStyle,
-      optionHeight: optionHeight ?? this.optionHeight,
       optionStyle: optionStyle ?? this.optionStyle,
       selectedOptionStyle: selectedOptionStyle ?? this.selectedOptionStyle,
       optionsSpacing: optionsSpacing ?? this.optionsSpacing,

@@ -1,3 +1,7 @@
+## [0.4.6] - 8.6.2021
+
+* Usability improvements
+
 ## [0.4.5] - 7.6.2021
 
 * ButtonWidget update default style
