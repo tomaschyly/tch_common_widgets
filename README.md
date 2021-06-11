@@ -19,7 +19,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.4.7
+  tch_common_widgets: ^0.5.0
 ```
 
 If your IDE does not autoImport, add manually:
@@ -50,55 +50,105 @@ const kFontFamily = 'Custom Font Family Name';
 const kText = const TextStyle(color: kColorTextPrimary, fontSize: 16);
 const kTextHeadline = const TextStyle(color: kColorTextPrimary, fontSize: 20);
 
-/// Style all IconButtonWidgets by default to be more desktop friendly
-const kIconButtonStyle = IconButtonStyle(
-  width: kMinInteractiveSizeNotTouch + kCommonHorizontalMarginHalf,
-  height: kMinInteractiveSizeNotTouch + kCommonVerticalMarginHalf,
-  iconWidth: kIconSizeNotTouch,
-  iconHeight: kIconSizeNotTouch,
-  color: kColorTextPrimary,
-);
-
-/// IconButtonWidgets inside AppBar have different style to default
-const kAppBarIconButtonStyle = const IconButtonStyle(
-  variant: IconButtonVariant.IconOnly,
-  color: kColorTextPrimary,
-);
-
-/// Default Style for all TextFormFieldWidgets
-const kTextFormFieldStyle = const TextFormFieldStyle(
-  iOSUseNativeTextField: true, // Use embedded UITextField or UITextView for autocorrect to work on iOS
-  borderColor: kColorGold,
-  fillColorDisabled: kColorSilver,
-  disabledBorderColor: kColorSilverDarker,
-  errorColor: kColorRed,
-);
-
-/// Modify the default Style to get style for email fields
-final TextFormFieldStyle kEmailTextFormFieldStyle = kTextFormFieldStyle.copyWith(
-  textCapitalization: TextCapitalization.none,
-  keyboardType: TextInputType.emailAddress,
-  validations: [
-    FormFieldValidation(
-      validator: validateEmail,
-      errorText: 'Please provide a valid email address', // Or tt('form.email.error'), if you use CoreApp Translator
-    ),
-  ],
-);
-
 /// Builder method that you provide to CoreApp or MaterialApp, it will wrap all pages inside CommonTheme
 /// Customize CommonTheme for the app
 Widget appThemeBuilder(BuildContext context, Widget child) {
-  return CommonTheme(
+  /// Change the BorderRadius depending on OS
+  BorderRadius platformBorderRadius = const BorderRadius.all(const Radius.circular(8));
+  if (!kIsWeb && (Platform.isWindows || Platform.isLinux)) {
+    platformBorderRadius = BorderRadius.circular(0);
+  }
+
+  /// Style all IconButtonWidgets by default to be more desktop friendly
+  final kIconButtonStyle = IconButtonStyle(
+    width: kMinInteractiveSizeNotTouch + kCommonHorizontalMarginHalf,
+    height: kMinInteractiveSizeNotTouch + kCommonVerticalMarginHalf,
+    iconWidth: kIconSizeNotTouch,
+    iconHeight: kIconSizeNotTouch,
+    color: kColorTextPrimary,
+    borderRadius: platformBorderRadius,
+  );
+
+  /// IconButtonWidgets inside AppBar have different style to default
+  const kAppBarIconButtonStyle = const IconButtonStyle(
+    variant: IconButtonVariant.IconOnly,
+    color: kColorTextPrimary,
+    borderRadius: platformBorderRadius,
+  );
+
+  final OutlineInputBorder platformInputBorder = OutlineInputBorder(
+    borderSide: const BorderSide(
+      width: 1,
+    ),
+    borderRadius: platformBorderRadius,
+  );
+
+  /// Default Style for all TextFormFieldWidgets
+  final kTextFormFieldStyle = TextFormFieldStyle(
+    iOSUseNativeTextField: true, // Use embedded UITextField or UITextView for autocorrect to work on iOS
+    inputDecoration: TextFormFieldStyle().inputDecoration.copyWith(
+          enabledBorder: platformInputBorder,
+          disabledBorder: platformInputBorder,
+          focusedBorder: platformInputBorder,
+          errorBorder: platformInputBorder,
+          focusedErrorBorder: platformInputBorder,
+        ),
+    borderColor: kColorGold,
+    fillColorDisabled: kColorSilver,
+    disabledBorderColor: kColorSilverDarker,
+    errorColor: kColorRed,
+  );
+
+  /// Modify the default Style to get style for email fields
+  final TextFormFieldStyle kEmailTextFormFieldStyle = kTextFormFieldStyle.copyWith(
+    textCapitalization: TextCapitalization.none,
+    keyboardType: TextInputType.emailAddress,
+    validations: [
+      FormFieldValidation(
+        validator: validateEmail,
+        errorText: 'Please provide a valid email address', // Or tt('form.email.error'), if you use CoreApp Translator
+      ),
+    ],
+  );
+
+  return AppTheme(
     child: child,
     fontFamily: prefsInt(PREFS_FANCY_FONT) == 1 ? kFontFamily : null,
     buttonsStyle: ButtonsStyle(
       iconButtonStyle: kIconButtonStyle,
     ),
+    appBarIconButtonStyle: kAppBarIconButtonStyle,
     formStyle: FormStyle(
       textFormFieldStyle: kTextFormFieldStyle,
     ),
+    emailTextFormFieldStyle: kEmailTextFormFieldStyle,
   );
+}
+
+/// Custom AppTheme extensing CommonTheme to allow custom style
+class AppTheme extends CommonTheme {
+  final IconButtonStyle appBarIconButtonStyle;
+  final TextFormFieldStyle emailTextFormFieldStyle;
+
+  /// AppTheme initialization
+  AppTheme({
+    required Widget child,
+    String? fontFamily,
+    required ButtonsStyle buttonsStyle,
+    required this.appBarIconButtonStyle,
+    required DialogsStyle dialogsStyle,
+    required FormStyle formStyle,
+    required this.emailTextFormFieldStyle,
+  }) : super(
+          /// Child needs to be CommonTheme otherwise common widgets will break
+          child: CommonTheme(
+            child: child,
+            fontFamily: fontFamily,
+            buttonsStyle: buttonsStyle,
+            dialogsStyle: dialogsStyle,
+            formStyle: formStyle,
+          ),
+        );
 }
 ```
 
@@ -106,9 +156,11 @@ To use non-default Styles that you have defined, simply provide them to widgets.
 
 ```dart
 ...
+final appTheme = CommonTheme.of<AppTheme>(context)!;
+...
 /// Use kAppBarIconButtonStyle style for IconButtonWidgets in AppBar
 IconButtonWidget(
-  style: kAppBarIconButtonStyle,
+  style: appTheme.appBarIconButtonStyle,
   svgAssetPath: 'images/back.svg',
   onTap: () {
     Navigator.pop(context);
@@ -121,7 +173,7 @@ IconButtonWidget(
 ...
 /// kEmailTextFormFieldStyle make sure that this field looks and behaves as email field
 TextFormFieldWidget(
-  style: kEmailTextFormFieldStyle,
+  style: appTheme.emailTextFormFieldStyle,
   controller: _emailController,
   focusNode: _emailFocus,
   nextFocus: _subjectFocus,

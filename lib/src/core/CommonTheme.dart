@@ -21,8 +21,8 @@ class CommonTheme extends InheritedWidget {
   }) : super(child: child);
 
   /// Access current CommonTheme anywhere from BuildContext
-  static CommonTheme? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CommonTheme>();
+  static T? of<T extends CommonTheme>(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<T>();
   }
 
   /// Disable update notifications
