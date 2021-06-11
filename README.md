@@ -148,6 +148,10 @@ class AppTheme extends CommonTheme {
             dialogsStyle: dialogsStyle,
             formStyle: formStyle,
           ),
+          fontFamily: fontFamily,
+          buttonsStyle: buttonsStyle,
+          dialogsStyle: dialogsStyle,
+          formStyle: formStyle,
         );
 }
 ```
@@ -170,6 +174,8 @@ IconButtonWidget(
 ```
 
 ```dart
+...
+final appTheme = CommonTheme.of<AppTheme>(context)!;
 ...
 /// kEmailTextFormFieldStyle make sure that this field looks and behaves as email field
 TextFormFieldWidget(
