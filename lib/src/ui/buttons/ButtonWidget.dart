@@ -11,7 +11,7 @@ class ButtonWidget extends AbstractStatefulWidget {
   final String? prefixIconSvgAssetPath;
   final Widget? prefixIcon;
   final GestureTapCallback? onTap;
-  final bool isLoading;
+  final bool? isLoading;
 
   /// ButtonWidget initialization
   ButtonWidget({
@@ -20,7 +20,7 @@ class ButtonWidget extends AbstractStatefulWidget {
     this.prefixIconSvgAssetPath,
     this.prefixIcon,
     this.onTap,
-    this.isLoading = false,
+    this.isLoading,
   });
 
   /// Create state for widget
@@ -28,7 +28,7 @@ class ButtonWidget extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => _ButtonWidgetState();
 }
 
-class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with SingleTickerProviderStateMixin {
+class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with TickerProviderStateMixin {
   AnimationController? _animationController;
 
   /// Manually dispose of resources
@@ -45,8 +45,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
   void didUpdateWidget(covariant ButtonWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    final screenDataState = ScreenDataState.of(context);
+
+    final theIsLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
+
     if (widget.isLoading != oldWidget.isLoading) {
-      if (widget.isLoading) {
+      if (theIsLoading) {
         _initLoadingAnimation(context);
       } else {
         WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
@@ -61,7 +65,11 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
   firstBuildOnly(BuildContext context) {
     super.firstBuildOnly(context);
 
-    if (widget.isLoading) {
+    final screenDataState = ScreenDataState.of(context);
+
+    final theIsLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
+
+    if (theIsLoading) {
       _initLoadingAnimation(context);
     }
   }
@@ -69,6 +77,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
   /// Create view layout from widgets
   @override
   Widget buildContent(BuildContext context) {
+    final screenDataState = ScreenDataState.of(context);
     final commonTheme = CommonTheme.of(context);
 
     final bool isDisabled = widget.onTap == null;
@@ -92,7 +101,13 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
     late Widget inner;
 
-    if (widget.isLoading) {
+    final theIsLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
+
+    if (theIsLoading) {
+      if (_animationController == null) {
+        _initLoadingAnimation(context);
+      }
+
       final loadingIconSvgAssetPath = widget.style?.loadingIconSvgAssetPath ?? commonTheme?.buttonsStyle.buttonStyle.loadingIconSvgAssetPath;
       final loadingIcon = widget.style?.loadingIcon ?? commonTheme?.buttonsStyle.buttonStyle.loadingIcon;
       final loadingIconWidth = widget.style?.loadingIconWidth ?? commonTheme?.buttonsStyle.buttonStyle.loadingIconWidth ?? kIconSize;

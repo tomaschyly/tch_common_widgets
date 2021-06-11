@@ -1,3 +1,8 @@
+## [0.5.1] - 11.6.2021
+
+* ButtonWidget if Core ScreenDataState use its isLoading
+* ButtonWidget fix loading able only once
+
 ## [0.5.0] - 11.6.2021
 
 * Subclassable CommonTheme for more dynamic AppTheme styling
