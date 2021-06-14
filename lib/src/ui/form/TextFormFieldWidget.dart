@@ -15,7 +15,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final bool autofocus;
   final FocusNode? focusNode;
   final FocusNode? nextFocus;
-  final ValueChanged<String>? onChanged;
+  // final ValueChanged<String>? onChanged; //TODO needs to also support iOS native views
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -36,7 +36,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.nextFocus,
-    this.onChanged,
+    // this.onChanged,
     this.onFieldSubmitted,
     this.keyboardType,
     this.textInputAction,
@@ -122,7 +122,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
-    final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
+    final bool fullWidthMobileOnly = widget.style?.fullWidthMobileOnly ?? commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
     final theNextFocus = widget.nextFocus;
     final theOnFieldSubmitted = widget.onFieldSubmitted;
@@ -293,7 +293,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         autofocus: widget.autofocus,
         controller: widget.controller,
         focusNode: _focusNode,
-        onChanged: widget.onChanged,
+        // onChanged: widget.onChanged,
         onFieldSubmitted: (String value) {
           if (theNextFocus != null) {
             final focusScope = FocusScope.of(context);
@@ -478,6 +478,7 @@ enum TextFormFieldVariant {
 }
 
 class TextFormFieldStyle {
+  final bool? fullWidthMobileOnly;
   final TextFormFieldVariant variant;
   final bool iOSUseNativeTextField;
   final TextStyle inputStyle;
@@ -496,6 +497,7 @@ class TextFormFieldStyle {
 
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
+    this.fullWidthMobileOnly,
     this.variant = TextFormFieldVariant.Material,
     this.iOSUseNativeTextField = false,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16),
@@ -555,6 +557,7 @@ class TextFormFieldStyle {
 
   /// Create copy of this style with changes
   TextFormFieldStyle copyWith({
+    bool? fullWidthMobileOnly,
     TextFormFieldVariant? variant,
     bool? iOSUseNativeTextField,
     TextStyle? inputStyle,
@@ -572,6 +575,7 @@ class TextFormFieldStyle {
     bool? obscureText,
   }) {
     return TextFormFieldStyle(
+      fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
       variant: variant ?? this.variant,
       iOSUseNativeTextField: iOSUseNativeTextField ?? this.iOSUseNativeTextField,
       inputStyle: inputStyle ?? this.inputStyle,

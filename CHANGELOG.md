@@ -1,3 +1,8 @@
+## [0.5.3] - 14.6.2021
+
+* Improve styling of ButtonWidget and TextFormFieldWidget
+* **Warning:** TextFormFieldWidget onChange removed, will be added back with support for iOS native views
+
 ## [0.5.2] - 14.6.2021
 
 * TextFormFieldWidget update handling when iOS native view with error

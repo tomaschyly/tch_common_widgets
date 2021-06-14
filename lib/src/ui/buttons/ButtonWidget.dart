@@ -225,6 +225,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
           width: widthWrapContent ? null : (fullWidthMobileOnly ? kPhoneStopBreakpoint : width),
           height: height,
           padding: contentPadding,
+          alignment: widget.style?.alignment ?? commonTheme?.buttonsStyle.buttonStyle.alignment,
           decoration: BoxDecoration(
             color: Colors.transparent,
             border: Border.all(
@@ -296,6 +297,7 @@ class CommonButtonStyle {
   final bool widthWrapContent;
   final double width;
   final double height;
+  final AlignmentGeometry? alignment;
   final EdgeInsets contentPadding;
   final double preffixIconWidth;
   final double preffixIconHeight;
@@ -322,6 +324,7 @@ class CommonButtonStyle {
     this.widthWrapContent = false,
     this.width = double.infinity,
     this.height = kMinInteractiveSize,
+    this.alignment,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: kCommonHorizontalMargin),
     this.preffixIconWidth = kIconSize,
     this.preffixIconHeight = kIconSize,
@@ -349,6 +352,7 @@ class CommonButtonStyle {
     bool? widthWrapContent,
     double? width,
     double? height,
+    AlignmentGeometry? alignment,
     EdgeInsets? contentPadding,
     double? preffixIconWidth,
     double? preffixIconHeight,
@@ -374,6 +378,7 @@ class CommonButtonStyle {
       widthWrapContent: widthWrapContent ?? this.widthWrapContent,
       width: width ?? this.width,
       height: height ?? this.height,
+      alignment: alignment ?? this.alignment,
       contentPadding: contentPadding ?? this.contentPadding,
       preffixIconWidth: preffixIconWidth ?? this.preffixIconWidth,
       preffixIconHeight: preffixIconHeight ?? this.preffixIconHeight,
