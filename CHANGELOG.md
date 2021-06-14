@@ -1,3 +1,7 @@
+## [0.5.2] - 14.6.2021
+
+* TextFormFieldWidget update handling when iOS native view with error
+
 ## [0.5.1] - 11.6.2021
 
 * ButtonWidget if Core ScreenDataState use its isLoading

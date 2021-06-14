@@ -241,6 +241,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
                     suffixIcon:
                         widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
                     hintText: '',
+                    errorText: _isError ? _errorText : null,
                   ),
                   baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
                   isFocused: _focusNode.hasFocus,
@@ -261,14 +262,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
                     ),
                   ),
                 ),
-                if (_isError)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
-                    child: Text(
-                      _errorText!,
-                      style: theDecoration.errorStyle,
-                    ),
-                  ),
               ],
             );
           },
