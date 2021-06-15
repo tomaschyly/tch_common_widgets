@@ -82,7 +82,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
     final bool isDisabled = widget.onTap == null;
 
-    final bool fullWidthMobileOnly = commonTheme?.buttonsStyle.fullWidthMobileOnly ?? true;
+    final bool fullWidthMobileOnly = widget.style?.fullWidthMobileOnly ?? commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
     final theVariant = widget.style?.variant ?? commonTheme?.buttonsStyle.buttonStyle.variant ?? ButtonVariant.Outlined;
 
@@ -290,6 +290,7 @@ enum ButtonVariant {
 }
 
 class CommonButtonStyle {
+  final bool? fullWidthMobileOnly;
   final ButtonVariant variant;
   final TextStyle textStyle;
   final TextStyle filledTextStyle;
@@ -317,6 +318,7 @@ class CommonButtonStyle {
 
   /// CommonButtonStyle initialization
   const CommonButtonStyle({
+    this.fullWidthMobileOnly,
     this.variant = ButtonVariant.Outlined,
     this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.filledTextStyle = const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
@@ -345,6 +347,7 @@ class CommonButtonStyle {
 
   /// Create copy of this style with changes
   CommonButtonStyle copyWith({
+    bool? fullWidthMobileOnly,
     ButtonVariant? variant,
     TextStyle? textStyle,
     TextStyle? filledTextStyle,
@@ -371,6 +374,7 @@ class CommonButtonStyle {
     Duration? loadingAnimationDuration,
   }) {
     return CommonButtonStyle(
+      fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
       variant: variant ?? this.variant,
       textStyle: textStyle ?? this.textStyle,
       filledTextStyle: filledTextStyle ?? this.filledTextStyle,

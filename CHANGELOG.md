@@ -1,3 +1,7 @@
+## [0.5.4] - 15.6.2021
+
+* Improve styling of ButtonWidget
+
 ## [0.5.3] - 14.6.2021
 
 * Improve styling of ButtonWidget and TextFormFieldWidget
