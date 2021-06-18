@@ -1,3 +1,8 @@
+## [0.6.0] - 18.6.2021
+
+* Convenience widget LoadingBuilder
+* Both ButtonWidget and LoadingBuilder now support loading Tag/s
+
 ## [0.5.4] - 15.6.2021
 
 * Improve styling of ButtonWidget

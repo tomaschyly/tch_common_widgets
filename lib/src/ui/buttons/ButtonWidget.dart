@@ -12,6 +12,7 @@ class ButtonWidget extends AbstractStatefulWidget {
   final Widget? prefixIcon;
   final GestureTapCallback? onTap;
   final bool? isLoading;
+  final List<String> loadingTags;
 
   /// ButtonWidget initialization
   ButtonWidget({
@@ -21,7 +22,12 @@ class ButtonWidget extends AbstractStatefulWidget {
     this.prefixIcon,
     this.onTap,
     this.isLoading,
-  });
+    String? tag,
+    List<String>? tags,
+  }) : loadingTags = [
+          if (tag != null) tag,
+          if (tags != null) ...tags,
+        ];
 
   /// Create state for widget
   @override
@@ -65,9 +71,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
   firstBuildOnly(BuildContext context) {
     super.firstBuildOnly(context);
 
-    final screenDataState = ScreenDataState.of(context);
-
-    final theIsLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
+    final theIsLoading = _isLoading(context);
 
     if (theIsLoading) {
       _initLoadingAnimation(context);
@@ -101,7 +105,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
     late Widget inner;
 
-    final theIsLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
+    final theIsLoading = _isLoading(context);
 
     if (theIsLoading) {
       if (_animationController == null) {
@@ -258,6 +262,21 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
     }
 
     return content;
+  }
+
+  /// Determine if screen loading state applies to this widget
+  bool _isLoading(BuildContext context) {
+    final screenDataState = ScreenDataState.of(context);
+
+    bool isLoading = false;
+
+    if (screenDataState == null ||
+        (screenDataState.loadingTags.isEmpty && widget.loadingTags.isEmpty) ||
+        (screenDataState.loadingTags.isNotEmpty && widget.loadingTags.any((tag) => screenDataState.loadingTags.contains(tag)))) {
+      isLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
+    }
+
+    return isLoading;
   }
 
   /// Initialize loading animation and start repeating
