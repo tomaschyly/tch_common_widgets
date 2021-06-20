@@ -1,3 +1,7 @@
+## [0.6.1] - 20.6.2021
+
+* Fix ButtonWidget text wrap
+
 ## [0.6.0] - 18.6.2021
 
 * Convenience widget LoadingBuilder

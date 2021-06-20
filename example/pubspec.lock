@@ -347,14 +347,14 @@ packages:
       name: tch_appliable_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.2"
+    version: "0.6.3"
   tch_common_widgets:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.6.0"
+    version: "0.6.1"
   term_glyph:
     dependency: transitive
     description:

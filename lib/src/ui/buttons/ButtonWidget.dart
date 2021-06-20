@@ -208,9 +208,11 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
               width: prefixIconSpacing,
             ),
           ],
-          Text(
-            widget.text,
-            style: textStyle,
+          Flexible(
+            child: Text(
+              widget.text,
+              style: textStyle,
+            ),
           ),
         ],
       );
