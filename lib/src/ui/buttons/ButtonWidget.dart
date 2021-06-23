@@ -81,7 +81,6 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
   /// Create view layout from widgets
   @override
   Widget buildContent(BuildContext context) {
-    final screenDataState = ScreenDataState.of(context);
     final commonTheme = CommonTheme.of(context);
 
     final bool isDisabled = widget.onTap == null;
@@ -295,9 +294,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
   /// Stop loading animation from running
   void _stopLoadingAnimation() {
-    _animationController!.stop();
+    _animationController?.stop();
 
-    _animationController!.dispose();
+    _animationController?.dispose();
 
     _animationController = null;
   }

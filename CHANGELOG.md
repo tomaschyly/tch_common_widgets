@@ -1,3 +1,7 @@
+## [0.6.2] - 23.6.2021
+
+* Fix ButtonWidget issue with loading animation
+
 ## [0.6.1] - 20.6.2021
 
 * Fix ButtonWidget text wrap
