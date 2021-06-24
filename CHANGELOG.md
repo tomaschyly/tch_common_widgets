@@ -1,3 +1,7 @@
+## [0.6.3] - 24.6.2021
+
+* DialogFooter support buttons loading
+
 ## [0.6.2] - 23.6.2021
 
 * Fix ButtonWidget issue with loading animation

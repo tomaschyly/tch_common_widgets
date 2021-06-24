@@ -9,6 +9,8 @@ class DialogFooter extends StatelessWidget {
   final GestureTapCallback? noOnTap;
   final GestureTapCallback? yesOnTap;
   final bool yesIsDanger;
+  final bool noIsLoading;
+  final bool yesIsLoading;
 
   /// DialogFooter initialization
   const DialogFooter({
@@ -18,6 +20,8 @@ class DialogFooter extends StatelessWidget {
     this.noOnTap,
     this.yesOnTap,
     this.yesIsDanger = false,
+    this.noIsLoading = false,
+    this.yesIsLoading = false,
   });
 
   /// Create view layout from widgets
@@ -40,6 +44,7 @@ class DialogFooter extends StatelessWidget {
             style: style.buttonStyle,
             text: theNoText,
             onTap: noOnTap,
+            isLoading: noIsLoading,
           ),
         if (theNoText != null && theYesText != null) CommonSpaceHHalf(),
         if (theYesText != null)
@@ -47,6 +52,7 @@ class DialogFooter extends StatelessWidget {
             style: yesButtonStyle,
             text: theYesText,
             onTap: yesOnTap,
+            isLoading: yesIsLoading,
           ),
       ],
     );
