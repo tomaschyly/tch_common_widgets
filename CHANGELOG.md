@@ -1,3 +1,7 @@
+## [0.6.4] - 28.6.2021
+
+* **Warning:** Added DialogContainer which changes some styling around dialogs
+
 ## [0.6.3] - 24.6.2021
 
 * DialogFooter support buttons loading

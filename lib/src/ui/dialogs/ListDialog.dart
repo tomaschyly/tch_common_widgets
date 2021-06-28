@@ -8,6 +8,7 @@ import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/DialogHeader.dart';
 import 'package:tch_common_widgets/src/ui/form/TextFormFieldWidget.dart';
 import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class ListDialog<T> extends AbstractStatefulWidget {
   final ListDialogStyle? style;
@@ -97,16 +98,8 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final bool fullWidthMobileOnly = commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
-
-    final mainAxisAlignment = widget.style?.mainAxisAlignment ?? commonTheme?.dialogsStyle.listDialogStyle.mainAxisAlignment ?? MainAxisAlignment.start;
-    final dialogPadding = widget.style?.dialogPadding ?? commonTheme?.dialogsStyle.listDialogStyle.dialogPadding ?? const EdgeInsets.all(12);
-    final dialogMargin = widget.style?.dialogMargin ?? commonTheme?.dialogsStyle.listDialogStyle.dialogMargin ?? const EdgeInsets.all(kCommonPrimaryMargin);
-
-    final color = widget.style?.color ?? commonTheme?.dialogsStyle.listDialogStyle.color ?? Colors.transparent;
-    final backgroundColor = widget.style?.backgroundColor ?? commonTheme?.dialogsStyle.listDialogStyle.backgroundColor ?? Colors.white;
-    final borderRadius = widget.style?.borderRadius ?? commonTheme?.dialogsStyle.listDialogStyle.borderRadius;
-
+    final dialogContainerStyle =
+        widget.style?.dialogContainerStyle ?? commonTheme?.dialogsStyle.listDialogStyle.dialogContainerStyle ?? const DialogContainerStyle();
     final dialogHeaderStyle = widget.style?.dialogHeaderStyle ?? commonTheme?.dialogsStyle.listDialogStyle.dialogHeaderStyle ?? const DialogHeaderStyle();
     final dialogFooterStyle = widget.style?.dialogFooterStyle ?? commonTheme?.dialogsStyle.listDialogStyle.dialogFooterStyle ?? const DialogFooterStyle();
 
@@ -123,95 +116,64 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
           variant: ButtonVariant.Filled,
         );
 
-    Widget dialog = Container(
-      width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
-      padding: dialogPadding,
-      margin: dialogMargin,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        border: Border.all(
-          color: color,
-          width: 1,
-        ),
-        borderRadius: borderRadius,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (theTitle != null) ...[
-            DialogHeader(
-              style: dialogHeaderStyle,
-              title: theTitle,
-            ),
-            CommonSpaceVHalf(),
-          ],
-          if (widget.hasFilter) ...[
-            TextFormFieldWidget(
-              style: filterStyle,
-              controller: _filterController,
-              label: widget.filterText ?? 'Filter Options',
-            ),
-            CommonSpaceVHalf(),
-          ],
-          Flexible(
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                final double optionsHeight = ((_options.length * optionHeight) + ((_options.length - 1) * optionsSpacing)).toDouble();
-
-                return Container(
-                  height: optionsHeight < constraints.maxHeight ? optionsHeight : constraints.maxHeight,
-                  child: Scrollbar(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: _options.map((ListDialogOption option) {
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: option == _options.last ? 0 : optionsSpacing),
-                            child: ButtonWidget(
-                              style: option.isSelected ? selectedOptionStyle : optionStyle,
-                              text: option.text,
-                              onTap: !option.isSelected
-                                  ? () {
-                                      Navigator.pop(context, option.value);
-                                    }
-                                  : null,
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+    return DialogContainer(
+      style: dialogContainerStyle,
+      content: [
+        if (theTitle != null) ...[
+          DialogHeader(
+            style: dialogHeaderStyle,
+            title: theTitle,
           ),
           CommonSpaceVHalf(),
-          DialogFooter(
-            style: dialogFooterStyle,
-            noText: widget.cancelText ?? 'Cancel',
-            yesText: null,
-            noOnTap: () {
-              Navigator.pop(context, null);
+        ],
+        if (widget.hasFilter) ...[
+          TextFormFieldWidget(
+            style: filterStyle,
+            controller: _filterController,
+            label: widget.filterText ?? 'Filter Options',
+          ),
+          CommonSpaceVHalf(),
+        ],
+        Flexible(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double optionsHeight = ((_options.length * optionHeight) + ((_options.length - 1) * optionsSpacing)).toDouble();
+
+              return Container(
+                height: optionsHeight < constraints.maxHeight ? optionsHeight : constraints.maxHeight,
+                child: Scrollbar(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: _options.map((ListDialogOption option) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: option == _options.last ? 0 : optionsSpacing),
+                          child: ButtonWidget(
+                            style: option.isSelected ? selectedOptionStyle : optionStyle,
+                            text: option.text,
+                            onTap: !option.isSelected
+                                ? () {
+                                    Navigator.pop(context, option.value);
+                                  }
+                                : null,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              );
             },
           ),
-        ],
-      ),
-    );
-
-    if (borderRadius != null) {
-      dialog = ClipRRect(
-        borderRadius: borderRadius,
-        child: dialog,
-      );
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: mainAxisAlignment,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Flexible(
-          child: dialog,
+        ),
+        CommonSpaceVHalf(),
+        DialogFooter(
+          style: dialogFooterStyle,
+          noText: widget.cancelText ?? 'Cancel',
+          yesText: null,
+          noOnTap: () {
+            Navigator.pop(context, null);
+          },
         ),
       ],
     );
@@ -235,12 +197,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
 }
 
 class ListDialogStyle {
-  final MainAxisAlignment mainAxisAlignment;
-  final EdgeInsets dialogPadding;
-  final EdgeInsets dialogMargin;
-  final Color color;
-  final Color backgroundColor;
-  final BorderRadius? borderRadius;
+  final DialogContainerStyle dialogContainerStyle;
   final DialogHeaderStyle dialogHeaderStyle;
   final DialogFooterStyle dialogFooterStyle;
   final TextFormFieldStyle filterStyle;
@@ -250,12 +207,7 @@ class ListDialogStyle {
 
   /// ListDialogStyle initialization
   const ListDialogStyle({
-    this.mainAxisAlignment = MainAxisAlignment.start,
-    this.dialogPadding = const EdgeInsets.all(12),
-    this.dialogMargin = const EdgeInsets.all(kCommonPrimaryMargin),
-    this.color = Colors.transparent,
-    this.backgroundColor = Colors.white,
-    this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.dialogContainerStyle = const DialogContainerStyle(),
     this.dialogHeaderStyle = const DialogHeaderStyle(),
     this.dialogFooterStyle = const DialogFooterStyle(),
     this.filterStyle = const TextFormFieldStyle(),
@@ -269,27 +221,17 @@ class ListDialogStyle {
   });
 
   /// Create copy of this tyle with changes
-  ListDialogStyle copyWith(
-    MainAxisAlignment? mainAxisAlignment,
-    EdgeInsets? dialogPadding,
-    EdgeInsets? dialogMargin,
-    Color? color,
-    Color? backgroundColor,
-    BorderRadius? borderRadius,
+  ListDialogStyle copyWith({
+    DialogContainerStyle? dialogContainerStyle,
     DialogHeaderStyle? dialogHeaderStyle,
     DialogFooterStyle? dialogFooterStyle,
     TextFormFieldStyle? filterStyle,
     CommonButtonStyle? optionStyle,
     CommonButtonStyle? selectedOptionStyle,
     double? optionsSpacing,
-  ) {
+  }) {
     return ListDialogStyle(
-      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
-      dialogPadding: dialogPadding ?? this.dialogPadding,
-      dialogMargin: dialogMargin ?? this.dialogMargin,
-      color: color ?? this.color,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      borderRadius: borderRadius ?? this.borderRadius,
+      dialogContainerStyle: dialogContainerStyle ?? this.dialogContainerStyle,
       dialogHeaderStyle: dialogHeaderStyle ?? this.dialogHeaderStyle,
       dialogFooterStyle: dialogFooterStyle ?? this.dialogFooterStyle,
       filterStyle: filterStyle ?? this.filterStyle,
