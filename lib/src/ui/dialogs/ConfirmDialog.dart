@@ -90,19 +90,19 @@ class ConfirmDialog extends StatelessWidget {
           ),
           CommonSpaceVHalf(),
         ],
-        DialogFooter(
-          style: dialogFooterStyle,
-          noText: noText ?? 'No',
-          yesText: yesText ?? 'Yes',
-          noOnTap: () {
-            Navigator.pop(context, false);
-          },
-          yesOnTap: () {
-            Navigator.pop(context, true);
-          },
-          yesIsDanger: isDanger,
-        ),
       ],
+      dialogFooter: DialogFooter(
+        style: dialogFooterStyle,
+        noText: noText ?? 'No',
+        yesText: yesText ?? 'Yes',
+        noOnTap: () {
+          Navigator.pop(context, false);
+        },
+        yesOnTap: () {
+          Navigator.pop(context, true);
+        },
+        yesIsDanger: isDanger,
+      ),
     );
   }
 }

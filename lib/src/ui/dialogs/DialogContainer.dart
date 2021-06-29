@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
+import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';
 
 class DialogContainer extends StatelessWidget {
   final DialogContainerStyle style;
+  final bool isScrollable;
   final List<Widget> content;
+  final DialogFooter dialogFooter;
 
   /// DialogContainer initialization
   const DialogContainer({
     required this.style,
+    this.isScrollable = true,
     required this.content,
+    required this.dialogFooter,
   });
 
   /// Create view layout from widgets
@@ -21,23 +26,69 @@ class DialogContainer extends StatelessWidget {
 
     final borderRadius = style.borderRadius;
 
-    Widget dialog = Container(
-      width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
-      padding: style.dialogPadding,
-      margin: style.dialogMargin,
-      decoration: BoxDecoration(
-        color: style.backgroundColor,
-        border: Border.all(
-          color: style.color,
-          width: 1,
+    Widget dialog;
+
+    if (isScrollable) {
+      dialog = Container(
+        width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
+        margin: style.dialogMargin,
+        decoration: BoxDecoration(
+          color: style.backgroundColor,
+          border: Border.all(
+            color: style.color,
+            width: 1,
+          ),
+          borderRadius: borderRadius,
         ),
-        borderRadius: borderRadius,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: content,
-      ),
-    );
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: style.dialogPadding.copyWith(
+                      bottom: 0,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: content,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              padding: style.dialogPadding.copyWith(
+                top: 0,
+              ),
+              child: dialogFooter,
+            ),
+          ],
+        ),
+      );
+    } else {
+      dialog = Container(
+        width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
+        padding: style.dialogPadding,
+        margin: style.dialogMargin,
+        decoration: BoxDecoration(
+          color: style.backgroundColor,
+          border: Border.all(
+            color: style.color,
+            width: 1,
+          ),
+          borderRadius: borderRadius,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...content,
+            dialogFooter,
+          ],
+        ),
+      );
+    }
 
     if (borderRadius != null) {
       dialog = ClipRRect(

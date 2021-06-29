@@ -167,15 +167,15 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
           ),
         ),
         CommonSpaceVHalf(),
-        DialogFooter(
-          style: dialogFooterStyle,
-          noText: widget.cancelText ?? 'Cancel',
-          yesText: null,
-          noOnTap: () {
-            Navigator.pop(context, null);
-          },
-        ),
       ],
+      dialogFooter: DialogFooter(
+        style: dialogFooterStyle,
+        noText: widget.cancelText ?? 'Cancel',
+        yesText: null,
+        noOnTap: () {
+          Navigator.pop(context, null);
+        },
+      ),
     );
   }
 

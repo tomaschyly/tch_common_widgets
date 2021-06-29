@@ -1,3 +1,7 @@
+## [0.6.5] - 29.6.2021
+
+* **Warning:** DialogContainer now scrollable by default, changes to fields
+
 ## [0.6.4] - 28.6.2021
 
 * **Warning:** Added DialogContainer which changes some styling around dialogs
