@@ -1,3 +1,7 @@
+## [0.6.7] - 4.7.2021
+
+* Update Core
+
 ## [0.6.6] - 4.7.2021
 
 * Convenience method for OS Dark mode is enabled
