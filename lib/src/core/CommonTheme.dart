@@ -40,4 +40,7 @@ class CommonTheme extends InheritedWidget {
 
     return processedTextStyle;
   }
+
+  /// Check if OS Dark mode is enabled
+  static bool isOSDarkMode(BuildContext context) => MediaQuery.of(context).platformBrightness == Brightness.dark;
 }

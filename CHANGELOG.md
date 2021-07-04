@@ -1,3 +1,7 @@
+## [0.6.6] - 4.7.2021
+
+* Convenience method for OS Dark mode is enabled
+
 ## [0.6.5] - 29.6.2021
 
 * **Warning:** DialogContainer now scrollable by default, changes to fields
