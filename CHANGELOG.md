@@ -1,3 +1,7 @@
+## [0.6.8] - 11.7.2021
+
+* DialogFooter add other button
+
 ## [0.6.7] - 4.7.2021
 
 * Update Core

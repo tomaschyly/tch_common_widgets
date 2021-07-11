@@ -6,22 +6,28 @@ class DialogFooter extends StatelessWidget {
   final DialogFooterStyle style;
   final String? noText;
   final String? yesText;
+  final String? otherText;
   final GestureTapCallback? noOnTap;
   final GestureTapCallback? yesOnTap;
+  final GestureTapCallback? otherOnTap;
   final bool yesIsDanger;
   final bool noIsLoading;
   final bool yesIsLoading;
+  final bool otherIsLoading;
 
   /// DialogFooter initialization
   const DialogFooter({
     required this.style,
     required this.noText,
     required this.yesText,
+    this.otherText,
     this.noOnTap,
     this.yesOnTap,
+    this.otherOnTap,
     this.yesIsDanger = false,
     this.noIsLoading = false,
     this.yesIsLoading = false,
+    this.otherIsLoading = false,
   });
 
   /// Create view layout from widgets
@@ -29,16 +35,29 @@ class DialogFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final theNoText = noText;
     final theYesText = yesText;
+    final theOtherText = otherText;
 
     CommonButtonStyle yesButtonStyle = style.buttonStyle.copyWith(
       variant: ButtonVariant.Filled,
       color: yesIsDanger ? style.dangerColor : style.buttonStyle.color,
     );
 
+    CommonButtonStyle otherButtonStyle = style.otherButtonStyle ?? style.buttonStyle;
+
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: style.mainAxisAlignment,
       children: [
+        if (theOtherText != null && style.mainAxisAlignment != MainAxisAlignment.start) ...[
+          ButtonWidget(
+            style: otherButtonStyle,
+            text: theOtherText,
+            onTap: otherOnTap,
+            isLoading: otherIsLoading,
+          ),
+          if (theNoText != null || theYesText != null) CommonSpaceHHalf(),
+          Spacer(),
+        ],
         if (theNoText != null)
           ButtonWidget(
             style: style.buttonStyle,
@@ -54,6 +73,16 @@ class DialogFooter extends StatelessWidget {
             onTap: yesOnTap,
             isLoading: yesIsLoading,
           ),
+        if (theOtherText != null && style.mainAxisAlignment == MainAxisAlignment.start) ...[
+          Spacer(),
+          if (theNoText != null || theYesText != null) CommonSpaceHHalf(),
+          ButtonWidget(
+            style: otherButtonStyle,
+            text: theOtherText,
+            onTap: otherOnTap,
+            isLoading: otherIsLoading,
+          ),
+        ],
       ],
     );
   }
@@ -62,6 +91,7 @@ class DialogFooter extends StatelessWidget {
 class DialogFooterStyle {
   final MainAxisAlignment mainAxisAlignment;
   final CommonButtonStyle buttonStyle;
+  final CommonButtonStyle? otherButtonStyle;
   final Color dangerColor;
 
   /// DialogFooterStyle initialization
@@ -70,6 +100,7 @@ class DialogFooterStyle {
     this.buttonStyle = const CommonButtonStyle(
       widthWrapContent: true,
     ),
+    this.otherButtonStyle,
     this.dangerColor = Colors.red,
   });
 
@@ -77,11 +108,13 @@ class DialogFooterStyle {
   DialogFooterStyle copyWith({
     MainAxisAlignment? mainAxisAlignment,
     CommonButtonStyle? buttonStyle,
+    CommonButtonStyle? otherButtonStyle,
     Color? dangerColor,
   }) {
     return DialogFooterStyle(
       mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
       buttonStyle: buttonStyle ?? this.buttonStyle,
+      otherButtonStyle: otherButtonStyle ?? this.otherButtonStyle,
       dangerColor: dangerColor ?? this.dangerColor,
     );
   }
