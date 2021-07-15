@@ -118,22 +118,23 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
 
     return DialogContainer(
       style: dialogContainerStyle,
-      content: [
+      contentBeforeScroll: [
         if (theTitle != null) ...[
           DialogHeader(
             style: dialogHeaderStyle,
             title: theTitle,
           ),
-          CommonSpaceVHalf(),
         ],
+        if (theTitle != null && widget.hasFilter) CommonSpaceVHalf(),
         if (widget.hasFilter) ...[
           TextFormFieldWidget(
             style: filterStyle,
             controller: _filterController,
             label: widget.filterText ?? 'Filter Options',
           ),
-          CommonSpaceVHalf(),
         ],
+      ],
+      content: [
         Flexible(
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {

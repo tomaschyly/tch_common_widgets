@@ -6,6 +6,7 @@ import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';
 class DialogContainer extends StatelessWidget {
   final DialogContainerStyle style;
   final bool isScrollable;
+  final List<Widget>? contentBeforeScroll;
   final List<Widget> content;
   final DialogFooter dialogFooter;
 
@@ -13,6 +14,7 @@ class DialogContainer extends StatelessWidget {
   const DialogContainer({
     required this.style,
     this.isScrollable = true,
+    this.contentBeforeScroll,
     required this.content,
     required this.dialogFooter,
   });
@@ -25,6 +27,8 @@ class DialogContainer extends StatelessWidget {
     final bool fullWidthMobileOnly = commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
 
     final borderRadius = style.borderRadius;
+
+    final theContentBeforeScroll = contentBeforeScroll;
 
     Widget dialog;
 
@@ -43,11 +47,22 @@ class DialogContainer extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (theContentBeforeScroll != null)
+              Container(
+                padding: style.dialogPadding.copyWith(
+                  bottom: 0,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: theContentBeforeScroll,
+                ),
+              ),
             Flexible(
               child: Scrollbar(
                 child: SingleChildScrollView(
                   child: Container(
                     padding: style.dialogPadding.copyWith(
+                      top: theContentBeforeScroll != null ? 0 : null,
                       bottom: 0,
                     ),
                     child: Column(
@@ -83,6 +98,7 @@ class DialogContainer extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (theContentBeforeScroll != null) ...theContentBeforeScroll,
             ...content,
             dialogFooter,
           ],

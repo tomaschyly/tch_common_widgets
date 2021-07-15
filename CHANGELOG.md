@@ -1,3 +1,7 @@
+## [0.6.10] - 15.7.2021
+
+* DialogContainer add content before scroll & ListDialog use of it
+
 ## [0.6.9] - 15.7.2021
 
 * Fix ListDialog situation with bad contraints
