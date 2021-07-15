@@ -137,7 +137,8 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
         Flexible(
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
-              final double optionsHeight = ((_options.length * optionHeight) + ((_options.length - 1) * optionsSpacing)).toDouble();
+              double optionsHeight = ((_options.length * optionHeight) + ((_options.length - 1) * optionsSpacing)).toDouble();
+              optionsHeight = optionsHeight > 0 ? optionsHeight : 0;
 
               return Container(
                 height: optionsHeight < constraints.maxHeight ? optionsHeight : constraints.maxHeight,

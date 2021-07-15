@@ -1,3 +1,7 @@
+## [0.6.9] - 15.7.2021
+
+* Fix ListDialog situation with bad contraints
+
 ## [0.6.8] - 11.7.2021
 
 * DialogFooter add other button
