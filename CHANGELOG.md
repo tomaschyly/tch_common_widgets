@@ -1,3 +1,7 @@
+## [0.6.11] - 16.7.2021
+
+* Fix TextFormField with native iOS views autofocus
+
 ## [0.6.10] - 15.7.2021
 
 * DialogContainer add content before scroll & ListDialog use of it

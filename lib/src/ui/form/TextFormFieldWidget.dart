@@ -104,6 +104,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       widget.controller.addListener(_controllerTextChangedForIOSNativeTextField);
 
       _focusNode.addListener(_focusChangedForIOSNativeTextField);
+
+      if (widget.autofocus) {
+        final focusScope = FocusScope.of(context);
+
+        Future.delayed(kThemeAnimationDuration, () {
+          focusScope.requestFocus(_focusNode);
+        });
+      }
     }
   }
 
