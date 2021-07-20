@@ -201,8 +201,34 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final List<FormFieldValidation<String>>? theValidations =
         widget.validations ?? widget.style?.validations ?? commonTheme?.formStyle.textFormFieldStyle.validations;
 
-    final theLabel = widget.label;
+    String? theLabel = widget.label;
     final theHintText = widget.style?.inputDecoration.hintText ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintText;
+
+    if (theLabel != null) {
+      final theRequiredLabelSuffix = widget.style?.requiredLabelSuffix ?? commonTheme?.formStyle.textFormFieldStyle.requiredLabelSuffix ?? ' *';
+      final theShowRequiredLabelSuffix = widget.style?.showRequiredLabelSuffix ??
+          commonTheme?.formStyle.textFormFieldStyle.showRequiredLabelSuffix ??
+          ShowRequiredLabelSuffix.ByValidateRequired;
+
+      switch (theShowRequiredLabelSuffix) {
+        case ShowRequiredLabelSuffix.ByValidateRequired:
+          if (theValidations != null) {
+            for (FormFieldValidation<String> validation in theValidations) {
+              if (validation.validator == validateRequired) {
+                theLabel = '$theLabel$theRequiredLabelSuffix';
+                break;
+              }
+            }
+          }
+          break;
+        case ShowRequiredLabelSuffix.Always:
+          theLabel = '$theLabel$theRequiredLabelSuffix';
+          break;
+        case ShowRequiredLabelSuffix.Never:
+          // do nothing
+          break;
+      }
+    }
 
     theDecoration = theDecoration.copyWith(
       hintText: theLabel == null || theLabel.isEmpty ? theHintText : '',
@@ -485,6 +511,12 @@ enum TextFormFieldVariant {
   Cupertino,
 }
 
+enum ShowRequiredLabelSuffix {
+  ByValidateRequired,
+  Never,
+  Always,
+}
+
 class TextFormFieldStyle {
   final bool? fullWidthMobileOnly;
   final TextFormFieldVariant variant;
@@ -502,6 +534,8 @@ class TextFormFieldStyle {
   final EdgeInsets cupertinoLabelPadding;
   final List<FormFieldValidation<String>>? validations;
   final bool? obscureText;
+  final String requiredLabelSuffix;
+  final ShowRequiredLabelSuffix showRequiredLabelSuffix;
 
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
@@ -561,6 +595,8 @@ class TextFormFieldStyle {
     this.cupertinoLabelPadding = const EdgeInsets.only(left: 8, right: 8, bottom: 8),
     this.validations = const <FormFieldValidation<String>>[],
     this.obscureText,
+    this.requiredLabelSuffix = ' *',
+    this.showRequiredLabelSuffix = ShowRequiredLabelSuffix.ByValidateRequired,
   });
 
   /// Create copy of this style with changes
@@ -581,6 +617,8 @@ class TextFormFieldStyle {
     EdgeInsets? cupertinoLabelPadding,
     List<FormFieldValidation<String>>? validations,
     bool? obscureText,
+    String? requiredLabelSuffix,
+    ShowRequiredLabelSuffix? showRequiredLabelSuffix,
   }) {
     return TextFormFieldStyle(
       fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
@@ -599,6 +637,8 @@ class TextFormFieldStyle {
       cupertinoLabelPadding: cupertinoLabelPadding ?? this.cupertinoLabelPadding,
       validations: validations ?? this.validations,
       obscureText: obscureText ?? this.obscureText,
+      requiredLabelSuffix: requiredLabelSuffix ?? this.requiredLabelSuffix,
+      showRequiredLabelSuffix: showRequiredLabelSuffix ?? this.showRequiredLabelSuffix,
     );
   }
 }

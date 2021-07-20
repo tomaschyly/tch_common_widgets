@@ -1,3 +1,7 @@
+## [0.6.12] - 16.7.2021
+
+* TextFormField add required suffix with options
+
 ## [0.6.11] - 16.7.2021
 
 * Fix TextFormField with native iOS views autofocus
