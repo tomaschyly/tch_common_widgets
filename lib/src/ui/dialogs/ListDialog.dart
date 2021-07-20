@@ -135,6 +135,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
         ],
       ],
       content: [
+        if (theTitle != null || widget.hasFilter) CommonSpaceVHalf(),
         Flexible(
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {

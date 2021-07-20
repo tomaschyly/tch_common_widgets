@@ -1,3 +1,7 @@
+## [0.6.13] - 16.7.2021
+
+* ListDialog fix top margin
+
 ## [0.6.12] - 16.7.2021
 
 * TextFormField add required suffix with options
