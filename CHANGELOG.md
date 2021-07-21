@@ -1,3 +1,7 @@
+## [0.6.14] - 21.7.2021
+
+* Update Core dependency
+
 ## [0.6.13] - 20.7.2021
 
 * ListDialog fix top margin
