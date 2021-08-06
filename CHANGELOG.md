@@ -1,3 +1,7 @@
+## [0.6.15] - 6.8.2021
+
+* Increase min Flutter version because of ButtonWidget - ActivityIndicator
+
 ## [0.6.14] - 21.7.2021
 
 * Update Core dependency
