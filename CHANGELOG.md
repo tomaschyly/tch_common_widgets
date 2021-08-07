@@ -1,3 +1,7 @@
+## [0.6.17] - 7.8.2021
+
+* Update Core dependency
+
 ## [0.6.16] - 6.8.2021
 
 * Update Core dependency
