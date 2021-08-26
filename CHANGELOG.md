@@ -1,3 +1,7 @@
+## [0.6.18] - 26.8.2021
+
+* Fix native iOS TextFormField sync when widget update
+
 ## [0.6.17] - 7.8.2021
 
 * Update Core dependency

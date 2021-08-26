@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -257,6 +258,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         autocorrect: widget.autocorrect,
         obscureText: theObscureText,
       );
+
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        _methodChannel?.invokeMethod("sync", creationParams.toJson());
+      });
 
       field = IgnorePointer(
         ignoring: !widget.enabled,

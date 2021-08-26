@@ -205,6 +205,17 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                 theTextField.text = (call.arguments as? String) ?? ""
                 result(nil)
                 break
+            case "sync":
+                _params = IOSUseNativeTextFieldParams.fromJson(dictionary: call.arguments as! NSDictionary)
+
+                if _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextField.text!.isEmpty {
+                    theTextField.text = theHintText
+
+                    styleTextField(textField: theTextField, params: _params, requestingPlaceholder: true)
+                } else {
+                    styleTextField(textField: theTextField, params: _params, requestingPlaceholder: false)
+                }
+                break
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -224,6 +235,17 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             case "setText":
                 theTextView.text = (call.arguments as? String) ?? ""
                 result(nil)
+                break
+            case "sync":
+                _params = IOSUseNativeTextFieldParams.fromJson(dictionary: call.arguments as! NSDictionary)
+
+                if _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextView.text.isEmpty {
+                    theTextView.text = theHintText
+
+                    styleTextField(textField: theTextView, params: _params, requestingPlaceholder: true)
+                } else {
+                    styleTextField(textField: theTextView, params: _params, requestingPlaceholder: false)
+                }
                 break
             default:
                 result(FlutterMethodNotImplemented)
