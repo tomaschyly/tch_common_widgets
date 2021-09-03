@@ -5,6 +5,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
     private let _channel: FlutterMethodChannel
     private var _view: UIView!
     private var _params: IOSUseNativeTextFieldParams!
+    private var _isFocused = false
 
     /**
      * TextFormFieldWidgetNativeView initialization with frame and other params.
@@ -208,7 +209,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             case "sync":
                 _params = IOSUseNativeTextFieldParams.fromJson(dictionary: call.arguments as! NSDictionary)
 
-                if _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextField.text!.isEmpty {
+                if !_isFocused, _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextField.text!.isEmpty {
                     theTextField.text = theHintText
 
                     styleTextField(textField: theTextField, params: _params, requestingPlaceholder: true)
@@ -239,7 +240,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             case "sync":
                 _params = IOSUseNativeTextFieldParams.fromJson(dictionary: call.arguments as! NSDictionary)
 
-                if _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextView.text.isEmpty {
+                if !_isFocused, _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextView.text.isEmpty {
                     theTextView.text = theHintText
 
                     styleTextField(textField: theTextView, params: _params, requestingPlaceholder: true)
@@ -258,12 +259,16 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
      * Handle custom placeholder.
      */
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        _channel.invokeMethod("focused", arguments: nil)
-        
+        _isFocused = true
+
         if let theHintText = _params.hintText, !theHintText.isEmpty, textField.text == theHintText {
             textField.text = ""
             
             styleTextField(textField: textField, params: _params, requestingPlaceholder: false)
+        }
+
+        OperationQueue.main.addOperation {
+            self._channel.invokeMethod("focused", arguments: nil)
         }
     }
     
@@ -272,12 +277,16 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
      * Handle custom placeholder.
      */
     func textViewDidBeginEditing(_ textView: UITextView) {
-        _channel.invokeMethod("focused", arguments: nil)
-        
+        _isFocused = true
+
         if let theHintText = _params.hintText, !theHintText.isEmpty, textView.text == theHintText {
             textView.text = ""
             
             styleTextField(textField: textView, params: _params, requestingPlaceholder: false)
+        }
+
+        OperationQueue.main.addOperation {
+            self._channel.invokeMethod("focused", arguments: nil)
         }
     }
     
@@ -285,6 +294,8 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
      * Editing ended on the UITextField, handle custom placeholder.
      */
     func textFieldDidEndEditing(_ textField: UITextField) {
+        _isFocused = false
+
         if let theHintText = _params.hintText, !theHintText.isEmpty, textField.text!.isEmpty {
             textField.text = theHintText
             
@@ -296,6 +307,8 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
      * Editing ended on the UITextView, handle custom placeholder.
      */
     func textViewDidEndEditing(_ textView: UITextView) {
+        _isFocused = false
+
         if let theHintText = _params.hintText, !theHintText.isEmpty, textView.text.isEmpty {
             textView.text = theHintText
             
