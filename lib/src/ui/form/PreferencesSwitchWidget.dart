@@ -42,6 +42,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
   /// Create view layout from widgets
   @override
   Widget buildContent(BuildContext context) {
+    final theme = Theme.of(context);
     final commonTheme = CommonTheme.of(context);
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
@@ -77,6 +78,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
                   theOnChange(newValue);
                 }
               },
+              activeColor: theme.colorScheme.secondary,
             ),
           ],
         ),

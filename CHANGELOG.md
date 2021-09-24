@@ -1,3 +1,7 @@
+## [0.7.1] - 24.9.2021
+
+* Update PreferencesSwitchWidget Switch for latest Theme system
+
 ## [0.7.0] - 3.9.2021
 
 * Fix iOS native TextFormField for different situations
