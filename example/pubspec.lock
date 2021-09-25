@@ -368,14 +368,14 @@ packages:
       name: tch_appliable_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.6"
+    version: "0.9.7"
   tch_common_widgets:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.7.1"
+    version: "0.7.2"
   term_glyph:
     dependency: transitive
     description:
@@ -427,4 +427,4 @@ packages:
     version: "5.1.1"
 sdks:
   dart: ">=2.13.0 <3.0.0"
-  flutter: ">=2.2.0"
+  flutter: ">=2.5.0"

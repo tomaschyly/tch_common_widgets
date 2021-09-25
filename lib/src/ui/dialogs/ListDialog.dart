@@ -62,6 +62,7 @@ class ListDialog<T> extends AbstractStatefulWidget {
 }
 
 class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
+  final ScrollController _scrollController = ScrollController();
   List<ListDialogOption<T>> _options = [];
   final TextEditingController _filterController = TextEditingController();
   Timer? _filterTimer;
@@ -88,6 +89,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
       _filterController.removeListener(_filterOptions);
     }
 
+    _scrollController.dispose();
     _filterController.dispose();
 
     super.dispose();
@@ -145,7 +147,9 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
               return Container(
                 height: optionsHeight < constraints.maxHeight ? optionsHeight : constraints.maxHeight,
                 child: Scrollbar(
+                  controller: _scrollController,
                   child: SingleChildScrollView(
+                    controller: _scrollController,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: _options.map((ListDialogOption option) {

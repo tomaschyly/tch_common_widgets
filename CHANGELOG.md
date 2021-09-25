@@ -1,3 +1,8 @@
+## [0.7.2] - 25.9.2021
+
+* Update Scrollbars to support latest Flutter on all platforms
+* **Warning:** Raised Flutter min version
+
 ## [0.7.1] - 24.9.2021
 
 * Update PreferencesSwitchWidget Switch for latest Theme system

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';
 
-class DialogContainer extends StatelessWidget {
+class DialogContainer extends AbstractStatefulWidget {
   final DialogContainerStyle style;
   final bool isScrollable;
   final List<Widget>? contentBeforeScroll;
@@ -11,7 +11,7 @@ class DialogContainer extends StatelessWidget {
   final DialogFooter dialogFooter;
 
   /// DialogContainer initialization
-  const DialogContainer({
+  DialogContainer({
     required this.style,
     this.isScrollable = true,
     this.contentBeforeScroll,
@@ -19,27 +19,43 @@ class DialogContainer extends StatelessWidget {
     required this.dialogFooter,
   });
 
+  /// Create state for widget
+  @override
+  State<StatefulWidget> createState() => _DialogContainerState();
+}
+
+class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer> {
+  final ScrollController _scrollController = ScrollController();
+
+  /// Manually dispose of resources
+  @override
+  void dispose() {
+    _scrollController.dispose();
+
+    super.dispose();
+  }
+
   /// Create view layout from widgets
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
     final bool fullWidthMobileOnly = commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
 
-    final borderRadius = style.borderRadius;
+    final borderRadius = widget.style.borderRadius;
 
-    final theContentBeforeScroll = contentBeforeScroll;
+    final theContentBeforeScroll = widget.contentBeforeScroll;
 
     Widget dialog;
 
-    if (isScrollable) {
+    if (widget.isScrollable) {
       dialog = Container(
         width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
-        margin: style.dialogMargin,
+        margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
-          color: style.backgroundColor,
+          color: widget.style.backgroundColor,
           border: Border.all(
-            color: style.color,
+            color: widget.style.color,
             width: 1,
           ),
           borderRadius: borderRadius,
@@ -49,7 +65,7 @@ class DialogContainer extends StatelessWidget {
           children: [
             if (theContentBeforeScroll != null)
               Container(
-                padding: style.dialogPadding.copyWith(
+                padding: widget.style.dialogPadding.copyWith(
                   bottom: 0,
                 ),
                 child: Column(
@@ -59,25 +75,27 @@ class DialogContainer extends StatelessWidget {
               ),
             Flexible(
               child: Scrollbar(
+                controller: _scrollController,
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Container(
-                    padding: style.dialogPadding.copyWith(
+                    padding: widget.style.dialogPadding.copyWith(
                       top: theContentBeforeScroll != null ? 0 : null,
                       bottom: 0,
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      children: content,
+                      children: widget.content,
                     ),
                   ),
                 ),
               ),
             ),
             Container(
-              padding: style.dialogPadding.copyWith(
+              padding: widget.style.dialogPadding.copyWith(
                 top: 0,
               ),
-              child: dialogFooter,
+              child: widget.dialogFooter,
             ),
           ],
         ),
@@ -85,12 +103,12 @@ class DialogContainer extends StatelessWidget {
     } else {
       dialog = Container(
         width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
-        padding: style.dialogPadding,
-        margin: style.dialogMargin,
+        padding: widget.style.dialogPadding,
+        margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
-          color: style.backgroundColor,
+          color: widget.style.backgroundColor,
           border: Border.all(
-            color: style.color,
+            color: widget.style.color,
             width: 1,
           ),
           borderRadius: borderRadius,
@@ -99,8 +117,8 @@ class DialogContainer extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (theContentBeforeScroll != null) ...theContentBeforeScroll,
-            ...content,
-            dialogFooter,
+            ...widget.content,
+            widget.dialogFooter,
           ],
         ),
       );
@@ -115,7 +133,7 @@ class DialogContainer extends StatelessWidget {
 
     return Column(
       mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: style.mainAxisAlignment,
+      mainAxisAlignment: widget.style.mainAxisAlignment,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Flexible(
