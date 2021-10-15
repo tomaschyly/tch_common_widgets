@@ -1,3 +1,7 @@
+## [0.7.3] - 15.10.2021
+
+* Updated packages to latest versions
+
 ## [0.7.2] - 25.9.2021
 
 * Update Scrollbars to support latest Flutter on all platforms
