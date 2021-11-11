@@ -20,7 +20,9 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final String? label;
+  final Widget? prefix;
   final Widget? prefixIcon;
+  final Widget? suffix;
   final Widget? suffixIcon;
   final int lines;
   final List<FormFieldValidation<String>>? validations;
@@ -41,7 +43,9 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.keyboardType,
     this.textInputAction,
     this.label,
+    this.prefix,
     this.prefixIcon,
+    this.suffix,
     this.suffixIcon,
     this.lines = 1,
     this.validations,
@@ -274,8 +278,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
                 InputDecorator(
                   decoration: theDecoration.copyWith(
                     labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
+                    prefix: widget.prefix ?? widget.style?.inputDecoration.prefix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefix,
                     prefixIcon:
                         widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
+                    suffix: widget.suffix ?? widget.style?.inputDecoration.suffix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix,
                     suffixIcon:
                         widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
                     hintText: '',
@@ -350,7 +356,9 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         style: textStyle,
         decoration: theDecoration.copyWith(
           labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
+          prefix: widget.prefix ?? widget.style?.inputDecoration.prefix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefix,
           prefixIcon: widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
+          suffix: widget.suffix ?? widget.style?.inputDecoration.suffix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix,
           suffixIcon: widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
         ),
         textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,

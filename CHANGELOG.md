@@ -1,3 +1,7 @@
+## [0.7.4] - 11.11.2021
+
+* TextFormFieldWidget add prefix and suffix
+
 ## [0.7.3] - 15.10.2021
 
 * Updated packages to latest versions
