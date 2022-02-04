@@ -1,3 +1,7 @@
+## [0.8.1] - 4.2.2022
+
+* Updates, make sure working with Flutter 2.10
+
 ## [0.8.0] - 19.12.2021
 
 * Update Core & dependencies
