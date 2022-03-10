@@ -35,11 +35,17 @@ class IconButtonWidget extends StatelessWidget {
     late Widget icon;
 
     if (iconWidget != null) {
-      icon = Container(
-        width: iconWidth,
-        height: iconHeight,
-        child: iconWidget,
-      );
+      bool iconRestricted = (style?.iconRestricted ?? commonTheme?.buttonsStyle.iconButtonStyle.iconRestricted) ?? true;
+
+      if (iconRestricted) {
+        icon = Container(
+          width: iconWidth,
+          height: iconHeight,
+          child: iconWidget,
+        );
+      } else {
+        icon = iconWidget!;
+      }
     } else {
       icon = SvgPicture.asset(
         svgAssetPath!,
@@ -119,6 +125,7 @@ class IconButtonStyle {
   final IconButtonVariant variant;
   final double width;
   final double height;
+  final bool iconRestricted;
   final double iconWidth;
   final double iconHeight;
   final Color? color;
@@ -133,6 +140,7 @@ class IconButtonStyle {
     this.variant = IconButtonVariant.Outlined,
     this.width = kMinInteractiveSize,
     this.height = kMinInteractiveSize,
+    this.iconRestricted = true,
     this.iconWidth = kIconSize,
     this.iconHeight = kIconSize,
     this.color = Colors.black,
@@ -148,6 +156,7 @@ class IconButtonStyle {
     IconButtonVariant? variant,
     double? width,
     double? height,
+    bool? iconRestricted,
     double? iconWidth,
     double? iconHeight,
     Color? color,
@@ -161,6 +170,7 @@ class IconButtonStyle {
       variant: variant ?? this.variant,
       width: width ?? this.width,
       height: height ?? this.height,
+      iconRestricted: iconRestricted ?? this.iconRestricted,
       iconWidth: iconWidth ?? this.iconWidth,
       iconHeight: iconHeight ?? this.iconHeight,
       color: color ?? this.color,

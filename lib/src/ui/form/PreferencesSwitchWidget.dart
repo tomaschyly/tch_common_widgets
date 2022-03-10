@@ -1,6 +1,7 @@
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
+import 'package:tch_common_widgets/src/ui/form/SwitchToggleWidget.dart';
 import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
 
 class PreferencesSwitchWidget extends AbstractStatefulWidget {
@@ -11,6 +12,8 @@ class PreferencesSwitchWidget extends AbstractStatefulWidget {
   final String? descriptionOff;
   final ValueChanged<bool>? onChange;
   final bool invert;
+  final String? onText;
+  final String? offText;
 
   /// PreferencesSwitchWidget initialization
   PreferencesSwitchWidget({
@@ -21,6 +24,8 @@ class PreferencesSwitchWidget extends AbstractStatefulWidget {
     this.descriptionOff,
     this.onChange,
     this.invert = false,
+    this.onText,
+    this.offText,
   });
 
   /// Create state for widget
@@ -47,7 +52,8 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
-    final PreferencesSwitchLayout layout = commonTheme?.formStyle.preferencesSwitchStyle.layout ?? PreferencesSwitchLayout.Horizontal;
+    final PreferencesSwitchLayout layout = (widget.style?.layout ?? commonTheme?.formStyle.preferencesSwitchStyle.layout) ?? PreferencesSwitchLayout.Horizontal;
+    final bool useSwitchToggleWidget = (widget.style?.useSwitchToggleWidget ?? commonTheme?.formStyle.preferencesSwitchStyle.useSwitchToggleWidget) ?? false;
 
     String? description = _value ? widget.descriptionOn : widget.descriptionOff;
 
@@ -65,23 +71,21 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
           style: widget.style?.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.labelStyle),
         ),
       if (layout == PreferencesSwitchLayout.Horizontal) CommonSpaceH(),
-      Switch(
-        value: _value,
-        onChanged: (bool newValue) {
-          prefsSetInt(widget.prefsKey, (widget.invert ? !newValue : newValue) ? 1 : 0);
-
-          setStateNotDisposed(() {
-            _value = newValue;
-          });
-
-          final theOnChange = widget.onChange;
-
-          if (theOnChange != null) {
-            theOnChange(newValue);
-          }
-        },
-        activeColor: theme.colorScheme.secondary,
-      ),
+      if (useSwitchToggleWidget) ...[
+        if (layout == PreferencesSwitchLayout.Vertical) CommonSpaceVHalf(),
+        SwitchToggleWidget(
+          onText: widget.onText,
+          offText: widget.offText,
+          onChange: _onChange,
+          initialValue: _value,
+        ),
+        if (layout == PreferencesSwitchLayout.Vertical) CommonSpaceVHalf(),
+      ] else
+        Switch(
+          value: _value,
+          onChanged: _onChange,
+          activeColor: theme.colorScheme.secondary,
+        ),
     ];
 
     final Widget field = Column(
@@ -95,6 +99,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
           )
         else
           ...mainWidgets,
+        if (useSwitchToggleWidget && layout == PreferencesSwitchLayout.Horizontal) CommonSpaceVHalf(),
         if (description != null)
           Text(
             description,
@@ -123,6 +128,21 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
 
     return content;
   }
+
+  /// On user toggle value, set prefs for key and send to callback
+  void _onChange(bool newValue) {
+    prefsSetInt(widget.prefsKey, (widget.invert ? !newValue : newValue) ? 1 : 0);
+
+    setStateNotDisposed(() {
+      _value = newValue;
+    });
+
+    final theOnChange = widget.onChange;
+
+    if (theOnChange != null) {
+      theOnChange(newValue);
+    }
+  }
 }
 
 class PreferencesSwitchStyle {
@@ -130,6 +150,7 @@ class PreferencesSwitchStyle {
   final TextStyle labelStyle;
   final TextStyle descriptionStyle;
   final CrossAxisAlignment crossAxisAlignment;
+  final bool useSwitchToggleWidget;
 
   /// PreferencesSwitchStyle initialization
   const PreferencesSwitchStyle({
@@ -137,6 +158,7 @@ class PreferencesSwitchStyle {
     this.labelStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.descriptionStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
     this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.useSwitchToggleWidget = false,
   });
 
   /// Create copy of this style with changes
@@ -144,11 +166,13 @@ class PreferencesSwitchStyle {
     TextStyle? labelStyle,
     TextStyle? descriptionStyle,
     CrossAxisAlignment? crossAxisAlignment,
+    bool? useSwitchToggleWidget,
   }) {
     return PreferencesSwitchStyle(
       labelStyle: labelStyle ?? this.labelStyle,
       descriptionStyle: descriptionStyle ?? this.descriptionStyle,
       crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
+      useSwitchToggleWidget: useSwitchToggleWidget ?? this.useSwitchToggleWidget,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:tch_common_widgets/src/ui/form/PreferencesSwitchWidget.dart';
 import 'package:tch_common_widgets/src/ui/form/SelectionFormFieldWidget.dart';
+import 'package:tch_common_widgets/src/ui/form/SwitchToggleWidget.dart';
 import 'package:tch_common_widgets/src/ui/form/TextFormFieldWidget.dart';
 
 class FormStyle {
@@ -7,6 +8,7 @@ class FormStyle {
   final bool fullWidthMobileOnly;
   final PreferencesSwitchStyle preferencesSwitchStyle;
   final SelectionFormFieldStyle selectionFormFieldStyle;
+  final SwitchToggleWidgetStyle switchToggleWidgetStyle;
   final TextFormFieldStyle textFormFieldStyle;
 
   /// FormStyle initialization
@@ -15,6 +17,7 @@ class FormStyle {
     this.fullWidthMobileOnly = true,
     this.preferencesSwitchStyle = const PreferencesSwitchStyle(),
     this.selectionFormFieldStyle = const SelectionFormFieldStyle(),
+    this.switchToggleWidgetStyle = const SwitchToggleWidgetStyle(useText: true),
     this.textFormFieldStyle = const TextFormFieldStyle(),
   });
 
@@ -24,6 +27,7 @@ class FormStyle {
     bool? fullWidthMobileOnly,
     PreferencesSwitchStyle? preferencesSwitchStyle,
     SelectionFormFieldStyle? selectionFormFieldStyle,
+    SwitchToggleWidgetStyle? switchToggleWidgetStyle,
     TextFormFieldStyle? textFormFieldStyle,
   }) {
     return FormStyle(
@@ -31,6 +35,7 @@ class FormStyle {
       fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
       preferencesSwitchStyle: preferencesSwitchStyle ?? this.preferencesSwitchStyle,
       selectionFormFieldStyle: selectionFormFieldStyle ?? this.selectionFormFieldStyle,
+      switchToggleWidgetStyle: switchToggleWidgetStyle ?? this.switchToggleWidgetStyle,
       textFormFieldStyle: textFormFieldStyle ?? this.textFormFieldStyle,
     );
   }

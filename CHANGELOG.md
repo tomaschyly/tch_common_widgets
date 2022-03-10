@@ -1,6 +1,7 @@
-## [0.9.0] - xxx
+## [0.9.0] - 10.3.2022
 
 * Add layout style option to PreferencesSwitchWidget
+* Wew SwitchToggleWidget for standalone use or as part of PreferencesSwitchWidget
 
 ## [0.8.1] - 4.2.2022
 
