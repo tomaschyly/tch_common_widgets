@@ -1,3 +1,7 @@
+## [0.9.0] - xxx
+
+* Add layout style option to PreferencesSwitchWidget
+
 ## [0.8.1] - 4.2.2022
 
 * Updates, make sure working with Flutter 2.10

@@ -47,41 +47,54 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
+    final PreferencesSwitchLayout layout = commonTheme?.formStyle.preferencesSwitchStyle.layout ?? PreferencesSwitchLayout.Horizontal;
+
     String? description = _value ? widget.descriptionOn : widget.descriptionOff;
+
+    List<Widget> mainWidgets = [
+      if (layout == PreferencesSwitchLayout.Horizontal)
+        Expanded(
+          child: Text(
+            widget.label,
+            style: widget.style?.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.labelStyle),
+          ),
+        )
+      else
+        Text(
+          widget.label,
+          style: widget.style?.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.labelStyle),
+        ),
+      if (layout == PreferencesSwitchLayout.Horizontal) CommonSpaceH(),
+      Switch(
+        value: _value,
+        onChanged: (bool newValue) {
+          prefsSetInt(widget.prefsKey, (widget.invert ? !newValue : newValue) ? 1 : 0);
+
+          setStateNotDisposed(() {
+            _value = newValue;
+          });
+
+          final theOnChange = widget.onChange;
+
+          if (theOnChange != null) {
+            theOnChange(newValue);
+          }
+        },
+        activeColor: theme.colorScheme.secondary,
+      ),
+    ];
 
     final Widget field = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: widget.style?.crossAxisAlignment ?? commonTheme?.formStyle.preferencesSwitchStyle.crossAxisAlignment ?? CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: Text(
-                widget.label,
-                style: widget.style?.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.labelStyle),
-              ),
-            ),
-            CommonSpaceH(),
-            Switch(
-              value: _value,
-              onChanged: (bool newValue) {
-                prefsSetInt(widget.prefsKey, (widget.invert ? !newValue : newValue) ? 1 : 0);
-
-                setStateNotDisposed(() {
-                  _value = newValue;
-                });
-
-                final theOnChange = widget.onChange;
-
-                if (theOnChange != null) {
-                  theOnChange(newValue);
-                }
-              },
-              activeColor: theme.colorScheme.secondary,
-            ),
-          ],
-        ),
+        if (layout == PreferencesSwitchLayout.Horizontal)
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: mainWidgets,
+          )
+        else
+          ...mainWidgets,
         if (description != null)
           Text(
             description,
@@ -102,7 +115,6 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
 
     if (animatedSizeChanges) {
       content = AnimatedSize(
-        vsync: this,
         duration: kThemeAnimationDuration,
         alignment: Alignment.topCenter,
         child: content,
@@ -114,12 +126,14 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
 }
 
 class PreferencesSwitchStyle {
+  final PreferencesSwitchLayout layout;
   final TextStyle labelStyle;
   final TextStyle descriptionStyle;
   final CrossAxisAlignment crossAxisAlignment;
 
   /// PreferencesSwitchStyle initialization
   const PreferencesSwitchStyle({
+    this.layout = PreferencesSwitchLayout.Horizontal,
     this.labelStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.descriptionStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
     this.crossAxisAlignment = CrossAxisAlignment.start,
@@ -137,4 +151,10 @@ class PreferencesSwitchStyle {
       crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
     );
   }
+}
+
+enum PreferencesSwitchLayout {
+  None,
+  Horizontal,
+  Vertical,
 }
