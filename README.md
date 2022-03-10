@@ -252,6 +252,12 @@ This is a set of widgets that can be used for easy and standard spaces between o
 
 Simple settings toggle/switch which gets and toggles int in preferences, uses it as a bool.
 
+### SwitchToggleWidget
+
+* works with **CommonTheme** and **standalone**
+
+Alternative widget for use instead of Switch, wraps IconButtonWidget and styling.
+
 ### TextFormFieldWidget
 
 * works with **CommonTheme** and **standalone**

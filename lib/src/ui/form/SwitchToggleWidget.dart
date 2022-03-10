@@ -47,7 +47,7 @@ class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleW
     final Widget? onIconWidget = widget.style?.onIconWidget ?? commonTheme?.formStyle.switchToggleWidgetStyle.onIconWidget;
     final Widget? offIconWidget = widget.style?.offIconWidget ?? commonTheme?.formStyle.switchToggleWidgetStyle.offIconWidget;
 
-    final bool useText = widget.style?.useText ?? commonTheme?.formStyle.switchToggleWidgetStyle.useText ?? false;
+    final bool useText = widget.style?.useText ?? commonTheme?.formStyle.switchToggleWidgetStyle.useText ?? true;
 
     String? svgAssetPath;
     Widget? iconWidget;
