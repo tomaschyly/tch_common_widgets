@@ -1,3 +1,7 @@
+## [0.9.1] - 11.3.2022
+
+* Add styling to the SwitchToggleWidget
+
 ## [0.9.0] - 10.3.2022
 
 * Add layout style option to PreferencesSwitchWidget

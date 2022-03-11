@@ -72,21 +72,54 @@ class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleW
       iconWidget = _value ? onIconWidget : offIconWidget;
     }
 
-    return IconButtonWidget(
-      style: iconButtonStyle,
-      svgAssetPath: svgAssetPath,
-      iconWidget: iconWidget,
-      onTap: () {
-        _value = !_value;
+    final bool semaphore = widget.style?.semaphore ?? commonTheme?.formStyle.switchToggleWidgetStyle.semaphore ?? true;
+    final Color semaphoreOnColor = widget.style?.semaphoreOnColor ?? commonTheme?.formStyle.switchToggleWidgetStyle.semaphoreOnColor ?? Colors.green;
+    final Color semaphoreOffColor = widget.style?.semaphoreOffColor ?? commonTheme?.formStyle.switchToggleWidgetStyle.semaphoreOffColor ?? Colors.red;
 
-        setStateNotDisposed(() {});
+    return Stack(
+      alignment: Alignment.center,
+      clipBehavior: Clip.none,
+      children: [
+        IconButtonWidget(
+          style: iconButtonStyle,
+          svgAssetPath: svgAssetPath,
+          iconWidget: iconWidget,
+          onTap: () {
+            _value = !_value;
 
-        final theOnChange = widget.onChange;
+            setStateNotDisposed(() {});
 
-        if (theOnChange != null) {
-          theOnChange(_value);
-        }
-      },
+            final theOnChange = widget.onChange;
+
+            if (theOnChange != null) {
+              theOnChange(_value);
+            }
+          },
+        ),
+        if (semaphore)
+          Positioned(
+            bottom: 1,
+            child: Container(
+              width: iconButtonStyle.width / 2,
+              height: 3,
+              decoration: BoxDecoration(
+                color: _value ? semaphoreOnColor : semaphoreOffColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  topRight: Radius.circular(4),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: (_value ? semaphoreOnColor : semaphoreOffColor).withOpacity(0.7),
+                    blurRadius: 3,
+                    spreadRadius: 1,
+                    offset: Offset(0, -1),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -101,6 +134,9 @@ class SwitchToggleWidgetStyle {
   final TextStyle textStyle;
   final String? onText;
   final String? offText;
+  final bool semaphore;
+  final Color semaphoreOnColor;
+  final Color semaphoreOffColor;
 
   /// SwitchToggleWidgetStyle initialization
   const SwitchToggleWidgetStyle({
@@ -113,6 +149,9 @@ class SwitchToggleWidgetStyle {
     this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.onText,
     this.offText,
+    this.semaphore = true,
+    this.semaphoreOnColor = Colors.green,
+    this.semaphoreOffColor = Colors.red,
   }) : assert((onSvgAssetPath != null && offSvgAssetPath != null) || (onIconWidget != null && offIconWidget != null) || useText);
 
   /// Create copy if this style with changes
@@ -126,6 +165,9 @@ class SwitchToggleWidgetStyle {
     TextStyle? textStyle,
     String? onText,
     String? offText,
+    bool? semaphore,
+    Color? semaphoreOnColor,
+    Color? semaphoreOffColor,
   }) {
     return SwitchToggleWidgetStyle(
       iconButtonStyle: iconButtonStyle ?? this.iconButtonStyle,
@@ -137,6 +179,9 @@ class SwitchToggleWidgetStyle {
       textStyle: textStyle ?? this.textStyle,
       onText: onText ?? this.onText,
       offText: offText ?? this.offText,
+      semaphore: semaphore ?? this.semaphore,
+      semaphoreOnColor: semaphoreOnColor ?? this.semaphoreOnColor,
+      semaphoreOffColor: semaphoreOffColor ?? this.semaphoreOffColor,
     );
   }
 }
