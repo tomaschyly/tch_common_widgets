@@ -58,8 +58,8 @@ class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleW
         textStyle = commonTheme.preProcessTextStyle(textStyle);
       }
 
-      final String onText = (widget.style?.onText ?? commonTheme?.formStyle.switchToggleWidgetStyle.onText) ?? 'On';
-      final String offText = (widget.style?.offText ?? commonTheme?.formStyle.switchToggleWidgetStyle.offText) ?? 'Off';
+      final String onText = (widget.onText ?? widget.style?.onText ?? commonTheme?.formStyle.switchToggleWidgetStyle.onText) ?? 'On';
+      final String offText = (widget.offText ?? widget.style?.offText ?? commonTheme?.formStyle.switchToggleWidgetStyle.offText) ?? 'Off';
 
       iconWidget = Text(
         _value ? onText : offText,

@@ -1,3 +1,7 @@
+## [0.9.2] - 11.3.2022
+
+* SwitchToggleWidget bugfix
+
 ## [0.9.1] - 11.3.2022
 
 * Add styling to the SwitchToggleWidget
