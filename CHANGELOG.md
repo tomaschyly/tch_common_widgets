@@ -1,3 +1,7 @@
+## [0.9.3] - 11.3.2022
+
+* Improve dialogs styling
+
 ## [0.9.2] - 11.3.2022
 
 * SwitchToggleWidget bugfix

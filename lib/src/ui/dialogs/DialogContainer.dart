@@ -41,6 +41,8 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
     final commonTheme = CommonTheme.of(context);
 
     final bool fullWidthMobileOnly = commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
+    final double dialogWidth =
+        widget.style.dialogWidth ?? commonTheme?.dialogsStyle.dialogWidth ?? (fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity);
 
     final borderRadius = widget.style.borderRadius;
 
@@ -50,7 +52,7 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
 
     if (widget.isScrollable) {
       dialog = Container(
-        width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
+        width: dialogWidth,
         margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
           color: widget.style.backgroundColor,
@@ -102,7 +104,7 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
       );
     } else {
       dialog = Container(
-        width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
+        width: dialogWidth,
         padding: widget.style.dialogPadding,
         margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
@@ -148,6 +150,7 @@ class DialogContainerStyle {
   final MainAxisAlignment mainAxisAlignment;
   final EdgeInsets dialogPadding;
   final EdgeInsets dialogMargin;
+  final double? dialogWidth;
   final Color color;
   final Color backgroundColor;
   final BorderRadius? borderRadius;
@@ -157,6 +160,7 @@ class DialogContainerStyle {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.dialogPadding = const EdgeInsets.all(12),
     this.dialogMargin = const EdgeInsets.all(kCommonPrimaryMargin),
+    this.dialogWidth,
     this.color = Colors.transparent,
     this.backgroundColor = Colors.white,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
@@ -167,6 +171,7 @@ class DialogContainerStyle {
     MainAxisAlignment? mainAxisAlignment,
     EdgeInsets? dialogPadding,
     EdgeInsets? dialogMargin,
+    double? dialogWidth,
     Color? color,
     Color? backgroundColor,
     BorderRadius? borderRadius,
@@ -175,6 +180,7 @@ class DialogContainerStyle {
       mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
       dialogPadding: dialogPadding ?? this.dialogPadding,
       dialogMargin: dialogMargin ?? this.dialogMargin,
+      dialogWidth: dialogWidth ?? this.dialogWidth,
       color: color ?? this.color,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       borderRadius: borderRadius ?? this.borderRadius,
