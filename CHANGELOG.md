@@ -1,3 +1,7 @@
+## [0.9.4] - 22.5.2022
+
+* Update core
+
 ## [0.9.3] - 11.3.2022
 
 * Improve dialogs styling
