@@ -15,6 +15,13 @@ class DatePickerFormFieldWidget extends AbstractStatefulWidget {
   final String? label;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final String? selectionTitle;
+  final String? cancelText;
+  final String? confirmText;
+  final String? fieldLabelText;
+  final String? fieldHintText;
+  final String? errorFormatText;
+  final String? errorInvalidText;
   final DateTime? initialValue;
   final DateTime? firstDate;
   final DateTime? lastDate;
@@ -31,6 +38,13 @@ class DatePickerFormFieldWidget extends AbstractStatefulWidget {
     this.label,
     this.prefixIcon,
     this.suffixIcon,
+    this.selectionTitle,
+    this.cancelText,
+    this.confirmText,
+    this.fieldLabelText,
+    this.fieldHintText,
+    this.errorFormatText,
+    this.errorInvalidText,
     this.initialValue,
     this.firstDate,
     this.lastDate,
@@ -212,6 +226,16 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
     final DateTime firstDate = widget.firstDate ?? Jiffy().startOf(Units.YEAR).dateTime;
     final DateTime lastDate = widget.lastDate ?? Jiffy().add(years: 1).endOf(Units.YEAR).dateTime;
 
+    DateTime initialDate = _value ?? DateTime.now();
+
+    if (initialDate.isBefore(firstDate)) {
+      initialDate = firstDate;
+    }
+
+    if (initialDate.isAfter(lastDate)) {
+      initialDate = lastDate;
+    }
+
     final bool cancelClearsValue = widget.style?.cancelClearsValue ?? commonTheme?.formStyle.datePickerFormFieldStyle.cancelClearsValue ?? true;
     final Color backgroundColor = widget.style?.backgroundColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.backgroundColor ?? Colors.black;
     final Color headerTextColor = widget.style?.headerTextColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.headerTextColor ?? Colors.white;
@@ -220,9 +244,16 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
 
     final DateTime? newValue = await showDatePicker(
       context: context,
-      initialDate: _value ?? DateTime.now(),
+      initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      helpText: widget.selectionTitle,
+      cancelText: widget.cancelText,
+      confirmText: widget.confirmText,
+      fieldLabelText: widget.fieldLabelText,
+      fieldHintText: widget.fieldHintText,
+      errorFormatText: widget.errorFormatText,
+      errorInvalidText: widget.errorInvalidText,
       builder: (BuildContext context, Widget? child) {
         final theme = Theme.of(context);
 
