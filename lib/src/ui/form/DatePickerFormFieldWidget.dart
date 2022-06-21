@@ -212,6 +212,16 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
     final DateTime firstDate = widget.firstDate ?? Jiffy().startOf(Units.YEAR).dateTime;
     final DateTime lastDate = widget.lastDate ?? Jiffy().add(years: 1).endOf(Units.YEAR).dateTime;
 
+    DateTime initialDate = _value ?? DateTime.now();
+
+    if (initialDate.isBefore(firstDate)) {
+      initialDate = firstDate;
+    }
+
+    if (initialDate.isAfter(lastDate)) {
+      initialDate = lastDate;
+    }
+
     final bool cancelClearsValue = widget.style?.cancelClearsValue ?? commonTheme?.formStyle.datePickerFormFieldStyle.cancelClearsValue ?? true;
     final Color backgroundColor = widget.style?.backgroundColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.backgroundColor ?? Colors.black;
     final Color headerTextColor = widget.style?.headerTextColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.headerTextColor ?? Colors.white;
@@ -220,7 +230,7 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
 
     final DateTime? newValue = await showDatePicker(
       context: context,
-      initialDate: _value ?? DateTime.now(),
+      initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
       builder: (BuildContext context, Widget? child) {
