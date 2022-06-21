@@ -19,7 +19,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.10.0
+  tch_common_widgets: ^0.11.0
 ```
 
 If your IDE does not autoImport, add manually:
@@ -296,7 +296,13 @@ InkWell based button widget for icons, 3 variants.
 
 * works with **CommonTheme** and **standalone**
 
-InkWell based button widget, 2 variants, content supports text or text and preffixIcon. Loading animatin built in.
+InkWell based button widget, 2 variants, content supports text or text and preffixIcon. Loading animation built in.
+
+### DatePickerFormFieldWidget
+
+* works with **CommonTheme** and **standalone**
+
+Custom Button that looks like TextFormFieldWidget for selecting Date with Material DatePicker. Supports Focus navigation and Form validation.
 
 ## Dialogs
 
