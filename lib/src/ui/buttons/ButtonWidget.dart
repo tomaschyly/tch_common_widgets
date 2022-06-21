@@ -59,7 +59,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       if (theIsLoading) {
         _initLoadingAnimation(context);
       } else {
-        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _stopLoadingAnimation();
         });
       }

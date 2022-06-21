@@ -1,57 +1,55 @@
+import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/Boundary.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/ListDialog.dart';
 import 'package:tch_common_widgets/src/ui/form/Form.dart';
-import 'package:tch_appliable_core/utils/List.dart';
 import 'package:tch_common_widgets/src/ui/form/TextFormFieldWidget.dart';
 
-class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
-  final SelectionFormFieldStyle? style;
+class DatePickerFormFieldWidget extends AbstractStatefulWidget {
+  final DatePickerFormFieldStyle? style;
+  final DateFormat? dateFormat;
   final FocusNode? focusNode;
   final FocusNode? nextFocus;
   final String? label;
-  final String? selectionTitle;
-  final String? clearText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
-  final T? initialValue;
-  final List<ListDialogOption<T>> options;
-  final ValueChanged<T?>? onChange;
-  final List<FormFieldValidation<T>>? validations;
+  final DateTime? initialValue;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
+  final ValueChanged<DateTime?>? onChange;
+  final List<FormFieldValidation<DateTime>>? validations;
 
-  /// SelectionFormFieldWidget initialization
-  SelectionFormFieldWidget({
-    GlobalKey<SelectionFormFieldWidgetState>? key,
+  /// DatePickerFormFieldWidget initialization
+  DatePickerFormFieldWidget({
+    GlobalKey<DatePickerFormFieldWidgetState>? key,
     this.style,
+    this.dateFormat,
     this.focusNode,
     this.nextFocus,
     this.label,
-    this.selectionTitle,
-    this.clearText,
     this.prefixIcon,
     this.suffixIcon,
     this.initialValue,
-    required this.options,
+    this.firstDate,
+    this.lastDate,
     this.onChange,
     this.validations,
-  })  : assert(options.isNotEmpty),
-        assert((focusNode == null && nextFocus == null) || focusNode != null),
+  })  : assert((focusNode == null && nextFocus == null) || focusNode != null),
         super(key: key);
 
   /// Create state for widget
   @override
-  State<StatefulWidget> createState() => SelectionFormFieldWidgetState<T>();
+  State<StatefulWidget> createState() => DatePickerFormFieldWidgetState();
 }
 
-class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<SelectionFormFieldWidget<T>> {
-  T? get value => _value;
+class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePickerFormFieldWidget> {
+  DateTime? get value => _value;
 
   final GlobalKey _fieldKey = GlobalKey();
   FocusNode? _focusNode;
-  late List<ListDialogOption<T>> _options;
-  T? _value;
+  DateTime? _value;
   final TextEditingController _controller = TextEditingController();
   Boundary? _fieldBoundary;
   String _errorText = '';
@@ -67,14 +65,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
     }
     _focusNode!.addListener(_focusChanged);
 
-    _options = widget.options;
-
     _value = widget.initialValue;
-    if (_value != null) {
-      final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
-
-      _controller.text = option?.text ?? '';
-    }
   }
 
   /// Dispose of resources manually
@@ -91,7 +82,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
   /// Widget parameters changed
   @override
-  void didUpdateWidget(covariant SelectionFormFieldWidget<T> oldWidget) {
+  void didUpdateWidget(covariant DatePickerFormFieldWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     _focusNode!.removeListener(_focusChanged);
@@ -100,16 +91,6 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
       _focusNode = FocusNode();
     }
     _focusNode!.addListener(_focusChanged);
-
-    if (oldWidget.options != widget.options) {
-      _options = widget.options;
-
-      final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
-
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _controller.text = option?.text ?? '';
-      });
-    }
   }
 
   /// Create view layout from widgets
@@ -123,10 +104,18 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
     final borderRadius = widget.style?.borderRadius ?? commonTheme?.formStyle.selectionFormFieldStyle.borderRadius;
 
+    final dateFormat = widget.dateFormat ?? widget.style?.dateFormat ?? commonTheme?.formStyle.datePickerFormFieldStyle.dateFormat ?? DateFormat.yMMMMEEEEd();
+
     final theBoundary = _fieldBoundary;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _calculateHeight();
+
+      if (_value != null) {
+        _controller.text = dateFormat.format(_value!);
+      } else {
+        _controller.text = "";
+      }
     });
 
     Widget? control;
@@ -140,7 +129,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
             height: theBoundary.height,
           ),
           onTap: () {
-            selectOption(context);
+            _selectDate(context);
           },
         ),
       );
@@ -209,33 +198,58 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
     if (_focusNode!.hasFocus) {
       _focusNode!.unfocus();
 
-      selectOption(context);
+      _selectDate(context);
     }
   }
 
-  /// Select option using ListDialog
-  Future<void> selectOption(BuildContext context) async {
+  /// Use Material DatePicker to select Date
+  Future<void> _selectDate(BuildContext context) async {
+    final commonTheme = CommonTheme.of(context);
     final focusScope = FocusScope.of(context);
 
     focusScope.unfocus();
 
-    _options.forEach((ListDialogOption option) {
-      option.isSelected = _value == option.value;
-    });
+    final DateTime firstDate = widget.firstDate ?? Jiffy().startOf(Units.YEAR).dateTime;
+    final DateTime lastDate = widget.lastDate ?? Jiffy().add(years: 1).endOf(Units.YEAR).dateTime;
 
-    final T? newValue = await ListDialog.show(
-      context,
-      options: _options,
-      title: widget.selectionTitle,
-      cancelText: widget.clearText ?? 'Clear',
+    final bool cancelClearsValue = widget.style?.cancelClearsValue ?? commonTheme?.formStyle.datePickerFormFieldStyle.cancelClearsValue ?? true;
+    final Color backgroundColor = widget.style?.backgroundColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.backgroundColor ?? Colors.black;
+    final Color headerTextColor = widget.style?.headerTextColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.headerTextColor ?? Colors.white;
+    final Color bodyTextColor = widget.style?.bodyTextColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.bodyTextColor ?? Colors.black;
+    final Color buttonTextColor = widget.style?.buttonTextColor ?? commonTheme?.formStyle.datePickerFormFieldStyle.buttonTextColor ?? Colors.black;
+
+    final DateTime? newValue = await showDatePicker(
+      context: context,
+      initialDate: _value ?? DateTime.now(),
+      firstDate: firstDate,
+      lastDate: lastDate,
+      builder: (BuildContext context, Widget? child) {
+        final theme = Theme.of(context);
+
+        return Theme(
+          data: theme.copyWith(
+            colorScheme: theme.colorScheme.copyWith(
+              primary: backgroundColor,
+              onPrimary: headerTextColor,
+              onSurface: bodyTextColor,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: buttonTextColor,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
+
+    if (newValue == null && !cancelClearsValue) {
+      return;
+    }
 
     setStateNotDisposed(() {
       _value = newValue;
-
-      final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
-
-      _controller.text = option?.text ?? '';
     });
 
     final theOnChange = widget.onChange;
@@ -248,39 +262,50 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
       focusScope.requestFocus(theNextFocus);
     }
   }
-
-  /// Set value to newValue if there is options for it
-  void setValue(T? newValue) {
-    final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == newValue);
-
-    if (newValue == null || option != null) {
-      _controller.text = option?.text ?? '';
-
-      setStateNotDisposed(() {
-        _value = newValue;
-      });
-    }
-  }
 }
 
-class SelectionFormFieldStyle {
+class DatePickerFormFieldStyle {
   final TextFormFieldStyle inputStyle;
   final BorderRadius? borderRadius;
+  final DateFormat? dateFormat;
+  final bool cancelClearsValue;
+  final Color backgroundColor;
+  final Color headerTextColor;
+  final Color bodyTextColor;
+  final Color buttonTextColor;
 
-  /// SelectionFormFieldStyle initialization
-  const SelectionFormFieldStyle({
+  /// DatePickerFormFieldStyle initialization
+  const DatePickerFormFieldStyle({
     this.inputStyle = const TextFormFieldStyle(),
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.dateFormat,
+    this.cancelClearsValue = true,
+    this.backgroundColor = Colors.black,
+    this.headerTextColor = Colors.white,
+    this.bodyTextColor = Colors.black,
+    this.buttonTextColor = Colors.black,
   });
 
   /// Create copy of this style with changes
-  SelectionFormFieldStyle copyWith({
+  DatePickerFormFieldStyle copyWith({
     TextFormFieldStyle? inputStyle,
     BorderRadius? borderRadius,
+    DateFormat? dateFormat,
+    bool? cancelClearsValue,
+    Color? backgroundColor,
+    Color? headerTextColor,
+    Color? bodyTextColor,
+    Color? buttonTextColor,
   }) {
-    return SelectionFormFieldStyle(
+    return DatePickerFormFieldStyle(
       inputStyle: inputStyle ?? this.inputStyle,
       borderRadius: borderRadius ?? this.borderRadius,
+      dateFormat: dateFormat ?? this.dateFormat,
+      cancelClearsValue: cancelClearsValue ?? this.cancelClearsValue,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      headerTextColor: headerTextColor ?? this.headerTextColor,
+      bodyTextColor: bodyTextColor ?? this.bodyTextColor,
+      buttonTextColor: buttonTextColor ?? this.buttonTextColor,
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:tch_common_widgets/src/ui/form/DatePickerFormFieldWidget.dart';
 import 'package:tch_common_widgets/src/ui/form/PreferencesSwitchWidget.dart';
 import 'package:tch_common_widgets/src/ui/form/SelectionFormFieldWidget.dart';
 import 'package:tch_common_widgets/src/ui/form/SwitchToggleWidget.dart';
@@ -10,6 +11,7 @@ class FormStyle {
   final SelectionFormFieldStyle selectionFormFieldStyle;
   final SwitchToggleWidgetStyle switchToggleWidgetStyle;
   final TextFormFieldStyle textFormFieldStyle;
+  final DatePickerFormFieldStyle datePickerFormFieldStyle;
 
   /// FormStyle initialization
   const FormStyle({
@@ -19,6 +21,7 @@ class FormStyle {
     this.selectionFormFieldStyle = const SelectionFormFieldStyle(),
     this.switchToggleWidgetStyle = const SwitchToggleWidgetStyle(useText: true),
     this.textFormFieldStyle = const TextFormFieldStyle(),
+    this.datePickerFormFieldStyle = const DatePickerFormFieldStyle(),
   });
 
   /// Create copy if this style with changes
@@ -29,6 +32,7 @@ class FormStyle {
     SelectionFormFieldStyle? selectionFormFieldStyle,
     SwitchToggleWidgetStyle? switchToggleWidgetStyle,
     TextFormFieldStyle? textFormFieldStyle,
+    DatePickerFormFieldStyle? datePickerFormFieldStyle,
   }) {
     return FormStyle(
       animatedSizeChanges: animatedSizeChanges ?? this.animatedSizeChanges,
@@ -37,6 +41,7 @@ class FormStyle {
       selectionFormFieldStyle: selectionFormFieldStyle ?? this.selectionFormFieldStyle,
       switchToggleWidgetStyle: switchToggleWidgetStyle ?? this.switchToggleWidgetStyle,
       textFormFieldStyle: textFormFieldStyle ?? this.textFormFieldStyle,
+      datePickerFormFieldStyle: datePickerFormFieldStyle ?? this.datePickerFormFieldStyle,
     );
   }
 }

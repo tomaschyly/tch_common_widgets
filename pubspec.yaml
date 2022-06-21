@@ -15,9 +15,11 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
-  tch_appliable_core: ^0.11.0
+  tch_appliable_core: ^0.11.2
 
   flutter_svg: ^1.1.0
+  intl: ^0.17.0
+  jiffy: ^5.0.0
 
 flutter:
   plugin:
