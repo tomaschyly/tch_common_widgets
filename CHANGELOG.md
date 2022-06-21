@@ -1,3 +1,7 @@
+## [0.11.1] - 21.6.2022
+
+* DatePickerFormFieldWidget improvements
+
 ## [0.11.0] - 21.6.2022
 
 * DatePickerFormFieldWidget component for selecting Date
