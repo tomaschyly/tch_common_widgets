@@ -15,6 +15,13 @@ class DatePickerFormFieldWidget extends AbstractStatefulWidget {
   final String? label;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final String? selectionTitle;
+  final String? cancelText;
+  final String? confirmText;
+  final String? fieldLabelText;
+  final String? fieldHintText;
+  final String? errorFormatText;
+  final String? errorInvalidText;
   final DateTime? initialValue;
   final DateTime? firstDate;
   final DateTime? lastDate;
@@ -31,6 +38,13 @@ class DatePickerFormFieldWidget extends AbstractStatefulWidget {
     this.label,
     this.prefixIcon,
     this.suffixIcon,
+    this.selectionTitle,
+    this.cancelText,
+    this.confirmText,
+    this.fieldLabelText,
+    this.fieldHintText,
+    this.errorFormatText,
+    this.errorInvalidText,
     this.initialValue,
     this.firstDate,
     this.lastDate,
@@ -233,6 +247,13 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: lastDate,
+      helpText: widget.selectionTitle,
+      cancelText: widget.cancelText,
+      confirmText: widget.confirmText,
+      fieldLabelText: widget.fieldLabelText,
+      fieldHintText: widget.fieldHintText,
+      errorFormatText: widget.errorFormatText,
+      errorInvalidText: widget.errorInvalidText,
       builder: (BuildContext context, Widget? child) {
         final theme = Theme.of(context);
 
