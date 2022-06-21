@@ -262,7 +262,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         obscureText: theObscureText,
       );
 
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _methodChannel?.invokeMethod("sync", creationParams.toJson());
       });
 
@@ -469,7 +469,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// Make sure Widget is visible on screen and set focus
   void _focusIOSNativeTextField() {
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.findRenderObject()!.showOnScreen(
               duration: kThemeAnimationDuration,
