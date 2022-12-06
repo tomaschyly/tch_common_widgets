@@ -1,3 +1,7 @@
+## [0.12.0] - 6.12.2022
+
+* Update all able dependencies
+
 ## [0.11.1] - 21.6.2022
 
 * DatePickerFormFieldWidget improvements
