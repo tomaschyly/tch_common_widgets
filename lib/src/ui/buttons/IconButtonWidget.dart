@@ -32,11 +32,10 @@ class IconButtonWidget extends StatelessWidget {
     final color = style?.color ?? commonTheme?.buttonsStyle.iconButtonStyle.color ?? Colors.black;
     final iconColor = style?.iconColor ?? commonTheme?.buttonsStyle.iconButtonStyle.iconColor ?? color;
 
+    bool iconRestricted = (style?.iconRestricted ?? commonTheme?.buttonsStyle.iconButtonStyle.iconRestricted) ?? true;
     late Widget icon;
 
     if (iconWidget != null) {
-      bool iconRestricted = (style?.iconRestricted ?? commonTheme?.buttonsStyle.iconButtonStyle.iconRestricted) ?? true;
-
       if (iconRestricted) {
         icon = Container(
           width: iconWidth,
@@ -47,12 +46,19 @@ class IconButtonWidget extends StatelessWidget {
         icon = iconWidget!;
       }
     } else {
-      icon = SvgPicture.asset(
-        svgAssetPath!,
-        width: iconWidth,
-        height: iconHeight,
-        color: iconColor,
-      );
+      if (iconRestricted) {
+        icon = SvgPicture.asset(
+          svgAssetPath!,
+          width: iconWidth,
+          height: iconHeight,
+          color: iconColor,
+        );
+      } else {
+        icon = SvgPicture.asset(
+          svgAssetPath!,
+          color: iconColor,
+        );
+      }
     }
 
     final theBorderWidth = style?.borderWidth ?? commonTheme?.buttonsStyle.buttonStyle.borderWidth ?? 1;
@@ -68,14 +74,14 @@ class IconButtonWidget extends StatelessWidget {
           decoration: variant == IconButtonVariant.IconOnly
               ? null
               : BoxDecoration(
-                  color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
-                  border: Border.all(
-                    color: color,
-                    width: theBorderWidth,
-                  ),
-                  borderRadius: borderRadius,
-                  boxShadow: boxShadow,
-                ),
+            color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
+            border: Border.all(
+              color: color,
+              width: theBorderWidth,
+            ),
+            borderRadius: borderRadius,
+            boxShadow: boxShadow,
+          ),
           child: Center(
             child: icon,
           ),

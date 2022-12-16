@@ -1,3 +1,8 @@
+## [0.12.1] - 16.12.2022
+
+* IconButtonWidget improvements
+* Core update
+
 ## [0.12.0] - 6.12.2022
 
 * Update all able dependencies
