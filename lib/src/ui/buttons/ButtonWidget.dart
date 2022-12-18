@@ -116,20 +116,33 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       final loadingIconWidth = widget.style?.loadingIconWidth ?? commonTheme?.buttonsStyle.buttonStyle.loadingIconWidth ?? kIconSize;
       final loadingIconHeight = widget.style?.loadingIconHeight ?? commonTheme?.buttonsStyle.buttonStyle.loadingIconHeight ?? kIconSize;
 
+      bool loadingIconRestricted = (widget.style?.loadingIconRestricted ?? commonTheme?.buttonsStyle.buttonStyle.loadingIconRestricted) ?? true;
+
       Widget? icon;
       if (loadingIcon != null) {
-        icon = Container(
-          width: loadingIconWidth,
-          height: loadingIconHeight,
-          child: loadingIcon,
-        );
+        if (loadingIconRestricted) {
+          icon = Container(
+            width: loadingIconWidth,
+            height: loadingIconHeight,
+            child: loadingIcon,
+          );
+        } else {
+          icon = loadingIcon;
+        }
       } else if (loadingIconSvgAssetPath != null) {
-        icon = SvgPicture.asset(
-          loadingIconSvgAssetPath,
-          width: loadingIconWidth,
-          height: loadingIconHeight,
-          color: iconColor,
-        );
+        if (loadingIconRestricted) {
+          icon = SvgPicture.asset(
+            loadingIconSvgAssetPath,
+            width: loadingIconWidth,
+            height: loadingIconHeight,
+            color: iconColor,
+          );
+        } else {
+          icon = SvgPicture.asset(
+            loadingIconSvgAssetPath,
+            color: iconColor,
+          );
+        }
       }
 
       inner = Row(
@@ -166,21 +179,33 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       final preffixIconWidth = widget.style?.preffixIconWidth ?? commonTheme?.buttonsStyle.buttonStyle.preffixIconWidth ?? kIconSize;
       final preffixIconHeight = widget.style?.preffixIconHeight ?? commonTheme?.buttonsStyle.buttonStyle.preffixIconHeight ?? kIconSize;
 
+      bool prefixIconRestricted = (widget.style?.prefixIconRestricted ?? commonTheme?.buttonsStyle.buttonStyle.prefixIconRestricted) ?? true;
       Widget? prefixIcon;
 
       if (widget.prefixIcon != null) {
-        prefixIcon = Container(
-          width: preffixIconWidth,
-          height: preffixIconHeight,
-          child: widget.prefixIcon,
-        );
+        if (prefixIconRestricted) {
+          prefixIcon = Container(
+            width: preffixIconWidth,
+            height: preffixIconHeight,
+            child: widget.prefixIcon,
+          );
+        } else {
+          prefixIcon = widget.prefixIcon;
+        }
       } else if (widget.prefixIconSvgAssetPath != null) {
-        prefixIcon = SvgPicture.asset(
-          widget.prefixIconSvgAssetPath!,
-          width: preffixIconWidth,
-          height: preffixIconHeight,
-          color: iconColor,
-        );
+        if (prefixIconRestricted) {
+          prefixIcon = SvgPicture.asset(
+            widget.prefixIconSvgAssetPath!,
+            width: preffixIconWidth,
+            height: preffixIconHeight,
+            color: iconColor,
+          );
+        } else {
+          prefixIcon = SvgPicture.asset(
+            widget.prefixIconSvgAssetPath!,
+            color: iconColor,
+          );
+        }
       }
 
       final prefixIconSpacing = widget.style?.prefixIconSpacing ?? commonTheme?.buttonsStyle.buttonStyle.prefixIconSpacing ?? kCommonHorizontalMargin;
@@ -320,6 +345,7 @@ class CommonButtonStyle {
   final double height;
   final AlignmentGeometry? alignment;
   final EdgeInsets contentPadding;
+  final bool prefixIconRestricted;
   final double preffixIconWidth;
   final double preffixIconHeight;
   final Color? color;
@@ -332,6 +358,7 @@ class CommonButtonStyle {
   final List<BoxShadow>? boxShadow;
   final String? loadingIconSvgAssetPath;
   final Widget? loadingIcon;
+  final bool loadingIconRestricted;
   final double loadingIconWidth;
   final double loadingIconHeight;
   final Duration loadingAnimationDuration;
@@ -348,6 +375,7 @@ class CommonButtonStyle {
     this.height = kMinInteractiveSize,
     this.alignment,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: kCommonHorizontalMargin),
+    this.prefixIconRestricted = true,
     this.preffixIconWidth = kIconSize,
     this.preffixIconHeight = kIconSize,
     this.color = Colors.black,
@@ -360,6 +388,7 @@ class CommonButtonStyle {
     this.boxShadow,
     this.loadingIconSvgAssetPath,
     this.loadingIcon,
+    this.loadingIconRestricted = true,
     this.loadingIconWidth = kIconSize,
     this.loadingIconHeight = kIconSize,
     this.loadingAnimationDuration = const Duration(milliseconds: 1200),
@@ -377,6 +406,7 @@ class CommonButtonStyle {
     double? height,
     AlignmentGeometry? alignment,
     EdgeInsets? contentPadding,
+    bool? prefixIconRestricted,
     double? preffixIconWidth,
     double? preffixIconHeight,
     Color? color,
@@ -389,6 +419,7 @@ class CommonButtonStyle {
     List<BoxShadow>? boxShadow,
     String? loadingIconSvgAssetPath,
     Widget? loadingIcon,
+    bool? loadingIconRestricted,
     double? loadingIconWidth,
     double? loadingIconHeight,
     Duration? loadingAnimationDuration,
@@ -404,6 +435,7 @@ class CommonButtonStyle {
       height: height ?? this.height,
       alignment: alignment ?? this.alignment,
       contentPadding: contentPadding ?? this.contentPadding,
+      prefixIconRestricted: prefixIconRestricted ?? this.prefixIconRestricted,
       preffixIconWidth: preffixIconWidth ?? this.preffixIconWidth,
       preffixIconHeight: preffixIconHeight ?? this.preffixIconHeight,
       color: color ?? this.color,
@@ -416,6 +448,7 @@ class CommonButtonStyle {
       boxShadow: boxShadow ?? this.boxShadow,
       loadingIconSvgAssetPath: loadingIconSvgAssetPath ?? this.loadingIconSvgAssetPath,
       loadingIcon: loadingIcon ?? this.loadingIcon,
+      loadingIconRestricted: loadingIconRestricted ?? this.loadingIconRestricted,
       loadingIconWidth: loadingIconWidth ?? this.loadingIconWidth,
       loadingIconHeight: loadingIconHeight ?? this.loadingIconHeight,
       loadingAnimationDuration: loadingAnimationDuration ?? this.loadingAnimationDuration,

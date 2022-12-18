@@ -1,3 +1,7 @@
+## [0.12.2] - 18.12.2022
+
+* ButtonWidget improvements
+
 ## [0.12.1] - 16.12.2022
 
 * IconButtonWidget improvements
