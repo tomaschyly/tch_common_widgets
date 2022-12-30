@@ -10,6 +10,8 @@ class ButtonWidget extends AbstractStatefulWidget {
   final String text;
   final String? prefixIconSvgAssetPath;
   final Widget? prefixIcon;
+  final String? suffixIconSvgAssetPath;
+  final Widget? suffixIcon;
   final GestureTapCallback? onTap;
   final bool? isLoading;
   final List<String> loadingTags;
@@ -20,6 +22,8 @@ class ButtonWidget extends AbstractStatefulWidget {
     required this.text,
     this.prefixIconSvgAssetPath,
     this.prefixIcon,
+    this.suffixIconSvgAssetPath,
+    this.suffixIcon,
     this.onTap,
     this.isLoading,
     String? tag,
@@ -178,9 +182,13 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
     } else {
       final preffixIconWidth = widget.style?.preffixIconWidth ?? commonTheme?.buttonsStyle.buttonStyle.preffixIconWidth ?? kIconSize;
       final preffixIconHeight = widget.style?.preffixIconHeight ?? commonTheme?.buttonsStyle.buttonStyle.preffixIconHeight ?? kIconSize;
+      final suffixIconWidth = widget.style?.suffixIconWidth ?? commonTheme?.buttonsStyle.buttonStyle.suffixIconWidth ?? kIconSize;
+      final suffixIconHeight = widget.style?.suffixIconHeight ?? commonTheme?.buttonsStyle.buttonStyle.suffixIconHeight ?? kIconSize;
 
       bool prefixIconRestricted = (widget.style?.prefixIconRestricted ?? commonTheme?.buttonsStyle.buttonStyle.prefixIconRestricted) ?? true;
+      bool suffixIconRestricted = (widget.style?.suffixIconRestricted ?? commonTheme?.buttonsStyle.buttonStyle.suffixIconRestricted) ?? true;
       Widget? prefixIcon;
+      Widget? suffixIcon;
 
       if (widget.prefixIcon != null) {
         if (prefixIconRestricted) {
@@ -208,7 +216,34 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
         }
       }
 
+      if (widget.suffixIcon != null) {
+        if (suffixIconRestricted) {
+          suffixIcon = Container(
+            width: suffixIconWidth,
+            height: suffixIconHeight,
+            child: widget.suffixIcon,
+          );
+        } else {
+          suffixIcon = widget.suffixIcon;
+        }
+      } else if (widget.suffixIconSvgAssetPath != null) {
+        if (suffixIconRestricted) {
+          suffixIcon = SvgPicture.asset(
+            widget.suffixIconSvgAssetPath!,
+            width: suffixIconWidth,
+            height: suffixIconHeight,
+            color: iconColor,
+          );
+        } else {
+          suffixIcon = SvgPicture.asset(
+            widget.suffixIconSvgAssetPath!,
+            color: iconColor,
+          );
+        }
+      }
+
       final prefixIconSpacing = widget.style?.prefixIconSpacing ?? commonTheme?.buttonsStyle.buttonStyle.prefixIconSpacing ?? kCommonHorizontalMargin;
+      final suffixIconSpacing = widget.style?.suffixIconSpacing ?? commonTheme?.buttonsStyle.buttonStyle.suffixIconSpacing ?? kCommonHorizontalMargin;
 
       TextStyle? textStyle;
       if (isDisabled) {
@@ -238,6 +273,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
               style: textStyle,
             ),
           ),
+          if (suffixIcon != null) ...[
+            Container(
+              width: suffixIconSpacing,
+            ),
+            suffixIcon,
+          ],
         ],
       );
     }
@@ -348,11 +389,15 @@ class CommonButtonStyle {
   final bool prefixIconRestricted;
   final double preffixIconWidth;
   final double preffixIconHeight;
+  final bool suffixIconRestricted;
+  final double suffixIconWidth;
+  final double suffixIconHeight;
   final Color? color;
   final Color? iconColor;
   final Color? disabledColor;
   final Color? disabledIconColor;
   final double prefixIconSpacing;
+  final double suffixIconSpacing;
   final double borderWidth;
   final BorderRadius? borderRadius;
   final List<BoxShadow>? boxShadow;
@@ -378,11 +423,15 @@ class CommonButtonStyle {
     this.prefixIconRestricted = true,
     this.preffixIconWidth = kIconSize,
     this.preffixIconHeight = kIconSize,
+    this.suffixIconRestricted = true,
+    this.suffixIconWidth = kIconSize,
+    this.suffixIconHeight = kIconSize,
     this.color = Colors.black,
     this.iconColor,
     this.disabledColor = Colors.grey,
     this.disabledIconColor,
     this.prefixIconSpacing = kCommonHorizontalMargin,
+    this.suffixIconSpacing = kCommonHorizontalMargin,
     this.borderWidth = 1,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
     this.boxShadow,
@@ -409,11 +458,15 @@ class CommonButtonStyle {
     bool? prefixIconRestricted,
     double? preffixIconWidth,
     double? preffixIconHeight,
+    bool? suffixIconRestricted,
+    double? suffixIconWidth,
+    double? suffixIconHeight,
     Color? color,
     Color? iconColor,
     Color? disabledColor,
     Color? disabledIconColor,
     double? prefixIconSpacing,
+    double? suffixIconSpacing,
     double? borderWidth,
     BorderRadius? borderRadius,
     List<BoxShadow>? boxShadow,
@@ -438,11 +491,15 @@ class CommonButtonStyle {
       prefixIconRestricted: prefixIconRestricted ?? this.prefixIconRestricted,
       preffixIconWidth: preffixIconWidth ?? this.preffixIconWidth,
       preffixIconHeight: preffixIconHeight ?? this.preffixIconHeight,
+      suffixIconRestricted: suffixIconRestricted ?? this.suffixIconRestricted,
+      suffixIconWidth: suffixIconWidth ?? this.suffixIconWidth,
+      suffixIconHeight: suffixIconHeight ?? this.suffixIconHeight,
       color: color ?? this.color,
       iconColor: iconColor ?? this.iconColor,
       disabledColor: disabledColor ?? this.disabledColor,
       disabledIconColor: disabledIconColor ?? this.disabledIconColor,
       prefixIconSpacing: prefixIconSpacing ?? this.prefixIconSpacing,
+      suffixIconSpacing: suffixIconSpacing ?? this.suffixIconSpacing,
       borderWidth: borderWidth ?? this.borderWidth,
       borderRadius: borderRadius ?? this.borderRadius,
       boxShadow: boxShadow ?? this.boxShadow,

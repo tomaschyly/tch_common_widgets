@@ -1,3 +1,7 @@
+## [0.13.1] - 30.12.2022
+
+* ButtonWidget improvements
+
 ## [0.13.0] - 29.12.2022
 
 * Update to latest Core
