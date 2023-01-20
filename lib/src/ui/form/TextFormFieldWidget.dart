@@ -454,6 +454,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   void _focusChangedForIOSNativeTextField() {
     if (_focusNode.hasFocus) {
       _methodChannel!.invokeMethod('focus');
+
+      final contextOfUIKit = _uiKitKey?.currentContext;
+
+      if (contextOfUIKit != null) {
+        Future.delayed(kThemeAnimationDuration, () {
+          Scrollable.ensureVisible(_uiKitKey!.currentContext!);
+        });
+      }
     } else {
       _methodChannel!.invokeMethod('unFocus');
 
