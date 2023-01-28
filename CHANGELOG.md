@@ -1,3 +1,7 @@
+## [0.17.0] - 28.1.2023
+
+* Core upgrade
+
 ## [0.16.0] - 20.1.2023
 
 * Native iOS TextField should be visisble when keyboard
