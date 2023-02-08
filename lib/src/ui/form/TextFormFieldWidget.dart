@@ -4,12 +4,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
+import 'package:tch_appliable_core/utils/form.dart';
+import 'package:tch_appliable_core/utils/widget.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_appliable_core/utils/Color.dart';
 import 'package:tch_common_widgets/src/ui/form/Form.dart';
 
 class TextFormFieldWidget extends AbstractStatefulWidget {
+  final bool? iOSUseNativeTextField;
   final TextFormFieldStyle? style;
   final TextEditingController controller;
   final bool autofocus;
@@ -32,6 +35,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
 
   /// TextFormFieldWidget initialization
   TextFormFieldWidget({
+    this.iOSUseNativeTextField,
     this.style,
     Key? key,
     required this.controller,
@@ -61,6 +65,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
 }
 
 class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> with TickerProviderStateMixin {
+  final _wrapperKey = GlobalKey();
   late FocusNode _focusNode;
   bool _isError = false;
   String? _errorText;
@@ -96,7 +101,9 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final commonTheme = CommonTheme.of(context);
 
     bool iOSUseNativeTextField = true;
-    if (widget.style != null) {
+    if (widget.iOSUseNativeTextField != null) {
+      iOSUseNativeTextField = widget.iOSUseNativeTextField!;
+    } else if (widget.style != null) {
       iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
     } else if (commonTheme != null) {
       iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
@@ -127,7 +134,9 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final TextFormFieldVariant theVariant = widget.style?.variant ?? commonTheme?.formStyle.textFormFieldStyle.variant ?? TextFormFieldVariant.Material;
 
     bool iOSUseNativeTextField = true;
-    if (widget.style != null) {
+    if (widget.iOSUseNativeTextField != null) {
+      iOSUseNativeTextField = widget.iOSUseNativeTextField!;
+    } else if (widget.style != null) {
       iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
     } else if (commonTheme != null) {
       iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
@@ -421,7 +430,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       );
     }
 
-    return content;
+    return Container(
+      key: _wrapperKey,
+      child: content,
+    );
   }
 
   /// Response to message from platform
@@ -455,11 +467,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     if (_focusNode.hasFocus) {
       _methodChannel!.invokeMethod('focus');
 
-      final contextOfUIKit = _uiKitKey?.currentContext;
+      final contextOfWrapper = _wrapperKey.currentContext;
 
-      if (contextOfUIKit != null) {
+      if (contextOfWrapper != null) {
         Future.delayed(kThemeAnimationDuration, () {
-          Scrollable.ensureVisible(_uiKitKey!.currentContext!);
+          Scrollable.ensureVisible(
+            contextOfWrapper,
+            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+          );
         });
       }
     } else {
@@ -510,11 +525,11 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final theOnFieldSubmitted = widget.onFieldSubmitted;
 
     if (theNextFocus != null) {
-      final focusScope = FocusScope.of(context);
+      clearFocus(context);
 
-      focusScope.unfocus();
-
-      focusScope.requestFocus(theNextFocus);
+      addPostFrameCallback((_) {
+        FocusScope.of(context).requestFocus(theNextFocus);
+      });
     }
 
     if (theOnFieldSubmitted != null) {

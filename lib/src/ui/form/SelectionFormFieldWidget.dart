@@ -1,5 +1,6 @@
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/Boundary.dart';
+import 'package:tch_appliable_core/utils/form.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/ListDialog.dart';
@@ -49,6 +50,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
   T? get value => _value;
 
   final GlobalKey _fieldKey = GlobalKey();
+  bool _selectingOption = false;
   FocusNode? _focusNode;
   late List<ListDialogOption<T>> _options;
   T? _value;
@@ -160,6 +162,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
         IgnorePointer(
           ignoring: true,
           child: TextFormFieldWidget(
+            iOSUseNativeTextField: false,
             key: _fieldKey,
             style: inputStyle,
             controller: _controller,
@@ -215,9 +218,12 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
   /// Select option using ListDialog
   Future<void> selectOption(BuildContext context) async {
-    final focusScope = FocusScope.of(context);
+    if (_selectingOption) {
+      return;
+    }
+    _selectingOption = true;
 
-    focusScope.unfocus();
+    clearFocus(context);
 
     _options.forEach((ListDialogOption option) {
       option.isSelected = _value == option.value;
@@ -245,8 +251,10 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
     final theNextFocus = widget.nextFocus;
     if (newValue != null && theNextFocus != null) {
-      focusScope.requestFocus(theNextFocus);
+      FocusScope.of(context).requestFocus(theNextFocus);
     }
+
+    _selectingOption = false;
   }
 
   /// Set value to newValue if there is options for it

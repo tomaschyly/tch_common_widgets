@@ -1,3 +1,7 @@
+## [0.17.1] - 8.2.2023
+
+* Fix focus issues on iOS with nativate fields
+
 ## [0.17.0] - 28.1.2023
 
 * Core upgrade
