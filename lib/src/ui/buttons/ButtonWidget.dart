@@ -94,9 +94,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
     final theVariant = widget.style?.variant ?? commonTheme?.buttonsStyle.buttonStyle.variant ?? ButtonVariant.Outlined;
 
     Color color = widget.style?.color ?? commonTheme?.buttonsStyle.buttonStyle.color ?? Colors.black;
+    Gradient? gradient = widget.style?.gradient ?? commonTheme?.buttonsStyle.buttonStyle.gradient ?? null;
     if (isDisabled) {
       color = widget.style?.disabledColor ?? commonTheme?.buttonsStyle.buttonStyle.disabledColor ?? Colors.grey;
+      gradient = widget.style?.disabledGradient ?? commonTheme?.buttonsStyle.buttonStyle.disabledGradient ?? gradient;
     }
+
     Color iconColor = widget.style?.iconColor ?? commonTheme?.buttonsStyle.buttonStyle.iconColor ?? color;
     if (isDisabled) {
       iconColor = widget.style?.disabledIconColor ?? commonTheme?.buttonsStyle.buttonStyle.disabledIconColor ?? color;
@@ -318,11 +321,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       );
     }
 
-    if (boxShadow != null) {
+    if (boxShadow != null || gradient != null) {
       content = Container(
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           boxShadow: boxShadow,
+          gradient: gradient,
         ),
         child: content,
       );
@@ -393,6 +397,8 @@ class CommonButtonStyle {
   final double suffixIconWidth;
   final double suffixIconHeight;
   final Color? color;
+  final Gradient? gradient;
+  final Gradient? disabledGradient;
   final Color? iconColor;
   final Color? disabledColor;
   final Color? disabledIconColor;
@@ -427,6 +433,8 @@ class CommonButtonStyle {
     this.suffixIconWidth = kIconSize,
     this.suffixIconHeight = kIconSize,
     this.color = Colors.black,
+    this.gradient,
+    this.disabledGradient,
     this.iconColor,
     this.disabledColor = Colors.grey,
     this.disabledIconColor,
@@ -462,6 +470,8 @@ class CommonButtonStyle {
     double? suffixIconWidth,
     double? suffixIconHeight,
     Color? color,
+    Gradient? gradient,
+    Gradient? disabledGradient,
     Color? iconColor,
     Color? disabledColor,
     Color? disabledIconColor,
@@ -495,6 +505,8 @@ class CommonButtonStyle {
       suffixIconWidth: suffixIconWidth ?? this.suffixIconWidth,
       suffixIconHeight: suffixIconHeight ?? this.suffixIconHeight,
       color: color ?? this.color,
+      gradient: gradient ?? this.gradient,
+      disabledGradient: disabledGradient ?? this.disabledGradient,
       iconColor: iconColor ?? this.iconColor,
       disabledColor: disabledColor ?? this.disabledColor,
       disabledIconColor: disabledIconColor ?? this.disabledIconColor,

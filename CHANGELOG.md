@@ -1,3 +1,7 @@
+## [0.18.1] - 14.2.2023
+
+* ButtonWidget gradient option
+
 ## [0.18.0] - 14.2.2023
 
 * Core upgrade
