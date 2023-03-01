@@ -11,6 +11,7 @@ class SwitchToggleWidget extends AbstractStatefulWidget {
 
   /// SwitchToggleWidget initialization
   SwitchToggleWidget({
+    super.key,
     this.style,
     this.onChange,
     this.initialValue = false,

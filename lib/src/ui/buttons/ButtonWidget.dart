@@ -18,6 +18,7 @@ class ButtonWidget extends AbstractStatefulWidget {
 
   /// ButtonWidget initialization
   ButtonWidget({
+    super.key,
     this.style,
     required this.text,
     this.prefixIconSvgAssetPath,

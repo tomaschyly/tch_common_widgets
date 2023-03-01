@@ -11,6 +11,7 @@ class IconButtonWidget extends StatelessWidget {
 
   /// IconButtonWidget initialization
   IconButtonWidget({
+    super.key,
     this.style,
     this.svgAssetPath,
     this.iconWidget,
@@ -74,14 +75,14 @@ class IconButtonWidget extends StatelessWidget {
           decoration: variant == IconButtonVariant.IconOnly
               ? null
               : BoxDecoration(
-            color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
-            border: Border.all(
-              color: color,
-              width: theBorderWidth,
-            ),
-            borderRadius: borderRadius,
-            boxShadow: boxShadow,
-          ),
+                  color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
+                  border: Border.all(
+                    color: color,
+                    width: theBorderWidth,
+                  ),
+                  borderRadius: borderRadius,
+                  boxShadow: boxShadow,
+                ),
           child: Center(
             child: icon,
           ),

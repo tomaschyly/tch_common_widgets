@@ -1,3 +1,7 @@
+## [0.18.2] - 1.3.2023
+
+* Add Keys to widgets
+
 ## [0.18.1] - 14.2.2023
 
 * ButtonWidget gradient option

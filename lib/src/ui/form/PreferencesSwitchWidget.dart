@@ -17,6 +17,7 @@ class PreferencesSwitchWidget extends AbstractStatefulWidget {
 
   /// PreferencesSwitchWidget initialization
   PreferencesSwitchWidget({
+    super.key,
     this.style,
     required this.label,
     required this.prefsKey,

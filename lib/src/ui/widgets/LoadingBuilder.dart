@@ -7,6 +7,7 @@ class LoadingBuilder extends StatelessWidget {
 
   /// LoadingBuilder initialization
   LoadingBuilder({
+    super.key,
     this.isLoading,
     required this.builder,
     String? tag,

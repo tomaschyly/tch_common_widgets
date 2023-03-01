@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tch_common_widgets/src/ui/buttons/Buttons.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/Dialogs.dart';
 import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class CommonTheme extends InheritedWidget {

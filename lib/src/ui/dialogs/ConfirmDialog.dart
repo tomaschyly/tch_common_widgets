@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/DialogContainer.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';

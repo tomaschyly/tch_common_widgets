@@ -64,7 +64,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => _TextFormFieldWidgetState();
 }
 
-class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> with TickerProviderStateMixin {
+class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> {
   final _wrapperKey = GlobalKey();
   late FocusNode _focusNode;
   bool _isError = false;
@@ -423,7 +423,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     if (animatedSizeChanges) {
       content = AnimatedSize(
-        vsync: this,
         duration: kThemeAnimationDuration,
         alignment: Alignment.topCenter,
         child: content,
