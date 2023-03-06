@@ -14,6 +14,7 @@ import 'package:tch_common_widgets/src/ui/form/Form.dart';
 class TextFormFieldWidget extends AbstractStatefulWidget {
   final bool? iOSUseNativeTextField;
   final TextFormFieldStyle? style;
+  final String? iOSFontFamily;
   final TextEditingController controller;
   final bool autofocus;
   final FocusNode? focusNode;
@@ -37,6 +38,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   TextFormFieldWidget({
     this.iOSUseNativeTextField,
     this.style,
+    this.iOSFontFamily,
     Key? key,
     required this.controller,
     this.autofocus = false,
@@ -253,15 +255,20 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
       TextStyle? inputStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
+      TextStyle? hintStyle = widget.style?.inputDecoration.hintStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintStyle;
       if (inputStyle != null && commonTheme != null) {
         inputStyle = commonTheme.preProcessTextStyle(inputStyle);
       }
+      if (hintStyle != null && commonTheme != null) {
+        hintStyle = commonTheme.preProcessTextStyle(hintStyle);
+      }
 
       final creationParams = _IOSUseNativeTextFieldParams(
+        iOSFontFamily: widget.iOSFontFamily ?? commonTheme?.iOSFontFamily,
         text: widget.controller.text,
         inputStyle: inputStyle,
         hintText: theDecoration.hintText,
-        hintStyle: widget.style?.inputDecoration.hintStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintStyle,
+        hintStyle: hintStyle,
         maxLines: theLines,
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
@@ -271,7 +278,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         obscureText: theObscureText,
       );
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      addPostFrameCallback((_) {
         _methodChannel?.invokeMethod("sync", creationParams.toJson());
       });
 
@@ -678,6 +685,7 @@ class TextFormFieldStyle {
 }
 
 class _IOSUseNativeTextFieldParams extends DataModel {
+  String? iOSFontFamily;
   String text;
   TextStyle? inputStyle;
   String? hintText;
@@ -692,6 +700,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
 
   /// IOSUseNativeTextFieldParams initialization
   _IOSUseNativeTextFieldParams({
+    this.iOSFontFamily,
     required this.text,
     this.inputStyle,
     this.hintText,
@@ -714,7 +723,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
         'color': inputStyle!.color?.toHex(),
         'fontSize': inputStyle!.fontSize,
         'fontWeightBold': inputStyle!.fontWeight == FontWeight.bold,
-        'fontFamily': inputStyle!.fontFamily,
+        'fontFamily': inputStyle!.fontFamily ?? "",
       };
     }
 
@@ -724,11 +733,12 @@ class _IOSUseNativeTextFieldParams extends DataModel {
         'color': hintStyle!.color?.toHex(),
         'fontSize': hintStyle!.fontSize,
         'fontWeightBold': hintStyle!.fontWeight == FontWeight.bold,
-        'fontFamily': hintStyle!.fontFamily,
+        'fontFamily': hintStyle!.fontFamily ?? "",
       };
     }
 
     return <String, dynamic>{
+      'iOSFontFamily': iOSFontFamily ?? '',
       'text': text,
       'inputStyle': _inputStyle,
       'hintText': hintText,

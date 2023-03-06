@@ -152,8 +152,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                     isBold = theFontWeightBold
                 }
                 
-                if let theFontFamily = theInputStyle["fontFamily"] as? String {
+                if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
                     theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
+                } else if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
+                    theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize))
                 } else {
                     theTextField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
                 }
@@ -176,8 +178,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                     isBold = theFontWeightBold
                 }
                 
-                if let theFontFamily = theInputStyle["fontFamily"] as? String {
+                if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
                     theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
+                } else if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
+                    theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize))
                 } else {
                     theTextField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
                 }
@@ -200,7 +204,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                 result(nil)
                 break
             case "getText":
-                result(theTextField.text ?? "")
+                var text = theTextField.text ?? ""
+                text = text == _params.hintText ? "" : text
+
+                result(text)
                 break
             case "setText":
                 theTextField.text = (call.arguments as? String) ?? ""
@@ -209,9 +216,9 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             case "sync":
                 _params = IOSUseNativeTextFieldParams.fromJson(dictionary: call.arguments as! NSDictionary)
 
-                if !_isFocused, _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextField.text!.isEmpty {
+                if !_isFocused, _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty {
                     theTextField.text = theHintText
-
+                    
                     styleTextField(textField: theTextField, params: _params, requestingPlaceholder: true)
                 } else {
                     styleTextField(textField: theTextField, params: _params, requestingPlaceholder: false)
@@ -231,7 +238,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                 result(nil)
                 break
             case "getText":
-                result(theTextView.text ?? "")
+                var text = theTextView.text ?? ""
+                text = text == _params.hintText ? "" : text
+
+                result(text)
                 break
             case "setText":
                 theTextView.text = (call.arguments as? String) ?? ""
@@ -240,9 +250,9 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
             case "sync":
                 _params = IOSUseNativeTextFieldParams.fromJson(dictionary: call.arguments as! NSDictionary)
 
-                if !_isFocused, _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty, theTextView.text.isEmpty {
+                if !_isFocused, _params.text.isEmpty, let theHintText = _params.hintText, !theHintText.isEmpty {
                     theTextView.text = theHintText
-
+                    
                     styleTextField(textField: theTextView, params: _params, requestingPlaceholder: true)
                 } else {
                     styleTextField(textField: theTextView, params: _params, requestingPlaceholder: false)
@@ -320,7 +330,9 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
      * On realtime change text of UITextField, update Flutter.
      */
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let text = textField.text?.replacingCharacters(in: Range(range, in: textField.text!)!, with: string) ?? ""
+        var text = textField.text?.replacingCharacters(in: Range(range, in: textField.text!)!, with: string) ?? ""
+
+        text = text == _params.hintText ? "" : text
         
         _channel.invokeMethod("setText", arguments: text)
         
@@ -331,7 +343,9 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
      * On realtime change text of UITextView, update Flutter.
      */
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let text = textView.text.replacingCharacters(in: Range(range, in: textView.text)!, with: text)
+        var text = textView.text.replacingCharacters(in: Range(range, in: textView.text)!, with: text)
+
+        text = text == _params.hintText ? "" : text
         
         _channel.invokeMethod("setText", arguments: text)
         
@@ -343,7 +357,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
      */
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if _params.maxLines == 1 {
-            _channel.invokeMethod("didEndEditing", arguments: textField.text ?? "")
+            var text = textField.text ?? ""
+            text = text == _params.hintText ? "" : text
+
+            _channel.invokeMethod("didEndEditing", arguments: text)
         }
         
         return _params.maxLines == 1
@@ -463,6 +480,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
 }
 
 struct IOSUseNativeTextFieldParams {
+    var iOSFontFamily: String?
     var text: String
     var inputStyle: NSDictionary?
     var hintText: String?
@@ -480,6 +498,7 @@ struct IOSUseNativeTextFieldParams {
      */
     static func fromJson(dictionary: NSDictionary) -> IOSUseNativeTextFieldParams {
         return IOSUseNativeTextFieldParams(
+            iOSFontFamily: dictionary["iOSFontFamily"] as? String,
             text: dictionary["text"] as! String,
             inputStyle: dictionary["inputStyle"] as? NSDictionary,
             hintText: dictionary["hintText"] as? String,
@@ -492,5 +511,18 @@ struct IOSUseNativeTextFieldParams {
             autocorrect: dictionary["autocorrect"] as! Bool,
             obscureText: dictionary["obscureText"] as! Bool
         )
+    }
+}
+
+/**
+ * Log Fonts available in the app.
+ */
+func logFonts() {
+    print("logFonts")
+    for family: String in UIFont.familyNames {
+        print("\(family)")
+        for names: String in UIFont.fontNames(forFamilyName: family) {
+            print("== \(names)")
+        }
     }
 }

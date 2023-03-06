@@ -4,6 +4,7 @@ import 'package:tch_common_widgets/tch_common_widgets.dart';
 class CommonTheme extends InheritedWidget {
   final CommonDimens commonDimens;
   final String? fontFamily;
+  final String? iOSFontFamily;
   final ButtonsStyle buttonsStyle;
   final DialogsStyle dialogsStyle;
   final FormStyle formStyle;
@@ -13,6 +14,7 @@ class CommonTheme extends InheritedWidget {
     required Widget child,
     this.commonDimens = const CommonDimens(),
     this.fontFamily,
+    this.iOSFontFamily,
     this.buttonsStyle = const ButtonsStyle(),
     this.dialogsStyle = const DialogsStyle(),
     this.formStyle = const FormStyle(),

@@ -1,3 +1,7 @@
+## [0.19.0] - 6.3.2023
+
+* iOS native TextFormField multiple style fixes for hints
+
 ## [0.18.2] - 1.3.2023
 
 * Add Keys to widgets
