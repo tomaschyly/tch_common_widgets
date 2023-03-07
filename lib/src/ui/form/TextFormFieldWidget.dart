@@ -486,6 +486,13 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
             contextOfWrapper,
             alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
           );
+
+          Future.delayed(kThemeAnimationDuration, () {
+            Scrollable.ensureVisible(
+              contextOfWrapper,
+              alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
+            );
+          });
         });
       }
     } else {
@@ -503,7 +510,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// Make sure Widget is visible on screen and set focus
   void _focusIOSNativeTextField() {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    addPostFrameCallback((_) {
       if (mounted) {
         context.findRenderObject()!.showOnScreen(
               duration: kThemeAnimationDuration,

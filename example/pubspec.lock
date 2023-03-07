@@ -480,7 +480,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.19.1"
+    version: "0.19.2"
   term_glyph:
     dependency: transitive
     description:

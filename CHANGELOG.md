@@ -1,3 +1,7 @@
+## [0.19.2] - 7.3.2023
+
+* TextFormField, iOS native, double ensure visible with keyboard
+
 ## [0.19.1] - 7.3.2023
 
 * TextFormField, compatible with iOS native, support max text length limit, enforced
