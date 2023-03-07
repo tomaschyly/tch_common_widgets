@@ -29,6 +29,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final Widget? suffix;
   final Widget? suffixIcon;
   final int lines;
+  final int? maxLength;
   final List<FormFieldValidation<String>>? validations;
   final bool enabled;
   final bool autocorrect;
@@ -54,6 +55,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.suffix,
     this.suffixIcon,
     this.lines = 1,
+    this.maxLength,
     this.validations,
     this.enabled = true,
     this.autocorrect = true,
@@ -270,6 +272,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         hintText: theDecoration.hintText,
         hintStyle: hintStyle,
         maxLines: theLines,
+        maxLength: widget.maxLength,
         keyboardType: theKeyboardType,
         textInputAction: theTextInputAction,
         textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
@@ -381,6 +384,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
         minLines: theLines,
         maxLines: theLines,
+        maxLength: widget.maxLength,
+        maxLengthEnforcement: widget.maxLength != null ? MaxLengthEnforcement.enforced : null,
         validator: (String? value) {
           if (theValidations != null) {
             final validated = validateValidations(theValidations, value);
@@ -691,6 +696,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
   String? hintText;
   TextStyle? hintStyle;
   int maxLines;
+  int? maxLength;
   TextInputType? keyboardType;
   TextInputAction? textInputAction;
   TextCapitalization textCapitalization;
@@ -706,6 +712,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
     this.hintText,
     this.hintStyle,
     required this.maxLines,
+    this.maxLength,
     this.keyboardType,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
@@ -744,6 +751,7 @@ class _IOSUseNativeTextFieldParams extends DataModel {
       'hintText': hintText,
       'hintStyle': _hintStyle,
       'maxLines': maxLines,
+      'maxLength': maxLength ?? 0,
       'keyboardType': keyboardType?.toJson()['name'],
       'textInputAction': textInputAction?.toString(),
       'textCapitalization': textCapitalization.toString(),

@@ -1,3 +1,7 @@
+## [0.19.1] - 7.3.2023
+
+* TextFormField, compatible with iOS native, support max text length limit, enforced
+
 ## [0.19.0] - 6.3.2023
 
 * iOS native TextFormField multiple style fixes for hints

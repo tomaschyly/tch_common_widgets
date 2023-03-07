@@ -333,6 +333,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
         var text = textField.text?.replacingCharacters(in: Range(range, in: textField.text!)!, with: string) ?? ""
 
         text = text == _params.hintText ? "" : text
+
+        if _params.maxLength > 0 && text.count > _params.maxLength {
+            return false
+        }
         
         _channel.invokeMethod("setText", arguments: text)
         
@@ -346,6 +350,10 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
         var text = textView.text.replacingCharacters(in: Range(range, in: textView.text)!, with: text)
 
         text = text == _params.hintText ? "" : text
+
+        if _params.maxLength > 0 && text.count > _params.maxLength {
+            return false
+        }
         
         _channel.invokeMethod("setText", arguments: text)
         
@@ -486,6 +494,7 @@ struct IOSUseNativeTextFieldParams {
     var hintText: String?
     var hintStyle: NSDictionary?
     var maxLines: Int
+    var maxLength: Int
     var keyboardType: String?
     var textInputAction: String?
     var textCapitalization: String
@@ -504,6 +513,7 @@ struct IOSUseNativeTextFieldParams {
             hintText: dictionary["hintText"] as? String,
             hintStyle: dictionary["hintStyle"] as? NSDictionary,
             maxLines: dictionary["maxLines"] as! Int,
+            maxLength: dictionary["maxLength"] as! Int,
             keyboardType: dictionary["keyboardType"] as? String,
             textInputAction: dictionary["textInputAction"] as? String,
             textCapitalization: dictionary["textCapitalization"] as! String,
