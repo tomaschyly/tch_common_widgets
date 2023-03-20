@@ -223,8 +223,8 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
 
     focusScope.unfocus();
 
-    final DateTime firstDate = widget.firstDate ?? Jiffy().startOf(Units.YEAR).dateTime;
-    final DateTime lastDate = widget.lastDate ?? Jiffy().add(years: 1).endOf(Units.YEAR).dateTime;
+    final DateTime firstDate = widget.firstDate ?? Jiffy.now().startOf(Unit.year).dateTime;
+    final DateTime lastDate = widget.lastDate ?? Jiffy.now().add(years: 1).endOf(Unit.year).dateTime;
 
     DateTime initialDate = _value ?? DateTime.now();
 

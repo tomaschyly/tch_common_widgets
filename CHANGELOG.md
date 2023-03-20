@@ -1,3 +1,7 @@
+## [0.20.0] - 20.3.2023
+
+* Upgrade dependencies with some **breaking changes**
+
 ## [0.19.2] - 7.3.2023
 
 * TextFormField, iOS native, double ensure visible with keyboard
