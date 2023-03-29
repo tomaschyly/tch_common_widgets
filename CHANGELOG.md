@@ -1,3 +1,7 @@
+## [0.20.1] - 29.3.2023
+
+* Add option to show prefix/suffix only on text isNotEmpty
+
 ## [0.20.0] - 20.3.2023
 
 * Upgrade dependencies with some **breaking changes**

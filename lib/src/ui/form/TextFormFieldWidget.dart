@@ -26,8 +26,10 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final String? label;
   final Widget? prefix;
   final Widget? prefixIcon;
+  final bool prefixOnlyWhenNotEmpty;
   final Widget? suffix;
   final Widget? suffixIcon;
+  final bool suffixOnlyWhenNotEmpty;
   final int lines;
   final int? maxLength;
   final List<FormFieldValidation<String>>? validations;
@@ -52,8 +54,10 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.label,
     this.prefix,
     this.prefixIcon,
+    this.prefixOnlyWhenNotEmpty = false,
     this.suffix,
     this.suffixIcon,
+    this.suffixOnlyWhenNotEmpty = false,
     this.lines = 1,
     this.maxLength,
     this.validations,
@@ -76,6 +80,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   GlobalKey? _uiKitKey;
   MethodChannel? _methodChannel;
   String? _ignoreSetTextOnIOSNativeTextField;
+  final _displayPrefix = ValueNotifier<bool>(true);
+  final _displaySuffix = ValueNotifier<bool>(true);
 
   /// State initialization
   @override
@@ -83,6 +89,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     super.initState();
 
     _focusNode = widget.focusNode ?? FocusNode();
+
+    if (widget.prefixOnlyWhenNotEmpty && widget.controller.text.isEmpty) {
+      _displayPrefix.value = false;
+    }
+
+    if (widget.suffixOnlyWhenNotEmpty && widget.controller.text.isEmpty) {
+      _displaySuffix.value = false;
+    }
   }
 
   /// Manually dispose of resources
@@ -90,6 +104,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   void dispose() {
     _methodChannel = null;
 
+    widget.controller.removeListener(_controllerTextChanged);
     widget.controller.removeListener(_controllerTextChangedForIOSNativeTextField);
 
     _focusNode.removeListener(_focusChangedForIOSNativeTextField);
@@ -101,6 +116,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   @override
   firstBuildOnly(BuildContext context) {
     super.firstBuildOnly(context);
+
+    widget.controller.addListener(_controllerTextChanged);
 
     final commonTheme = CommonTheme.of(context);
 
@@ -253,6 +270,11 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     final theObscureText = widget.obscureText ?? widget.style?.obscureText ?? commonTheme?.formStyle.textFormFieldStyle.obscureText ?? false;
 
+    final thePrefix = widget.prefix ?? widget.style?.inputDecoration.prefix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefix;
+    final thePrefixIcon = widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon;
+    final theSuffix = widget.suffix ?? widget.style?.inputDecoration.suffix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix;
+    final suffixIcon = widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon;
+
     late Widget field;
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
@@ -297,12 +319,54 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
                 InputDecorator(
                   decoration: theDecoration.copyWith(
                     labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
-                    prefix: widget.prefix ?? widget.style?.inputDecoration.prefix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefix,
-                    prefixIcon:
-                        widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
-                    suffix: widget.suffix ?? widget.style?.inputDecoration.suffix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix,
-                    suffixIcon:
-                        widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
+                    prefix: thePrefix != null
+                        ? ValueListenableBuilder(
+                            valueListenable: _displayPrefix,
+                            builder: (context, value, child) {
+                              if (value) {
+                                return thePrefix;
+                              }
+
+                              return SizedBox();
+                            },
+                          )
+                        : null,
+                    prefixIcon: thePrefixIcon != null
+                        ? ValueListenableBuilder(
+                            valueListenable: _displayPrefix,
+                            builder: (context, value, child) {
+                              if (value) {
+                                return thePrefixIcon;
+                              }
+
+                              return SizedBox();
+                            },
+                          )
+                        : null,
+                    suffix: theSuffix != null
+                        ? ValueListenableBuilder(
+                            valueListenable: _displaySuffix,
+                            builder: (context, value, child) {
+                              if (value) {
+                                return theSuffix;
+                              }
+
+                              return SizedBox();
+                            },
+                          )
+                        : null,
+                    suffixIcon: suffixIcon != null
+                        ? ValueListenableBuilder(
+                            valueListenable: _displaySuffix,
+                            builder: (context, value, child) {
+                              if (value) {
+                                return suffixIcon;
+                              }
+
+                              return SizedBox();
+                            },
+                          )
+                        : null,
                     hintText: '',
                     errorText: _isError ? _errorText : null,
                   ),
@@ -375,10 +439,54 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         style: textStyle,
         decoration: theDecoration.copyWith(
           labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
-          prefix: widget.prefix ?? widget.style?.inputDecoration.prefix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefix,
-          prefixIcon: widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon,
-          suffix: widget.suffix ?? widget.style?.inputDecoration.suffix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix,
-          suffixIcon: widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon,
+          prefix: thePrefix != null
+              ? ValueListenableBuilder(
+                  valueListenable: _displayPrefix,
+                  builder: (context, value, child) {
+                    if (value) {
+                      return thePrefix;
+                    }
+
+                    return SizedBox();
+                  },
+                )
+              : null,
+          prefixIcon: thePrefixIcon != null
+              ? ValueListenableBuilder(
+                  valueListenable: _displayPrefix,
+                  builder: (context, value, child) {
+                    if (value) {
+                      return thePrefixIcon;
+                    }
+
+                    return SizedBox();
+                  },
+                )
+              : null,
+          suffix: theSuffix != null
+              ? ValueListenableBuilder(
+                  valueListenable: _displaySuffix,
+                  builder: (context, value, child) {
+                    if (value) {
+                      return theSuffix;
+                    }
+
+                    return SizedBox();
+                  },
+                )
+              : null,
+          suffixIcon: suffixIcon != null
+              ? ValueListenableBuilder(
+                  valueListenable: _displaySuffix,
+                  builder: (context, value, child) {
+                    if (value) {
+                      return suffixIcon;
+                    }
+
+                    return SizedBox();
+                  },
+                )
+              : null,
         ),
         textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
         textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
@@ -445,6 +553,28 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       key: _wrapperKey,
       child: content,
     );
+  }
+
+  /// Listen to text changes on TextEditingController and update prefix/suffix display
+  void _controllerTextChanged() {
+    print('TCH_d widget.controller.text = ${widget.controller.text}'); //TODO remove
+    if (widget.controller.text.isEmpty) {
+      if (widget.prefixOnlyWhenNotEmpty) {
+        _displayPrefix.value = false;
+      }
+
+      if (widget.suffixOnlyWhenNotEmpty) {
+        _displaySuffix.value = false;
+      }
+    } else {
+      if (widget.prefixOnlyWhenNotEmpty) {
+        _displayPrefix.value = true;
+      }
+
+      if (widget.suffixOnlyWhenNotEmpty) {
+        _displaySuffix.value = true;
+      }
+    }
   }
 
   /// Response to message from platform
