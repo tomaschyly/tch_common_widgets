@@ -1,3 +1,7 @@
+## [0.20.2] - 7.4.2023
+
+* Core upgrade
+
 ## [0.20.1] - 29.3.2023
 
 * Add option to show prefix/suffix only on text isNotEmpty
