@@ -401,10 +401,10 @@ packages:
     dependency: "direct main"
     description:
       name: tch_appliable_core
-      sha256: a5e7a8f66885e70efafd91d2388cb958ade432d4dbe617d6996c4b91fbb2584e
+      sha256: "85cab5b6e755f5cd6e433c5b5b0b9e1b21f934ef7de216805ddf4f982379fbd5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.20.0"
+    version: "0.20.1"
   term_glyph:
     dependency: transitive
     description:

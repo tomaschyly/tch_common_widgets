@@ -557,7 +557,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// Listen to text changes on TextEditingController and update prefix/suffix display
   void _controllerTextChanged() {
-    print('TCH_d widget.controller.text = ${widget.controller.text}'); //TODO remove
     if (widget.controller.text.isEmpty) {
       if (widget.prefixOnlyWhenNotEmpty) {
         _displayPrefix.value = false;
