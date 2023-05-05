@@ -8,6 +8,7 @@ class CommonTheme extends InheritedWidget {
   final ButtonsStyle buttonsStyle;
   final DialogsStyle dialogsStyle;
   final FormStyle formStyle;
+  final TooltipStyle tooltipStyle;
 
   /// CommonTheme initialization
   const CommonTheme({
@@ -18,6 +19,7 @@ class CommonTheme extends InheritedWidget {
     this.buttonsStyle = const ButtonsStyle(),
     this.dialogsStyle = const DialogsStyle(),
     this.formStyle = const FormStyle(),
+    this.tooltipStyle = const TooltipStyle(),
   }) : super(child: child);
 
   /// Access current CommonTheme anywhere from BuildContext
@@ -35,12 +37,14 @@ class CommonTheme extends InheritedWidget {
 
     final theFontFamily = fontFamily;
     if (theFontFamily != null && processedTextStyle.fontFamily == null) {
-      processedTextStyle = processedTextStyle.copyWith(fontFamily: theFontFamily);
+      processedTextStyle =
+          processedTextStyle.copyWith(fontFamily: theFontFamily);
     }
 
     return processedTextStyle;
   }
 
   /// Check if OS Dark mode is enabled
-  static bool isOSDarkMode(BuildContext context) => MediaQuery.of(context).platformBrightness == Brightness.dark;
+  static bool isOSDarkMode(BuildContext context) =>
+      MediaQuery.of(context).platformBrightness == Brightness.dark;
 }

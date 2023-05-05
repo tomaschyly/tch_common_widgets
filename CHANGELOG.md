@@ -1,3 +1,7 @@
+## [0.23.0] - 5.5.2023
+
+* Add TooltipWidget and innclude with Buttons
+
 ## [0.22.0] - 2.5.2023
 
 * Core upgrade
