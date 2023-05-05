@@ -21,10 +21,11 @@ class SwitchToggleWidget extends AbstractStatefulWidget {
 
   /// Create state for widget
   @override
-  State<StatefulWidget> createState() => _SwitchToggleWidgetState();
+  State<StatefulWidget> createState() => SwitchToggleWidgetState();
 }
 
-class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleWidget> {
+class SwitchToggleWidgetState
+    extends AbstractStatefulWidgetState<SwitchToggleWidget> {
   bool _value = false;
 
   /// State initialization
@@ -40,27 +41,41 @@ class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleW
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final IconButtonStyle iconButtonStyle =
-        (widget.style?.iconButtonStyle ?? commonTheme?.formStyle.switchToggleWidgetStyle.iconButtonStyle) ?? const IconButtonStyle();
-    final String? onSvgAssetPath = widget.style?.onSvgAssetPath ?? commonTheme?.formStyle.switchToggleWidgetStyle.onSvgAssetPath;
-    final String? offSvgAssetPath = widget.style?.offSvgAssetPath ?? commonTheme?.formStyle.switchToggleWidgetStyle.offSvgAssetPath;
+    final IconButtonStyle iconButtonStyle = (widget.style?.iconButtonStyle ??
+            commonTheme?.formStyle.switchToggleWidgetStyle.iconButtonStyle) ??
+        const IconButtonStyle();
+    final String? onSvgAssetPath = widget.style?.onSvgAssetPath ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.onSvgAssetPath;
+    final String? offSvgAssetPath = widget.style?.offSvgAssetPath ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.offSvgAssetPath;
 
-    final Widget? onIconWidget = widget.style?.onIconWidget ?? commonTheme?.formStyle.switchToggleWidgetStyle.onIconWidget;
-    final Widget? offIconWidget = widget.style?.offIconWidget ?? commonTheme?.formStyle.switchToggleWidgetStyle.offIconWidget;
+    final Widget? onIconWidget = widget.style?.onIconWidget ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.onIconWidget;
+    final Widget? offIconWidget = widget.style?.offIconWidget ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.offIconWidget;
 
-    final bool useText = widget.style?.useText ?? commonTheme?.formStyle.switchToggleWidgetStyle.useText ?? true;
+    final bool useText = widget.style?.useText ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.useText ??
+        true;
 
     String? svgAssetPath;
     Widget? iconWidget;
 
     if (useText) {
-      TextStyle? textStyle = widget.style?.textStyle ?? commonTheme?.formStyle.switchToggleWidgetStyle.textStyle;
+      TextStyle? textStyle = widget.style?.textStyle ??
+          commonTheme?.formStyle.switchToggleWidgetStyle.textStyle;
       if (textStyle != null && commonTheme != null) {
         textStyle = commonTheme.preProcessTextStyle(textStyle);
       }
 
-      final String onText = (widget.onText ?? widget.style?.onText ?? commonTheme?.formStyle.switchToggleWidgetStyle.onText) ?? 'On';
-      final String offText = (widget.offText ?? widget.style?.offText ?? commonTheme?.formStyle.switchToggleWidgetStyle.offText) ?? 'Off';
+      final String onText = (widget.onText ??
+              widget.style?.onText ??
+              commonTheme?.formStyle.switchToggleWidgetStyle.onText) ??
+          'On';
+      final String offText = (widget.offText ??
+              widget.style?.offText ??
+              commonTheme?.formStyle.switchToggleWidgetStyle.offText) ??
+          'Off';
 
       iconWidget = Text(
         _value ? onText : offText,
@@ -73,9 +88,15 @@ class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleW
       iconWidget = _value ? onIconWidget : offIconWidget;
     }
 
-    final bool semaphore = widget.style?.semaphore ?? commonTheme?.formStyle.switchToggleWidgetStyle.semaphore ?? true;
-    final Color semaphoreOnColor = widget.style?.semaphoreOnColor ?? commonTheme?.formStyle.switchToggleWidgetStyle.semaphoreOnColor ?? Colors.green;
-    final Color semaphoreOffColor = widget.style?.semaphoreOffColor ?? commonTheme?.formStyle.switchToggleWidgetStyle.semaphoreOffColor ?? Colors.red;
+    final bool semaphore = widget.style?.semaphore ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.semaphore ??
+        true;
+    final Color semaphoreOnColor = widget.style?.semaphoreOnColor ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.semaphoreOnColor ??
+        Colors.green;
+    final Color semaphoreOffColor = widget.style?.semaphoreOffColor ??
+        commonTheme?.formStyle.switchToggleWidgetStyle.semaphoreOffColor ??
+        Colors.red;
 
     return Stack(
       alignment: Alignment.center,
@@ -111,7 +132,8 @@ class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleW
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: (_value ? semaphoreOnColor : semaphoreOffColor).withOpacity(0.7),
+                    color: (_value ? semaphoreOnColor : semaphoreOffColor)
+                        .withOpacity(0.7),
                     blurRadius: 3,
                     spreadRadius: 1,
                     offset: Offset(0, -1),
@@ -122,6 +144,13 @@ class _SwitchToggleWidgetState extends AbstractStatefulWidgetState<SwitchToggleW
           ),
       ],
     );
+  }
+
+  /// Change value
+  void changeValue(bool value) {
+    _value = value;
+
+    setStateNotDisposed(() {});
   }
 }
 
@@ -147,13 +176,16 @@ class SwitchToggleWidgetStyle {
     this.onIconWidget,
     this.offIconWidget,
     this.useText = false,
-    this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+    this.textStyle = const TextStyle(
+        color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.onText,
     this.offText,
     this.semaphore = true,
     this.semaphoreOnColor = Colors.green,
     this.semaphoreOffColor = Colors.red,
-  }) : assert((onSvgAssetPath != null && offSvgAssetPath != null) || (onIconWidget != null && offIconWidget != null) || useText);
+  }) : assert((onSvgAssetPath != null && offSvgAssetPath != null) ||
+            (onIconWidget != null && offIconWidget != null) ||
+            useText);
 
   /// Create copy if this style with changes
   SwitchToggleWidgetStyle copyWith({

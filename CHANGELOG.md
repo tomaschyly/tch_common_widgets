@@ -1,3 +1,7 @@
+## [0.23.1] - 5.5.2023
+
+* Improve SwitchToggleWidget functionality
+
 ## [0.23.0] - 5.5.2023
 
 * Add TooltipWidget and innclude with Buttons
