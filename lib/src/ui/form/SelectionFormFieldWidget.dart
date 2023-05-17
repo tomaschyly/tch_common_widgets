@@ -1,11 +1,11 @@
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/Boundary.dart';
+import 'package:tch_appliable_core/utils/List.dart';
 import 'package:tch_appliable_core/utils/form.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/ListDialog.dart';
 import 'package:tch_common_widgets/src/ui/form/Form.dart';
-import 'package:tch_appliable_core/utils/List.dart';
 import 'package:tch_common_widgets/src/ui/form/TextFormFieldWidget.dart';
 
 class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
@@ -15,12 +15,14 @@ class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
   final String? label;
   final String? selectionTitle;
   final String? clearText;
+  final String? confirmText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final T? initialValue;
   final List<ListDialogOption<T>> options;
   final ValueChanged<T?>? onChange;
   final List<FormFieldValidation<T>>? validations;
+  final SelectionFormFieldCustomOption? customOption;
 
   /// SelectionFormFieldWidget initialization
   SelectionFormFieldWidget({
@@ -31,13 +33,16 @@ class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
     this.label,
     this.selectionTitle,
     this.clearText,
+    this.confirmText,
     this.prefixIcon,
     this.suffixIcon,
     this.initialValue,
     required this.options,
     this.onChange,
     this.validations,
-  })  : assert(options.isNotEmpty),
+    this.customOption,
+  })
+      : assert(options.isNotEmpty),
         assert((focusNode == null && nextFocus == null) || focusNode != null),
         super(key: key);
 
@@ -55,8 +60,11 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
   late List<ListDialogOption<T>> _options;
   T? _value;
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _customOptionTextController = TextEditingController();
+  final FocusNode _customOptionFocusNode = FocusNode();
   Boundary? _fieldBoundary;
   String _errorText = '';
+  final ValueNotifier<bool> customOptionFocusChangeNotifier = ValueNotifier<bool>(false);
 
   /// State initialization
   @override
@@ -77,12 +85,18 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
       _controller.text = option?.text ?? '';
     }
+
+    _customOptionTextController.addListener(_customOptionChange);
+    _customOptionFocusNode.addListener(_customOptionFocused);
   }
 
   /// Dispose of resources manually
   @override
   void dispose() {
     _controller.dispose();
+    _customOptionTextController.dispose();
+    _customOptionFocusNode.dispose();
+    customOptionFocusChangeNotifier.dispose();
 
     if (widget.focusNode == null) {
       _focusNode!.dispose();
@@ -109,7 +123,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
       final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _controller.text = option?.text ?? '';
+        _controller.text = option?.text ?? _customOptionTextController.text;
       });
     }
   }
@@ -209,10 +223,39 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
   /// On TextFormFieldWidget hasFocus, resign focus as it should not be interactive
   void _focusChanged() {
+    if (_customOptionFocusNode.hasFocus) {
+      _customOptionFocusNode.unfocus();
+    }
+
     if (_focusNode!.hasFocus) {
       _focusNode!.unfocus();
 
       selectOption(context);
+    }
+  }
+
+  /// On custom option focus
+  void _customOptionFocused() {
+    _controller.text = _customOptionTextController.text;
+    _value = _controller.text as T;
+
+    if (_focusNode!.hasFocus) {
+      _focusNode!.unfocus();
+
+      selectOption(context);
+    }
+    customOptionFocusChangeNotifier.value = _customOptionFocusNode.hasFocus;
+  }
+
+  /// On custom option change
+  void _customOptionChange() {
+    _controller.text = _customOptionTextController.text;
+    _value = _controller.text as T;
+
+    final theOnChange = widget.onChange;
+
+    if (theOnChange != null) {
+      theOnChange(_value);
     }
   }
 
@@ -233,7 +276,14 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
       context,
       options: _options,
       title: widget.selectionTitle,
+      customOption: widget.customOption,
+      customOptionTextController: _customOptionTextController,
+      customOptionFocusNode: _customOptionFocusNode,
       cancelText: widget.clearText ?? 'Clear',
+      customOptionFocusChangeNotifier: customOptionFocusChangeNotifier,
+      confirmText: widget.confirmText,
+      onConfirmTap: widget.customOption == null ? null : (buildContext) =>
+          Navigator.pop(buildContext, _customOptionTextController.text != '' ? _customOptionTextController.text : null),
     );
 
     setStateNotDisposed(() {
@@ -241,7 +291,7 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
       final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
 
-      _controller.text = option?.text ?? '';
+      _controller.text = option?.text ?? _customOptionTextController.text;
     });
 
     final theOnChange = widget.onChange;
@@ -291,4 +341,11 @@ class SelectionFormFieldStyle {
       borderRadius: borderRadius ?? this.borderRadius,
     );
   }
+}
+
+class SelectionFormFieldCustomOption {
+  final bool show;
+  final TextFormFieldStyle? style;
+
+  SelectionFormFieldCustomOption({this.show = false, this.style});
 }
