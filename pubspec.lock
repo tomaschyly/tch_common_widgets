@@ -137,7 +137,7 @@ packages:
     source: hosted
     version: "0.18.0"
   jiffy:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       path: "."
       ref: HEAD
