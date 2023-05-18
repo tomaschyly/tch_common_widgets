@@ -223,6 +223,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
           }
         },
         noOnTap: () {
+          widget.customOptionTextController?.text = '';
           Navigator.pop(context, null);
         },
       ),
