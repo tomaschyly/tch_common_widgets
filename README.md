@@ -19,7 +19,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.23.1
+  tch_common_widgets: ^0.23.2
 ```
 
 If your IDE does not autoImport, add manually:

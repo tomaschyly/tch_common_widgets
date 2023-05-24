@@ -1,3 +1,7 @@
+## [0.23.2] - 24.5.2023
+
+* Smoother Button loading animation when changing state
+
 ## [0.23.1] - 5.5.2023
 
 * Improve SwitchToggleWidget functionality
