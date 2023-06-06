@@ -1,3 +1,7 @@
+## [0.24.0] - 6.6.2023
+
+* Improvements to usage of Dialogs
+
 ## [0.23.2] - 24.5.2023
 
 * Smoother Button loading animation when changing state

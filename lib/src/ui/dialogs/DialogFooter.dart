@@ -14,6 +14,7 @@ class DialogFooter extends StatelessWidget {
   final bool noIsLoading;
   final bool yesIsLoading;
   final bool otherIsLoading;
+  final List<Widget> otherWidgets;
 
   /// DialogFooter initialization
   const DialogFooter({
@@ -28,6 +29,7 @@ class DialogFooter extends StatelessWidget {
     this.noIsLoading = false,
     this.yesIsLoading = false,
     this.otherIsLoading = false,
+    this.otherWidgets = const [],
   });
 
   /// Create view layout from widgets
@@ -37,10 +39,12 @@ class DialogFooter extends StatelessWidget {
     final theYesText = yesText;
     final theOtherText = otherText;
 
-    CommonButtonStyle yesButtonStyle = style.buttonStyle.copyWith(
-      variant: ButtonVariant.Filled,
-      color: yesIsDanger ? style.dangerColor : style.buttonStyle.color,
-    );
+    CommonButtonStyle yesButtonStyle = style.yesButtonStyle ??
+        style.buttonStyle.copyWith(
+          variant: ButtonVariant.Filled,
+          color: yesIsDanger ? style.dangerColor : style.buttonStyle.color,
+        );
+    CommonButtonStyle noButtonStyle = style.noButtonStyle ?? style.buttonStyle;
 
     CommonButtonStyle otherButtonStyle = style.otherButtonStyle ?? style.buttonStyle;
 
@@ -48,6 +52,7 @@ class DialogFooter extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: style.mainAxisAlignment,
       children: [
+        ...otherWidgets,
         if (theOtherText != null && style.mainAxisAlignment != MainAxisAlignment.start) ...[
           ButtonWidget(
             style: otherButtonStyle,
@@ -60,7 +65,7 @@ class DialogFooter extends StatelessWidget {
         ],
         if (theNoText != null)
           ButtonWidget(
-            style: style.buttonStyle,
+            style: noButtonStyle,
             text: theNoText,
             onTap: noOnTap,
             isLoading: noIsLoading,
@@ -91,6 +96,8 @@ class DialogFooter extends StatelessWidget {
 class DialogFooterStyle {
   final MainAxisAlignment mainAxisAlignment;
   final CommonButtonStyle buttonStyle;
+  final CommonButtonStyle? yesButtonStyle;
+  final CommonButtonStyle? noButtonStyle;
   final CommonButtonStyle? otherButtonStyle;
   final Color dangerColor;
 
@@ -100,6 +107,8 @@ class DialogFooterStyle {
     this.buttonStyle = const CommonButtonStyle(
       widthWrapContent: true,
     ),
+    this.yesButtonStyle,
+    this.noButtonStyle,
     this.otherButtonStyle,
     this.dangerColor = Colors.red,
   });
@@ -108,12 +117,16 @@ class DialogFooterStyle {
   DialogFooterStyle copyWith({
     MainAxisAlignment? mainAxisAlignment,
     CommonButtonStyle? buttonStyle,
+    CommonButtonStyle? yesButtonStyle,
+    CommonButtonStyle? noButtonStyle,
     CommonButtonStyle? otherButtonStyle,
     Color? dangerColor,
   }) {
     return DialogFooterStyle(
       mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
       buttonStyle: buttonStyle ?? this.buttonStyle,
+      yesButtonStyle: yesButtonStyle ?? this.yesButtonStyle,
+      noButtonStyle: noButtonStyle ?? this.noButtonStyle,
       otherButtonStyle: otherButtonStyle ?? this.otherButtonStyle,
       dangerColor: dangerColor ?? this.dangerColor,
     );
