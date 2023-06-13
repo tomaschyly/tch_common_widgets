@@ -7,29 +7,46 @@ class ListDialog<T> extends AbstractStatefulWidget {
   final ListDialogStyle? style;
   final String? title;
   final String? cancelText;
+  final String? confirmText;
   final List<ListDialogOption<T>> options;
   final bool hasFilter;
   final String? filterText;
+  final SelectionFormFieldCustomOption? customOption;
+  final Function(BuildContext context)? onConfirmTap;
+  final ValueNotifier<bool>? customOptionFocusChangeNotifier;
+  final TextEditingController? customOptionTextController;
+  final FocusNode? customOptionFocusNode;
 
   /// ListDialog initialization
   ListDialog({
     this.style,
     this.title,
     this.cancelText,
+    this.confirmText,
     required this.options,
     this.hasFilter = false,
     this.filterText,
+    this.customOption,
+    this.onConfirmTap,
+    this.customOptionFocusChangeNotifier,
+    this.customOptionFocusNode,
+    this.customOptionTextController
   }) : assert(options.isNotEmpty);
 
   /// Show the dialog as a popup
-  static Future<T?> show<T>(
-    BuildContext context, {
+  static Future<T?> show<T>(BuildContext context, {
     ListDialogStyle? style,
     String? title,
     String? cancelText,
+    String? confirmText,
     required List<ListDialogOption<T>> options,
     bool hasFilter = false,
     String? filterText,
+    SelectionFormFieldCustomOption? customOption,
+    Function(BuildContext context)? onConfirmTap,
+    ValueNotifier<bool>? customOptionFocusChangeNotifier,
+    TextEditingController? customOptionTextController,
+    FocusNode? customOptionFocusNode,
   }) {
     return showDialog<T>(
       context: context,
@@ -40,9 +57,15 @@ class ListDialog<T> extends AbstractStatefulWidget {
             style: style,
             title: title,
             cancelText: cancelText,
+            confirmText: confirmText,
             options: options,
+            customOption: customOption,
             hasFilter: hasFilter,
             filterText: filterText,
+            onConfirmTap: onConfirmTap,
+            customOptionFocusChangeNotifier: customOptionFocusChangeNotifier,
+            customOptionFocusNode: customOptionFocusNode,
+            customOptionTextController: customOptionTextController,
           ),
         );
       },
@@ -59,11 +82,13 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
   List<ListDialogOption<T>> _options = [];
   final TextEditingController _filterController = TextEditingController();
   Timer? _filterTimer;
+  final GlobalKey customOptionFieldKey = GlobalKey();
 
   /// State initialization
   @override
   void initState() {
     super.initState();
+    widget.customOptionFocusChangeNotifier?.addListener(_onCustomOptionFocused);
 
     _options = widget.options;
 
@@ -81,6 +106,8 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
     if (widget.hasFilter) {
       _filterController.removeListener(_filterOptions);
     }
+
+    widget.customOptionFocusChangeNotifier?.removeListener(_onCustomOptionFocused);
 
     _scrollController.dispose();
     _filterController.dispose();
@@ -101,6 +128,8 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
     final theTitle = widget.title;
 
     final filterStyle = widget.style?.filterStyle ?? commonTheme?.dialogsStyle.listDialogStyle.filterStyle ?? const TextFormFieldStyle();
+
+    final customOptionStyle = widget.customOption?.style ?? commonTheme?.formStyle.textFormFieldStyle ?? const TextFormFieldStyle();
 
     final optionHeight = widget.style?.optionStyle.height ?? commonTheme?.dialogsStyle.listDialogStyle.optionStyle.height ?? kMinInteractiveSize;
     final optionStyle = widget.style?.optionStyle ?? commonTheme?.dialogsStyle.listDialogStyle.optionStyle ?? const CommonButtonStyle();
@@ -134,7 +163,8 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
         Flexible(
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
-              double optionsHeight = ((_options.length * optionHeight) + ((_options.length - 1) * optionsSpacing)).toDouble();
+              double optionsHeight = ((_options.length * optionHeight) + ((_options.length - 1) * optionsSpacing)).toDouble() +
+                  (widget.customOption != null ? optionsSpacing + optionHeight : 0);
               optionsHeight = optionsHeight > 0 ? optionsHeight : 0;
 
               return Container(
@@ -144,21 +174,36 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: _options.map((ListDialogOption option) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: option == _options.last ? 0 : optionsSpacing),
-                          child: ButtonWidget(
-                            style: option.isSelected ? selectedOptionStyle : optionStyle,
-                            text: option.text,
-                            onTap: !option.isSelected
-                                ? () {
-                                    Navigator.pop(context, option.value);
-                                  }
-                                : null,
-                          ),
-                        );
-                      }).toList(),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ..._options.map((ListDialogOption option) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: option == _options.last ? 0 : optionsSpacing),
+                              child: ButtonWidget(
+                                style: option.isSelected ? selectedOptionStyle : optionStyle,
+                                text: option.text,
+                                onTap: !option.isSelected
+                                    ? () {
+                                  Navigator.pop(context, option.value);
+                                }
+                                    : null,
+                              ),
+                            );
+                          }).toList(),
+                          if(widget.customOption != null && widget.customOptionTextController != null)
+                            Padding(
+                              padding: EdgeInsets.only(top: optionsSpacing, bottom: 150),
+                              child: SizedBox(
+                                  height: optionHeight,
+                                  child: TextFormFieldWidget(
+                                    key: customOptionFieldKey,
+                                    style: customOptionStyle,
+                                    controller: widget.customOptionTextController!,
+                                    focusNode: widget.customOptionFocusNode,
+                                  )
+                              ),
+                            ),
+                        ]
                     ),
                   ),
                 ),
@@ -171,12 +216,28 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
       dialogFooter: DialogFooter(
         style: dialogFooterStyle,
         noText: widget.cancelText ?? 'Cancel',
-        yesText: null,
+        yesText: widget.confirmText,
+        yesOnTap: () {
+          if (widget.onConfirmTap != null) {
+            widget.onConfirmTap!(context);
+          }
+        },
         noOnTap: () {
+          widget.customOptionTextController?.text = '';
           Navigator.pop(context, null);
         },
       ),
     );
+  }
+
+  void _onCustomOptionFocused() {
+    if (widget.customOptionFocusChangeNotifier?.value == true) {
+      _options.forEach((element) {
+        element.isSelected = false;
+      });
+      Scrollable.ensureVisible(customOptionFieldKey.currentContext!);
+      setStateNotDisposed(() {});
+    }
   }
 
   /// Filter options by term
@@ -185,7 +246,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
 
     _filterTimer = Timer(
       Duration(milliseconds: 300),
-      () {
+          () {
         final String term = _filterController.text.trim().toLowerCase();
 
         setStateNotDisposed(() {

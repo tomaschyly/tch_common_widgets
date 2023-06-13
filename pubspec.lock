@@ -139,10 +139,11 @@ packages:
   jiffy:
     dependency: "direct main"
     description:
-      name: jiffy
-      sha256: "9d1ea8fa2955d62d3fd5f83317db4d565350deea13d7884212aa7d0ddb1c9982"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f14b41463074d7fccfbc087dea69a4878b796ef2
+      url: "https://github.com/tomaschyly/jiffy"
+    source: git
     version: "6.1.0"
   js:
     dependency: transitive

@@ -19,7 +19,9 @@ dependencies:
 
   flutter_svg: ^2.0.4
   intl: any
-  jiffy: ^6.1.0
+  jiffy: #^6.1.0
+    git:
+      url: https://github.com/tomaschyly/jiffy
 
 dependency_overrides:
   intl: ^0.18.0
