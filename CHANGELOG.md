@@ -1,3 +1,7 @@
+## [0.26.0] - 16.6.2023
+
+* Core upgrade
+
 ## [0.25.0] - 16.6.2023
 
 * **Warning:** Dependecies upgrade, some may have breaking changes
