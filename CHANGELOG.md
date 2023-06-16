@@ -1,3 +1,7 @@
+## [0.25.0] - 16.6.2023
+
+* **Warning:** Dependecies upgrade, some may have breaking changes
+
 ## [0.24.0] - 6.6.2023
 
 * Improvements to usage of Dialogs

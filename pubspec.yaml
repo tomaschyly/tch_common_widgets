@@ -1,12 +1,12 @@
 name: tch_common_widgets
 description: Flutter common widgets & theming package used by tomaschyly.
-version: 0.24.0
+version: 0.25.0
 homepage: https://tomas-chyly.com/en/project/tomas-chyly-common-widgets
 repository: https://github.com/tomaschyly/tch_common_widgets
 issue_tracker: https://github.com/tomaschyly/tch_common_widgets/issues
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=2.18.6 <4.0.0'
   flutter: ">=2.5.0"
 
 dependencies:
@@ -15,14 +15,14 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
-  tch_appliable_core: ^0.22.0
+  tch_appliable_core: ^0.23.0
 
   flutter_svg: ^2.0.4
   intl: any
   jiffy: ^6.1.0
 
-dependency_overrides:
-  intl: ^0.18.0
+# dependency_overrides:
+#   intl: ^0.18.0
 
 flutter:
   plugin:
