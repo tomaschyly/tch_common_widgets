@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/form.dart';
@@ -288,7 +287,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       }
 
       final creationParams = _IOSUseNativeTextFieldParams(
-        iOSFontFamily: widget.iOSFontFamily ?? commonTheme?.iOSFontFamily,
+        iOSFontFamily:
+            widget.iOSFontFamily ?? widget.style?.iOSFontFamily ?? commonTheme?.formStyle.textFormFieldStyle.iOSFontFamily ?? commonTheme?.iOSFontFamily,
         text: widget.controller.text,
         inputStyle: inputStyle,
         hintText: theDecoration.hintText,
@@ -704,6 +704,7 @@ class TextFormFieldStyle {
   final TextFormFieldVariant variant;
   final bool iOSUseNativeTextField;
   final TextStyle inputStyle;
+  final String? iOSFontFamily;
   final TextCapitalization textCapitalization;
   final TextAlign textAlign;
   final TextInputType? keyboardType;
@@ -725,6 +726,7 @@ class TextFormFieldStyle {
     this.variant = TextFormFieldVariant.Material,
     this.iOSUseNativeTextField = false,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16),
+    this.iOSFontFamily,
     this.textCapitalization = TextCapitalization.none,
     this.textAlign = TextAlign.start,
     this.keyboardType,
@@ -787,6 +789,7 @@ class TextFormFieldStyle {
     TextFormFieldVariant? variant,
     bool? iOSUseNativeTextField,
     TextStyle? inputStyle,
+    String? iOSFontFamily,
     TextCapitalization? textCapitalization,
     TextAlign? textAlign,
     TextInputType? keyboardType,
@@ -807,6 +810,7 @@ class TextFormFieldStyle {
       variant: variant ?? this.variant,
       iOSUseNativeTextField: iOSUseNativeTextField ?? this.iOSUseNativeTextField,
       inputStyle: inputStyle ?? this.inputStyle,
+      iOSFontFamily: iOSFontFamily ?? this.iOSFontFamily,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       textAlign: textAlign ?? this.textAlign,
       keyboardType: keyboardType ?? this.keyboardType,

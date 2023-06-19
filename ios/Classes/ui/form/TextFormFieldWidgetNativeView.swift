@@ -151,13 +151,15 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                 if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
                     isBold = theFontWeightBold
                 }
+
+                var theFont = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
                 
-                if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
-                    theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
-                } else if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
-                    theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize))
+                if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
+                    theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize)) ?? theFont
+                } else if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
+                    theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize)) ?? theFont
                 } else {
-                    theTextField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                    theTextField.font = theFont
                 }
             } else if let theTextField = textField as? UITextView {
                 var color: UIColor?
@@ -177,13 +179,15 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                 if let theFontWeightBold = theInputStyle["fontWeightBold"] as? Bool {
                     isBold = theFontWeightBold
                 }
+
+                var theFont = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
                 
-                if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
-                    theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize))
-                } else if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
-                    theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize))
+                if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
+                    theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize)) ?? theFont
+                } else if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
+                    theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize)) ?? theFont
                 } else {
-                    theTextField.font = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                    theTextField.font = theFont
                 }
             }
         }
