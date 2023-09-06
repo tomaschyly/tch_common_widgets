@@ -1,3 +1,7 @@
+## [0.26.2] - 6.9.2023
+
+* Fixes to iOS native UITextView used instead of TextFormField
+
 ## [0.26.1] - 19.6.2023
 
 * Improvements to iOS native UITextView used instead of TextFormField

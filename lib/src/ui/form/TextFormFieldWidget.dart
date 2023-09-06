@@ -79,6 +79,8 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   GlobalKey? _uiKitKey;
   MethodChannel? _methodChannel;
   String? _ignoreSetTextOnIOSNativeTextField;
+  bool _iOSNativeTextFieldTextBeforeChannelReady = false;
+  bool _iOSNativeTextFieldCheckFocusBeforeChannelReady = false;
   final _displayPrefix = ValueNotifier<bool>(true);
   final _displaySuffix = ValueNotifier<bool>(true);
 
@@ -385,6 +387,18 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
                       onPlatformViewCreated: (int viewId) {
                         _methodChannel = MethodChannel('tch_common_widgets/TextFormFieldWidget$viewId');
                         _methodChannel!.setMethodCallHandler(_onMethodCall);
+
+                        if (_iOSNativeTextFieldTextBeforeChannelReady) {
+                          _controllerTextChangedForIOSNativeTextField();
+
+                          _iOSNativeTextFieldTextBeforeChannelReady = false;
+                        }
+
+                        if (_iOSNativeTextFieldCheckFocusBeforeChannelReady) {
+                          _focusChangedForIOSNativeTextField();
+
+                          _iOSNativeTextFieldCheckFocusBeforeChannelReady = false;
+                        }
                       },
                     ),
                   ),
@@ -593,6 +607,12 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// On TextEditingController change text update Widget text
   void _controllerTextChangedForIOSNativeTextField() {
+    if (_methodChannel == null) {
+      _iOSNativeTextFieldTextBeforeChannelReady = true;
+
+      return;
+    }
+
     if (widget.controller.text != _ignoreSetTextOnIOSNativeTextField) {
       _methodChannel!.invokeMethod("setText", widget.controller.text);
 
@@ -604,6 +624,12 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
   /// On FocusNode focus changed update Widget state
   void _focusChangedForIOSNativeTextField() {
+    if (_methodChannel == null) {
+      _iOSNativeTextFieldCheckFocusBeforeChannelReady = true;
+
+      return;
+    }
+
     if (_focusNode.hasFocus) {
       _methodChannel!.invokeMethod('focus');
 
