@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tch_common_widgets/src/core/CommonDimens.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_common_widgets/src/ui/widgets/tooltip_widget.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class IconButtonWidget extends StatelessWidget {
   final IconButtonStyle? style;

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
-import 'package:tch_common_widgets/src/core/CommonDimens.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
+import 'package:tch_common_widgets/src/core/common_dimens.dart';
+import 'package:tch_common_widgets/src/core/common_theme.dart';
 import 'package:tch_common_widgets/src/ui/widgets/tooltip_widget.dart';
 
 class ButtonWidget extends AbstractStatefulWidget {

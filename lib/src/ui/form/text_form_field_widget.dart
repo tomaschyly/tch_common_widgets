@@ -5,10 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/form.dart';
 import 'package:tch_appliable_core/utils/widget.dart';
-import 'package:tch_common_widgets/src/core/CommonDimens.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_appliable_core/utils/Color.dart';
-import 'package:tch_common_widgets/src/ui/form/Form.dart';
+import 'package:tch_appliable_core/utils/color.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class TextFormFieldWidget extends AbstractStatefulWidget {
   final bool? iOSUseNativeTextField;

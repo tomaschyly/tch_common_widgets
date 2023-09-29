@@ -1,8 +1,6 @@
-import 'package:tch_common_widgets/src/ui/dialogs/ConfirmDialog.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/DialogContainer.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/DialogHeader.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/ListDialog.dart';
+
+
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class DialogsStyle {
   final bool fullWidthMobileOnly;

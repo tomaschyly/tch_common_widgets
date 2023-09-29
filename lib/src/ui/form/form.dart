@@ -1,8 +1,6 @@
-import 'package:tch_common_widgets/src/ui/form/DatePickerFormFieldWidget.dart';
-import 'package:tch_common_widgets/src/ui/form/PreferencesSwitchWidget.dart';
-import 'package:tch_common_widgets/src/ui/form/SelectionFormFieldWidget.dart';
-import 'package:tch_common_widgets/src/ui/form/SwitchToggleWidget.dart';
-import 'package:tch_common_widgets/src/ui/form/TextFormFieldWidget.dart';
+
+
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class FormStyle {
   final bool animatedSizeChanges;

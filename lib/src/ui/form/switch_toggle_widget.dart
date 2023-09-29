@@ -1,6 +1,5 @@
 import 'package:tch_appliable_core/tch_appliable_core.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_common_widgets/src/ui/buttons/IconButtonWidget.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class SwitchToggleWidget extends AbstractStatefulWidget {
   final SwitchToggleWidgetStyle? style;

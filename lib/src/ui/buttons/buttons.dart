@@ -1,5 +1,4 @@
-import 'package:tch_common_widgets/src/ui/buttons/ButtonWidget.dart';
-import 'package:tch_common_widgets/src/ui/buttons/IconButtonWidget.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class ButtonsStyle {
   final bool fullWidthMobileOnly;

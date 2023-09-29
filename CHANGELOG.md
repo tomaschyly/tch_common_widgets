@@ -1,3 +1,7 @@
+## [0.27.0] - 29.9.2023
+
+* **Warning:** Code refactor to support better current Flutter
+
 ## [0.26.2] - 6.9.2023
 
 * Fixes to iOS native UITextView used instead of TextFormField
@@ -12,7 +16,7 @@
 
 ## [0.25.0] - 16.6.2023
 
-* **Warning:** Dependecies upgrade, some may have breaking changes
+* **Warning:** Dependencies upgrade, some may have breaking changes
 
 ## [0.24.0] - 6.6.2023
 

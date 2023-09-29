@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tch_common_widgets/src/ui/buttons/ButtonWidget.dart';
-import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class DialogFooter extends StatelessWidget {
   final DialogFooterStyle style;
