@@ -1,3 +1,7 @@
+## [0.27.1] - 6.10.2023
+
+* Ignore interaction with ButtonWidget when loading
+
 ## [0.27.0] - 29.9.2023
 
 * **Warning:** Code refactor to support better current Flutter

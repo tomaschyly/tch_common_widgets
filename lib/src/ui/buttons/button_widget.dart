@@ -17,6 +17,7 @@ class ButtonWidget extends AbstractStatefulWidget {
   final bool? isLoading;
   final List<String> loadingTags;
   final String? tooltip;
+  final bool? ignoreInteractionsWhenLoading;
 
   /// ButtonWidget initialization
   ButtonWidget({
@@ -32,6 +33,7 @@ class ButtonWidget extends AbstractStatefulWidget {
     String? tag,
     List<String>? tags,
     this.tooltip,
+    this.ignoreInteractionsWhenLoading,
   }) : loadingTags = [
           if (tag != null) tag,
           if (tags != null) ...tags,
@@ -116,6 +118,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
     late Widget inner;
 
     final theIsLoading = _isLoading(context);
+    final ignoreInteractionsWhenLoading = widget.ignoreInteractionsWhenLoading ?? commonTheme?.buttonsStyle.ignoreInteractionsWhenLoading ?? true;
 
     if (theIsLoading) {
       if (_animationController == null) {
@@ -296,25 +299,28 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
     final contentPadding =
         widget.style?.contentPadding ?? commonTheme?.buttonsStyle.buttonStyle.contentPadding ?? const EdgeInsets.symmetric(horizontal: kCommonHorizontalMargin);
 
-    Widget content = Material(
-      color: theVariant == ButtonVariant.Filled ? color : Colors.transparent,
-      child: InkWell(
-        child: Container(
-          width: widthWrapContent ? null : (fullWidthMobileOnly ? kPhoneStopBreakpoint : width),
-          height: height,
-          padding: contentPadding,
-          alignment: widget.style?.alignment ?? commonTheme?.buttonsStyle.buttonStyle.alignment,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.all(
-              color: theVariant == ButtonVariant.TextOnly ? Colors.transparent : color,
-              width: theBorderWidth,
+    Widget content = IgnorePointer(
+      ignoring: theIsLoading && ignoreInteractionsWhenLoading,
+      child: Material(
+        color: theVariant == ButtonVariant.Filled ? color : Colors.transparent,
+        child: InkWell(
+          child: Container(
+            width: widthWrapContent ? null : (fullWidthMobileOnly ? kPhoneStopBreakpoint : width),
+            height: height,
+            padding: contentPadding,
+            alignment: widget.style?.alignment ?? commonTheme?.buttonsStyle.buttonStyle.alignment,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              border: Border.all(
+                color: theVariant == ButtonVariant.TextOnly ? Colors.transparent : color,
+                width: theBorderWidth,
+              ),
+              borderRadius: borderRadius,
             ),
-            borderRadius: borderRadius,
+            child: inner,
           ),
-          child: inner,
+          onTap: widget.onTap,
         ),
-        onTap: widget.onTap,
       ),
     );
 
