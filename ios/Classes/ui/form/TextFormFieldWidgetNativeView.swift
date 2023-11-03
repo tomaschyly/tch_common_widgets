@@ -152,9 +152,9 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                     isBold = theFontWeightBold
                 }
 
-                var theFont = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                let theFont = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
                 
-                if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
+                if let iOSFontFamily = params.iOSFontFamily, iOSFontFamily.isEmpty == false {
                     theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize)) ?? theFont
                 } else if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
                     theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize)) ?? theFont
@@ -180,9 +180,9 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
                     isBold = theFontWeightBold
                 }
 
-                var theFont = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
+                let theFont = UIFont.systemFont(ofSize: CGFloat(fontSize), weight: isBold ? .bold : .regular)
                 
-                if let iOSFontFamily = params.iOSFontFamily as? String, iOSFontFamily.isEmpty == false {
+                if let iOSFontFamily = params.iOSFontFamily, iOSFontFamily.isEmpty == false {
                     theTextField.font = UIFont(name: iOSFontFamily, size: CGFloat(fontSize)) ?? theFont
                 } else if let theFontFamily = theInputStyle["fontFamily"] as? String, theFontFamily.isEmpty == false {
                     theTextField.font = UIFont(name: theFontFamily, size: CGFloat(fontSize)) ?? theFont
@@ -388,7 +388,7 @@ class TextFormFieldWidgetNativeView: NSObject, FlutterPlatformView, UITextViewDe
         case "TextInputType.multiline":
             return .default
         case "TextInputType.number":
-            return .numbersAndPunctuation
+            return .decimalPad
         case "TextInputType.phone":
             return .phonePad
         case "TextInputType.datetime":

@@ -1,3 +1,7 @@
+## [0.27.2] - 3.11.2023
+
+* Minor fixes for iOS 17
+
 ## [0.27.1] - 6.10.2023
 
 * Ignore interaction with ButtonWidget when loading
