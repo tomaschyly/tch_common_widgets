@@ -1,3 +1,8 @@
+## [0.28.0] - 28.11.2023
+
+* Core upgrade
+* DashedLineWidget for creating dynamic dashed lines
+
 ## [0.27.2] - 3.11.2023
 
 * Minor fixes for iOS 17
