@@ -1,3 +1,7 @@
+## [0.29.1] - 10.12.2023
+
+* Upgrade Kotling requirements
+
 ## [0.29.0] - 30.11.2023
 
 * Core upgrade
