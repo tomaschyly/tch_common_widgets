@@ -161,7 +161,6 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
           ignoring: true,
           child: TextFormFieldWidget(
             key: _fieldKey,
-            iOSUseNativeTextField: false,
             style: inputStyle,
             controller: _controller,
             focusNode: _focusNode,

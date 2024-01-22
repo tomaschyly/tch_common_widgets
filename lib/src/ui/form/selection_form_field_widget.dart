@@ -158,7 +158,6 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
         IgnorePointer(
           ignoring: true,
           child: TextFormFieldWidget(
-            iOSUseNativeTextField: false,
             key: _fieldKey,
             style: inputStyle,
             controller: _controller,
