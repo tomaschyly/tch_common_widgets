@@ -21,7 +21,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.29.1
+  tch_common_widgets: ^0.30.0
 ```
 
 If your IDE does not autoImport, add manually:
@@ -87,7 +87,6 @@ Widget appThemeBuilder(BuildContext context, Widget child) {
 
   /// Default Style for all TextFormFieldWidgets
   final kTextFormFieldStyle = TextFormFieldStyle(
-    iOSUseNativeTextField: true, // Use embedded UITextField or UITextView for autocorrect to work on iOS
     inputDecoration: TextFormFieldStyle().inputDecoration.copyWith(
           enabledBorder: platformInputBorder,
           disabledBorder: platformInputBorder,
@@ -264,6 +263,7 @@ Alternative widget for use instead of Switch, wraps IconButtonWidget and styling
 
 * works with **CommonTheme** and **standalone**
 * **Custom solution to fix Flutter iOS issue with autocorrect not working!**
+* **This solution is no necessary since Flutter >= 3.16.0**
 
 Wrapped TextFormField for extra styling, features mainly with CommonTheme. Has 2 variants Material, Cupertino style.
 

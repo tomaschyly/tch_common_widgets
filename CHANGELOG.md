@@ -1,3 +1,7 @@
+## [0.30.0] - 10.12.2023
+
+* iOS native text fields no longer necessary, Flutter >= 3.16.0
+
 ## [0.29.1] - 10.12.2023
 
 * Upgrade Kotling requirements

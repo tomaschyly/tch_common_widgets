@@ -9,7 +9,6 @@ import 'package:tch_appliable_core/utils/color.dart';
 import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class TextFormFieldWidget extends AbstractStatefulWidget {
-  final bool? iOSUseNativeTextField;
   final TextFormFieldStyle? style;
   final String? iOSFontFamily;
   final TextEditingController controller;
@@ -36,7 +35,6 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
 
   /// TextFormFieldWidget initialization
   TextFormFieldWidget({
-    this.iOSUseNativeTextField,
     this.style,
     this.iOSFontFamily,
     Key? key,
@@ -120,14 +118,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     final commonTheme = CommonTheme.of(context);
 
-    bool iOSUseNativeTextField = true;
-    if (widget.iOSUseNativeTextField != null) {
+    final bool iOSUseNativeTextField = false;
+    /* if (widget.iOSUseNativeTextField != null) {
       iOSUseNativeTextField = widget.iOSUseNativeTextField!;
     } else if (widget.style != null) {
       iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
     } else if (commonTheme != null) {
       iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
-    }
+    } */
 
     if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
       _uiKitKey = GlobalKey();
@@ -153,14 +151,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     final TextFormFieldVariant theVariant = widget.style?.variant ?? commonTheme?.formStyle.textFormFieldStyle.variant ?? TextFormFieldVariant.Material;
 
-    bool iOSUseNativeTextField = true;
-    if (widget.iOSUseNativeTextField != null) {
+    final bool iOSUseNativeTextField = false;
+    /* if (widget.iOSUseNativeTextField != null) {
       iOSUseNativeTextField = widget.iOSUseNativeTextField!;
     } else if (widget.style != null) {
       iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
     } else if (commonTheme != null) {
       iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
-    }
+    } */
 
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = widget.style?.fullWidthMobileOnly ?? commonTheme?.formStyle.fullWidthMobileOnly ?? true;
@@ -726,7 +724,6 @@ enum ShowRequiredLabelSuffix {
 class TextFormFieldStyle {
   final bool? fullWidthMobileOnly;
   final TextFormFieldVariant variant;
-  final bool iOSUseNativeTextField;
   final TextStyle inputStyle;
   final String? iOSFontFamily;
   final TextCapitalization textCapitalization;
@@ -748,7 +745,6 @@ class TextFormFieldStyle {
   const TextFormFieldStyle({
     this.fullWidthMobileOnly,
     this.variant = TextFormFieldVariant.Material,
-    this.iOSUseNativeTextField = false,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16),
     this.iOSFontFamily,
     this.textCapitalization = TextCapitalization.none,
@@ -832,7 +828,6 @@ class TextFormFieldStyle {
     return TextFormFieldStyle(
       fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
       variant: variant ?? this.variant,
-      iOSUseNativeTextField: iOSUseNativeTextField ?? this.iOSUseNativeTextField,
       inputStyle: inputStyle ?? this.inputStyle,
       iOSFontFamily: iOSFontFamily ?? this.iOSFontFamily,
       textCapitalization: textCapitalization ?? this.textCapitalization,
