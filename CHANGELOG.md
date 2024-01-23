@@ -1,4 +1,9 @@
-## [0.30.0] - 10.12.2023
+## [0.31.0] - 23.1.2024
+
+* Dependencies update
+* Remove iOS native text fields code
+
+## [0.30.0] - 22.1.2024
 
 * iOS native text fields no longer necessary, Flutter >= 3.16.0
 
