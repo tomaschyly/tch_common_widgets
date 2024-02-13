@@ -1,3 +1,7 @@
+## [0.32.0] - 13.2.2023
+
+* Core upgrade
+
 ## [0.31.0] - 23.1.2024
 
 * Dependencies update
