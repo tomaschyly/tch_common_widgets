@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/widget.dart';
@@ -113,31 +115,57 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
 
       bool loadingIconRestricted = (widget.style?.loadingIconRestricted ?? commonTheme?.buttonsStyle.iconButtonStyle.loadingIconRestricted) ?? true;
 
+      Widget? loadingIconWidget;
       if (loadingIcon != null) {
         if (loadingIconRestricted) {
-          icon = Container(
+          loadingIconWidget = Container(
             width: loadingIconWidth,
             height: loadingIconHeight,
             child: loadingIcon,
           );
         } else {
-          icon = loadingIcon;
+          loadingIconWidget = loadingIcon;
         }
       } else if (loadingIconSvgAssetPath != null) {
         if (loadingIconRestricted) {
-          icon = SvgPicture.asset(
+          loadingIconWidget = SvgPicture.asset(
             loadingIconSvgAssetPath,
             width: loadingIconWidth,
             height: loadingIconHeight,
             color: iconColor,
           );
         } else {
-          icon = SvgPicture.asset(
+          loadingIconWidget = SvgPicture.asset(
             loadingIconSvgAssetPath,
             color: iconColor,
           );
         }
       }
+
+      icon = AnimatedBuilder(
+        animation: _animationController!,
+        builder: (BuildContext context, Widget? child) {
+          if (loadingIconSvgAssetPath != null || loadingIcon != null) {
+            return Transform.rotate(
+              angle: _animationController!.value * 2 * pi,
+              child: child,
+            );
+          } else {
+            return Transform.rotate(
+              angle: _animationController!.value * 2 * pi,
+              child: Container(
+                width: loadingIconWidth,
+                height: loadingIconHeight,
+                child: CircularProgressIndicator(
+                  color: iconColor,
+                  value: 0.25,
+                ),
+              ),
+            );
+          }
+        },
+        child: loadingIconWidget,
+      );
     } else {
       if (widget.iconWidget != null) {
         if (iconRestricted) {
