@@ -1,3 +1,7 @@
+## [0.32.1] - 19.2.2023
+
+* IconButtonWidget loading icon
+
 ## [0.32.0] - 13.2.2023
 
 * Core upgrade
