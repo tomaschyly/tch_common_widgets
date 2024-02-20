@@ -263,7 +263,7 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                primary: buttonTextColor,
+                foregroundColor: buttonTextColor,
               ),
             ),
           ),

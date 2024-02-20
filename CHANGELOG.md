@@ -1,3 +1,7 @@
+## [0.32.2] - 20.2.2023
+
+* Update to work with latest Flutter version
+
 ## [0.32.1] - 19.2.2023
 
 * IconButtonWidget loading icon
