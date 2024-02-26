@@ -1,3 +1,7 @@
+## [0.33.0] - 26.2.2023
+
+* Core upgrade
+
 ## [0.32.2] - 20.2.2023
 
 * Update to work with latest Flutter version
