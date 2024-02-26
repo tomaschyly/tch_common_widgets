@@ -385,10 +385,10 @@ packages:
     dependency: "direct main"
     description:
       name: tch_appliable_core
-      sha256: "6095b826d2d15ad129b4747699261c10f3814724b46965a55df374eb47e5ae4d"
+      sha256: "07fe19d3288fedac3ff6556a6b281886539fc5244c929417b94875008c077713"
       url: "https://pub.dev"
     source: hosted
-    version: "0.30.0"
+    version: "0.30.0+1"
   term_glyph:
     dependency: transitive
     description:
