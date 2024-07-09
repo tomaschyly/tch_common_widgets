@@ -1,18 +1,9 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
-import 'package:tch_appliable_core/utils/form.dart';
-import 'package:tch_appliable_core/utils/widget.dart';
-import 'package:tch_common_widgets/src/core/CommonDimens.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_appliable_core/utils/Color.dart';
-import 'package:tch_common_widgets/src/ui/form/Form.dart';
+import 'package:tch_appliable_core/utils/color.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class TextFormFieldWidget extends AbstractStatefulWidget {
-  final bool? iOSUseNativeTextField;
   final TextFormFieldStyle? style;
   final String? iOSFontFamily;
   final TextEditingController controller;
@@ -39,7 +30,6 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
 
   /// TextFormFieldWidget initialization
   TextFormFieldWidget({
-    this.iOSUseNativeTextField,
     this.style,
     this.iOSFontFamily,
     Key? key,
@@ -76,10 +66,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   final _wrapperKey = GlobalKey();
   late FocusNode _focusNode;
   bool _isError = false;
-  String? _errorText;
-  GlobalKey? _uiKitKey;
-  MethodChannel? _methodChannel;
-  String? _ignoreSetTextOnIOSNativeTextField;
   final _displayPrefix = ValueNotifier<bool>(true);
   final _displaySuffix = ValueNotifier<bool>(true);
 
@@ -102,12 +88,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   /// Manually dispose of resources
   @override
   void dispose() {
-    _methodChannel = null;
-
     widget.controller.removeListener(_controllerTextChanged);
-    widget.controller.removeListener(_controllerTextChangedForIOSNativeTextField);
-
-    _focusNode.removeListener(_focusChangedForIOSNativeTextField);
 
     super.dispose();
   }
@@ -118,33 +99,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     super.firstBuildOnly(context);
 
     widget.controller.addListener(_controllerTextChanged);
-
-    final commonTheme = CommonTheme.of(context);
-
-    bool iOSUseNativeTextField = true;
-    if (widget.iOSUseNativeTextField != null) {
-      iOSUseNativeTextField = widget.iOSUseNativeTextField!;
-    } else if (widget.style != null) {
-      iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
-    } else if (commonTheme != null) {
-      iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
-    }
-
-    if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
-      _uiKitKey = GlobalKey();
-
-      widget.controller.addListener(_controllerTextChangedForIOSNativeTextField);
-
-      _focusNode.addListener(_focusChangedForIOSNativeTextField);
-
-      if (widget.autofocus) {
-        final focusScope = FocusScope.of(context);
-
-        Future.delayed(kThemeAnimationDuration, () {
-          focusScope.requestFocus(_focusNode);
-        });
-      }
-    }
   }
 
   /// Create view layout from widgets
@@ -153,15 +107,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final commonTheme = CommonTheme.of(context);
 
     final TextFormFieldVariant theVariant = widget.style?.variant ?? commonTheme?.formStyle.textFormFieldStyle.variant ?? TextFormFieldVariant.Material;
-
-    bool iOSUseNativeTextField = true;
-    if (widget.iOSUseNativeTextField != null) {
-      iOSUseNativeTextField = widget.iOSUseNativeTextField!;
-    } else if (widget.style != null) {
-      iOSUseNativeTextField = widget.style!.iOSUseNativeTextField;
-    } else if (commonTheme != null) {
-      iOSUseNativeTextField = commonTheme.formStyle.textFormFieldStyle.iOSUseNativeTextField;
-    }
 
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = widget.style?.fullWidthMobileOnly ?? commonTheme?.formStyle.fullWidthMobileOnly ?? true;
@@ -275,243 +220,106 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final theSuffix = widget.suffix ?? widget.style?.inputDecoration.suffix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix;
     final suffixIcon = widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon;
 
-    late Widget field;
-
-    if (iOSUseNativeTextField && !kIsWeb && Platform.isIOS) {
-      TextStyle? inputStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
-      TextStyle? hintStyle = widget.style?.inputDecoration.hintStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintStyle;
-      if (inputStyle != null && commonTheme != null) {
-        inputStyle = commonTheme.preProcessTextStyle(inputStyle);
-      }
-      if (hintStyle != null && commonTheme != null) {
-        hintStyle = commonTheme.preProcessTextStyle(hintStyle);
-      }
-
-      final creationParams = _IOSUseNativeTextFieldParams(
-        iOSFontFamily: widget.iOSFontFamily ?? commonTheme?.iOSFontFamily,
-        text: widget.controller.text,
-        inputStyle: inputStyle,
-        hintText: theDecoration.hintText,
-        hintStyle: hintStyle,
-        maxLines: theLines,
-        maxLength: widget.maxLength,
-        keyboardType: theKeyboardType,
-        textInputAction: theTextInputAction,
-        textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
-        textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
-        autocorrect: widget.autocorrect,
-        obscureText: theObscureText,
-      );
-
-      addPostFrameCallback((_) {
-        _methodChannel?.invokeMethod("sync", creationParams.toJson());
-      });
-
-      field = IgnorePointer(
-        ignoring: !widget.enabled,
-        child: FormField(
-          builder: (FormFieldState<String> field) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InputDecorator(
-                  decoration: theDecoration.copyWith(
-                    labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
-                    prefix: thePrefix != null
-                        ? ValueListenableBuilder(
-                            valueListenable: _displayPrefix,
-                            builder: (context, value, child) {
-                              if (value) {
-                                return thePrefix;
-                              }
-
-                              return SizedBox();
-                            },
-                          )
-                        : null,
-                    prefixIcon: thePrefixIcon != null
-                        ? ValueListenableBuilder(
-                            valueListenable: _displayPrefix,
-                            builder: (context, value, child) {
-                              if (value) {
-                                return thePrefixIcon;
-                              }
-
-                              return SizedBox();
-                            },
-                          )
-                        : null,
-                    suffix: theSuffix != null
-                        ? ValueListenableBuilder(
-                            valueListenable: _displaySuffix,
-                            builder: (context, value, child) {
-                              if (value) {
-                                return theSuffix;
-                              }
-
-                              return SizedBox();
-                            },
-                          )
-                        : null,
-                    suffixIcon: suffixIcon != null
-                        ? ValueListenableBuilder(
-                            valueListenable: _displaySuffix,
-                            builder: (context, value, child) {
-                              if (value) {
-                                return suffixIcon;
-                              }
-
-                              return SizedBox();
-                            },
-                          )
-                        : null,
-                    hintText: '',
-                    errorText: _isError ? _errorText : null,
-                  ),
-                  baseStyle: widget.style?.inputStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.textFormFieldStyle.inputStyle),
-                  isFocused: _focusNode.hasFocus,
-                  isEmpty: widget.controller.value.text.isEmpty,
-                  expands: false,
-                  child: Container(
-                    height: theLines * 24, //48, //TODO height by lines, isDense = false does not seem to work right now, check later
-                    child: UiKitView(
-                      key: _uiKitKey,
-                      viewType: 'tch_common_widgets/TextFormFieldWidget',
-                      layoutDirection: TextDirection.ltr,
-                      creationParams: creationParams.toJson(),
-                      creationParamsCodec: const StandardMessageCodec(),
-                      onPlatformViewCreated: (int viewId) {
-                        _methodChannel = MethodChannel('tch_common_widgets/TextFormFieldWidget$viewId');
-                        _methodChannel!.setMethodCallHandler(_onMethodCall);
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-          validator: (String? value) {
-            value = widget.controller.value.text;
-
-            if (theValidations != null) {
-              final validated = validateValidations(theValidations, value);
-
-              setStateNotDisposed(() {
-                _isError = validated != null;
-                _errorText = validated;
-              });
-
-              return validated;
-            }
-
-            return null;
-          },
-        ),
-      );
-    } else {
-      TextStyle? textStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
-      if (textStyle != null && commonTheme != null) {
-        textStyle = commonTheme.preProcessTextStyle(textStyle);
-      }
-
-      field = TextFormField(
-        autofocus: widget.autofocus,
-        controller: widget.controller,
-        focusNode: _focusNode,
-        // onChanged: widget.onChanged,
-        onFieldSubmitted: (String value) {
-          if (theNextFocus != null) {
-            final focusScope = FocusScope.of(context);
-
-            focusScope.unfocus();
-
-            focusScope.requestFocus(theNextFocus);
-          }
-
-          if (theOnFieldSubmitted != null) {
-            theOnFieldSubmitted(value);
-          }
-        },
-        keyboardType: theKeyboardType,
-        textInputAction: theTextInputAction,
-        style: textStyle,
-        decoration: theDecoration.copyWith(
-          labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
-          prefix: thePrefix != null
-              ? ValueListenableBuilder(
-                  valueListenable: _displayPrefix,
-                  builder: (context, value, child) {
-                    if (value) {
-                      return thePrefix;
-                    }
-
-                    return SizedBox();
-                  },
-                )
-              : null,
-          prefixIcon: thePrefixIcon != null
-              ? ValueListenableBuilder(
-                  valueListenable: _displayPrefix,
-                  builder: (context, value, child) {
-                    if (value) {
-                      return thePrefixIcon;
-                    }
-
-                    return SizedBox();
-                  },
-                )
-              : null,
-          suffix: theSuffix != null
-              ? ValueListenableBuilder(
-                  valueListenable: _displaySuffix,
-                  builder: (context, value, child) {
-                    if (value) {
-                      return theSuffix;
-                    }
-
-                    return SizedBox();
-                  },
-                )
-              : null,
-          suffixIcon: suffixIcon != null
-              ? ValueListenableBuilder(
-                  valueListenable: _displaySuffix,
-                  builder: (context, value, child) {
-                    if (value) {
-                      return suffixIcon;
-                    }
-
-                    return SizedBox();
-                  },
-                )
-              : null,
-        ),
-        textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
-        textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
-        minLines: theLines,
-        maxLines: theLines,
-        maxLength: widget.maxLength,
-        maxLengthEnforcement: widget.maxLength != null ? MaxLengthEnforcement.enforced : null,
-        validator: (String? value) {
-          if (theValidations != null) {
-            final validated = validateValidations(theValidations, value);
-
-            setStateNotDisposed(() {
-              _isError = validated != null;
-            });
-
-            return validated;
-          }
-
-          return null;
-        },
-        autocorrect: widget.autocorrect,
-        enabled: widget.enabled,
-        obscureText: theObscureText,
-      );
+    TextStyle? textStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
+    if (textStyle != null && commonTheme != null) {
+      textStyle = commonTheme.preProcessTextStyle(textStyle);
     }
+
+    Widget field = TextFormField(
+      autofocus: widget.autofocus,
+      controller: widget.controller,
+      focusNode: _focusNode,
+      // onChanged: widget.onChanged,
+      onFieldSubmitted: (String value) {
+        if (theNextFocus != null) {
+          final focusScope = FocusScope.of(context);
+
+          focusScope.unfocus();
+
+          focusScope.requestFocus(theNextFocus);
+        }
+
+        if (theOnFieldSubmitted != null) {
+          theOnFieldSubmitted(value);
+        }
+      },
+      keyboardType: theKeyboardType,
+      textInputAction: theTextInputAction,
+      style: textStyle,
+      decoration: theDecoration.copyWith(
+        labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
+        prefix: thePrefix != null
+            ? ValueListenableBuilder(
+                valueListenable: _displayPrefix,
+                builder: (context, value, child) {
+                  if (value) {
+                    return thePrefix;
+                  }
+
+                  return SizedBox();
+                },
+              )
+            : null,
+        prefixIcon: thePrefixIcon != null
+            ? ValueListenableBuilder(
+                valueListenable: _displayPrefix,
+                builder: (context, value, child) {
+                  if (value) {
+                    return thePrefixIcon;
+                  }
+
+                  return SizedBox();
+                },
+              )
+            : null,
+        suffix: theSuffix != null
+            ? ValueListenableBuilder(
+                valueListenable: _displaySuffix,
+                builder: (context, value, child) {
+                  if (value) {
+                    return theSuffix;
+                  }
+
+                  return SizedBox();
+                },
+              )
+            : null,
+        suffixIcon: suffixIcon != null
+            ? ValueListenableBuilder(
+                valueListenable: _displaySuffix,
+                builder: (context, value, child) {
+                  if (value) {
+                    return suffixIcon;
+                  }
+
+                  return SizedBox();
+                },
+              )
+            : null,
+      ),
+      textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
+      textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
+      minLines: theLines,
+      maxLines: theLines,
+      maxLength: widget.maxLength,
+      maxLengthEnforcement: widget.maxLength != null ? MaxLengthEnforcement.enforced : null,
+      validator: (String? value) {
+        if (theValidations != null) {
+          final validated = validateValidations(theValidations, value);
+
+          setStateNotDisposed(() {
+            _isError = validated != null;
+          });
+
+          return validated;
+        }
+
+        return null;
+      },
+      autocorrect: widget.autocorrect,
+      enabled: widget.enabled,
+      obscureText: theObscureText,
+    );
 
     Widget content = field;
 
@@ -575,116 +383,6 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       }
     }
   }
-
-  /// Response to message from platform
-  Future<dynamic> _onMethodCall(MethodCall call) async {
-    switch (call.method) {
-      case "focused":
-        _focusIOSNativeTextField();
-        break;
-      case "setText":
-        _setTextFromIOSNativeTextField(call.arguments as String);
-        break;
-      case "didEndEditing":
-        _didEndEditingIOSNativeTextField(call.arguments as String);
-        break;
-    }
-  }
-
-  /// On TextEditingController change text update Widget text
-  void _controllerTextChangedForIOSNativeTextField() {
-    if (widget.controller.text != _ignoreSetTextOnIOSNativeTextField) {
-      _methodChannel!.invokeMethod("setText", widget.controller.text);
-
-      setStateNotDisposed(() {});
-    }
-
-    _ignoreSetTextOnIOSNativeTextField = null;
-  }
-
-  /// On FocusNode focus changed update Widget state
-  void _focusChangedForIOSNativeTextField() {
-    if (_focusNode.hasFocus) {
-      _methodChannel!.invokeMethod('focus');
-
-      final contextOfWrapper = _wrapperKey.currentContext;
-
-      if (contextOfWrapper != null) {
-        Future.delayed(kThemeAnimationDuration, () {
-          Scrollable.ensureVisible(
-            contextOfWrapper,
-            alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-          );
-
-          Future.delayed(kThemeAnimationDuration, () {
-            Scrollable.ensureVisible(
-              contextOfWrapper,
-              alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-            );
-          });
-        });
-      }
-    } else {
-      _methodChannel!.invokeMethod('unFocus');
-
-      _methodChannel!.invokeMethod<String>('getText').then((String? text) {
-        setStateNotDisposed(() {
-          widget.controller.text = text ?? "";
-        });
-      });
-    }
-
-    setStateNotDisposed(() {});
-  }
-
-  /// Make sure Widget is visible on screen and set focus
-  void _focusIOSNativeTextField() {
-    addPostFrameCallback((_) {
-      if (mounted) {
-        context.findRenderObject()!.showOnScreen(
-              duration: kThemeAnimationDuration,
-              curve: Curves.linear,
-            );
-      }
-    });
-
-    if (!_focusNode.hasFocus) {
-      final focusScope = FocusScope.of(context);
-
-      focusScope.unfocus();
-
-      focusScope.requestFocus(_focusNode);
-    }
-  }
-
-  /// Make sure Widget text is synchronized
-  void _setTextFromIOSNativeTextField(String text) {
-    _ignoreSetTextOnIOSNativeTextField = text;
-
-    widget.controller.text = text;
-  }
-
-  /// Widget ended text editing, update controller and emulate onFieldSubmitted
-  void _didEndEditingIOSNativeTextField(String text) {
-    widget.controller.text = text;
-
-    final theNextFocus = widget.nextFocus;
-    final theOnFieldSubmitted = widget.onFieldSubmitted;
-
-    if (theNextFocus != null) {
-      clearFocus(context);
-
-      addPostFrameCallback((_) {
-        FocusScope.of(context).requestFocus(theNextFocus);
-      });
-    }
-
-    if (theOnFieldSubmitted != null) {
-      theOnFieldSubmitted(text);
-    }
-
-    setStateNotDisposed(() {});
-  }
 }
 
 enum TextFormFieldVariant {
@@ -702,8 +400,8 @@ enum ShowRequiredLabelSuffix {
 class TextFormFieldStyle {
   final bool? fullWidthMobileOnly;
   final TextFormFieldVariant variant;
-  final bool iOSUseNativeTextField;
   final TextStyle inputStyle;
+  final String? iOSFontFamily;
   final TextCapitalization textCapitalization;
   final TextAlign textAlign;
   final TextInputType? keyboardType;
@@ -723,8 +421,8 @@ class TextFormFieldStyle {
   const TextFormFieldStyle({
     this.fullWidthMobileOnly,
     this.variant = TextFormFieldVariant.Material,
-    this.iOSUseNativeTextField = false,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16),
+    this.iOSFontFamily,
     this.textCapitalization = TextCapitalization.none,
     this.textAlign = TextAlign.start,
     this.keyboardType,
@@ -787,6 +485,7 @@ class TextFormFieldStyle {
     TextFormFieldVariant? variant,
     bool? iOSUseNativeTextField,
     TextStyle? inputStyle,
+    String? iOSFontFamily,
     TextCapitalization? textCapitalization,
     TextAlign? textAlign,
     TextInputType? keyboardType,
@@ -805,8 +504,8 @@ class TextFormFieldStyle {
     return TextFormFieldStyle(
       fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
       variant: variant ?? this.variant,
-      iOSUseNativeTextField: iOSUseNativeTextField ?? this.iOSUseNativeTextField,
       inputStyle: inputStyle ?? this.inputStyle,
+      iOSFontFamily: iOSFontFamily ?? this.iOSFontFamily,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       textAlign: textAlign ?? this.textAlign,
       keyboardType: keyboardType ?? this.keyboardType,

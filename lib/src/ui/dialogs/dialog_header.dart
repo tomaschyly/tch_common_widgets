@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class DialogHeader extends StatelessWidget {
   final DialogHeaderStyle style;

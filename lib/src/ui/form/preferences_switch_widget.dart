@@ -1,8 +1,5 @@
 import 'package:tch_appliable_core/tch_appliable_core.dart';
-import 'package:tch_common_widgets/src/core/CommonDimens.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_common_widgets/src/ui/form/SwitchToggleWidget.dart';
-import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class PreferencesSwitchWidget extends AbstractStatefulWidget {
   final PreferencesSwitchStyle? style;

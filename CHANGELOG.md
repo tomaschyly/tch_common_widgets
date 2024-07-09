@@ -1,3 +1,89 @@
+## [0.36.0] - 16.5.2024
+
+* Core upgrade
+
+## [0.35.0] - 20.3.2024
+
+* Core upgrade
+
+## [0.34.0] - 15.3.2024
+
+* Core upgrade
+
+## [0.33.0] - 26.2.2024
+
+* Core upgrade
+
+## [0.32.2] - 20.2.2024
+
+* Update to work with latest Flutter version
+
+## [0.32.1] - 19.2.2024
+
+* IconButtonWidget loading icon
+
+## [0.32.0] - 13.2.2024
+
+* Core upgrade
+
+## [0.31.0] - 23.1.2024
+
+* Dependencies update
+* Remove iOS native text fields code
+
+## [0.30.0] - 22.1.2024
+
+* iOS native text fields no longer necessary, Flutter >= 3.16.0
+
+## [0.29.1] - 10.12.2023
+
+* Upgrade Kotling requirements
+
+## [0.29.0] - 30.11.2023
+
+* Core upgrade
+
+## [0.28.0] - 28.11.2023
+
+* Core upgrade
+* DashedLineWidget for creating dynamic dashed lines
+
+## [0.27.2] - 3.11.2023
+
+* Minor fixes for iOS 17
+
+## [0.27.1] - 6.10.2023
+
+* Ignore interaction with ButtonWidget when loading
+
+## [0.27.0] - 29.9.2023
+
+* **Warning:** Code refactor to support better current Flutter
+
+## [0.26.2] - 6.9.2023
+
+* Fixes to iOS native UITextView used instead of TextFormField
+
+## [0.26.1] - 19.6.2023
+
+* Improvements to iOS native UITextView used instead of TextFormField
+
+## [0.26.0] - 16.6.2023
+
+* Core upgrade
+
+## [0.25.0] - 16.6.2023
+
+* **Warning:** Dependencies upgrade, some may have breaking changes
+
+## [0.24.0] - 6.6.2023
+
+* Improvements to usage of Dialogs
+
+## [0.23.2] - 24.5.2023
+
+* Smoother Button loading animation when changing state
+
 ## [0.23.1] - 5.5.2023
 
 * Improve SwitchToggleWidget functionality

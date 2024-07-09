@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tch_common_widgets/src/core/CommonTheme.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/DialogContainer.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/DialogFooter.dart';
-import 'package:tch_common_widgets/src/ui/dialogs/DialogHeader.dart';
-import 'package:tch_common_widgets/src/ui/widgets/CommonSpace.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class ConfirmDialog extends StatelessWidget {
   final ConfirmDialogStyle? style;

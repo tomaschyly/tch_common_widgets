@@ -1,14 +1,15 @@
-import 'package:tch_common_widgets/src/ui/buttons/ButtonWidget.dart';
-import 'package:tch_common_widgets/src/ui/buttons/IconButtonWidget.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class ButtonsStyle {
   final bool fullWidthMobileOnly;
+  final bool ignoreInteractionsWhenLoading;
   final CommonButtonStyle buttonStyle;
   final IconButtonStyle iconButtonStyle;
 
   /// ButtonsStyle initialization
   const ButtonsStyle({
     this.fullWidthMobileOnly = true,
+    this.ignoreInteractionsWhenLoading = true,
     this.buttonStyle = const CommonButtonStyle(),
     this.iconButtonStyle = const IconButtonStyle(),
   });

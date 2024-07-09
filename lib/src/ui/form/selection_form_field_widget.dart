@@ -1,7 +1,9 @@
 import 'package:tch_appliable_core/tch_appliable_core.dart';
-import 'package:tch_appliable_core/utils/Boundary.dart';
+import 'package:tch_appliable_core/utils/boundary.dart';
 import 'package:tch_appliable_core/utils/List.dart';
 import 'package:tch_appliable_core/utils/form.dart';
+import 'package:tch_appliable_core/utils/list.dart';
+import 'package:tch_common_widgets/tch_common_widgets.dart';
 import 'package:tch_common_widgets/src/core/CommonDimens.dart';
 import 'package:tch_common_widgets/src/core/CommonTheme.dart';
 import 'package:tch_common_widgets/src/ui/dialogs/ListDialog.dart';
@@ -176,7 +178,6 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
         IgnorePointer(
           ignoring: true,
           child: TextFormFieldWidget(
-            iOSUseNativeTextField: false,
             key: _fieldKey,
             style: inputStyle,
             controller: _controller,

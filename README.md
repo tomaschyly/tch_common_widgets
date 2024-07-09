@@ -6,6 +6,8 @@ This package is made to work with and some features require my package [tch_appl
 
 **Platforms notice:** I have worked on projects that use Flutter on all platforms, but my focus is on **Mobile** and **Desktop**. Therefore some widgets and features may not work on **Web**, but should work on other platforms. Personally I do not consider Flutter ready for web dev.
 
+**Development notice:** This documentation is out of date for lack of time, but the package itself continues to be maintained and developed over time.
+
 ## Contents
 
 1. [Installation](#installation)
@@ -19,7 +21,7 @@ This package is made to work with and some features require my package [tch_appl
 In your project's `pubspec.yaml` add:
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.23.1
+  tch_common_widgets: ^0.36.0
 ```
 
 If your IDE does not autoImport, add manually:
@@ -85,7 +87,6 @@ Widget appThemeBuilder(BuildContext context, Widget child) {
 
   /// Default Style for all TextFormFieldWidgets
   final kTextFormFieldStyle = TextFormFieldStyle(
-    iOSUseNativeTextField: true, // Use embedded UITextField or UITextView for autocorrect to work on iOS
     inputDecoration: TextFormFieldStyle().inputDecoration.copyWith(
           enabledBorder: platformInputBorder,
           disabledBorder: platformInputBorder,
@@ -262,6 +263,7 @@ Alternative widget for use instead of Switch, wraps IconButtonWidget and styling
 
 * works with **CommonTheme** and **standalone**
 * **Custom solution to fix Flutter iOS issue with autocorrect not working!**
+* **This solution is no necessary since Flutter >= 3.16.0**
 
 Wrapped TextFormField for extra styling, features mainly with CommonTheme. Has 2 variants Material, Cupertino style.
 
