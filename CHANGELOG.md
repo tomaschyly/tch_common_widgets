@@ -1,3 +1,7 @@
+## [0.36.2] - 18.9.2024
+
+* Core upgrade
+
 ## [0.36.1] - 17.9.2024
 
 * Updates to dependencies
