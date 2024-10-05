@@ -1,3 +1,7 @@
+## [0.36.3] - 5.10.2024
+
+* DialogHeader & other improvements
+
 ## [0.36.2] - 18.9.2024
 
 * Core upgrade

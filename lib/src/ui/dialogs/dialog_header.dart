@@ -4,17 +4,21 @@ import 'package:tch_common_widgets/tch_common_widgets.dart';
 class DialogHeader extends StatelessWidget {
   final DialogHeaderStyle style;
   final String title;
+  final Widget? leading;
+  final Widget? trailing;
 
   /// DialogHeader initialization
   const DialogHeader({
     required this.style,
     required this.title,
+    this.leading,
+    this.trailing,
   });
 
   /// Create view layout from widgets
   @override
   Widget build(BuildContext context) {
-    final commonTheme = CommonTheme.of(context);
+    final commonTheme = context.commonThemeOrNull;
 
     TextStyle textStyle = style.textStyle;
     if (commonTheme != null) {
@@ -24,6 +28,7 @@ class DialogHeader extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
+        if (leading != null) leading!,
         Expanded(
           child: Text(
             title,
@@ -31,6 +36,7 @@ class DialogHeader extends StatelessWidget {
             textAlign: style.textAlign,
           ),
         ),
+        if (trailing != null) trailing!,
       ],
     );
   }
