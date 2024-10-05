@@ -1,3 +1,7 @@
+## [0.36.4] - 5.10.2024
+
+* General dialog improvements
+
 ## [0.36.3] - 5.10.2024
 
 * DialogHeader & other improvements

@@ -41,6 +41,8 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
     final bool fullWidthMobileOnly = commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
     final double dialogWidth =
         widget.style.dialogWidth ?? commonTheme?.dialogsStyle.dialogWidth ?? (fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity);
+    final double? dialogHeight = widget.style.dialogHeight ?? commonTheme?.dialogsStyle.dialogHeight ?? null;
+    final bool stretchContent = widget.style.stretchContent ? true : commonTheme?.dialogsStyle.stretchContent ?? false;
 
     final borderRadius = widget.style.borderRadius;
 
@@ -49,8 +51,26 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
     Widget dialog;
 
     if (widget.isScrollable) {
+      Widget content = Scrollbar(
+        controller: _scrollController,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Container(
+            padding: widget.style.dialogPadding.copyWith(
+              top: theContentBeforeScroll != null ? 0 : null,
+              bottom: 0,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: widget.content,
+            ),
+          ),
+        ),
+      );
+
       dialog = Container(
         width: dialogWidth,
+        height: dialogHeight,
         margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
           color: widget.style.backgroundColor,
@@ -73,24 +93,14 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
                   children: theContentBeforeScroll,
                 ),
               ),
-            Flexible(
-              child: Scrollbar(
-                controller: _scrollController,
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Container(
-                    padding: widget.style.dialogPadding.copyWith(
-                      top: theContentBeforeScroll != null ? 0 : null,
-                      bottom: 0,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: widget.content,
-                    ),
-                  ),
-                ),
+            if (stretchContent)
+              Expanded(
+                child: content,
+              )
+            else
+              Flexible(
+                child: content,
               ),
-            ),
             Container(
               padding: widget.style.dialogPadding.copyWith(
                 top: 0,
@@ -103,6 +113,7 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
     } else {
       dialog = Container(
         width: dialogWidth,
+        height: dialogHeight,
         padding: widget.style.dialogPadding,
         margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
@@ -117,7 +128,18 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
           mainAxisSize: MainAxisSize.min,
           children: [
             if (theContentBeforeScroll != null) ...theContentBeforeScroll,
-            ...widget.content,
+            if (stretchContent)
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: widget.content,
+                ),
+              )
+            else
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: widget.content,
+              ),
             widget.dialogFooter,
           ],
         ),
@@ -149,6 +171,8 @@ class DialogContainerStyle {
   final EdgeInsets dialogPadding;
   final EdgeInsets dialogMargin;
   final double? dialogWidth;
+  final double? dialogHeight;
+  final bool stretchContent;
   final Color color;
   final Color backgroundColor;
   final BorderRadius? borderRadius;
@@ -159,6 +183,8 @@ class DialogContainerStyle {
     this.dialogPadding = const EdgeInsets.all(12),
     this.dialogMargin = const EdgeInsets.all(kCommonPrimaryMargin),
     this.dialogWidth,
+    this.dialogHeight,
+    this.stretchContent = false,
     this.color = Colors.transparent,
     this.backgroundColor = Colors.white,
     this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
@@ -170,6 +196,8 @@ class DialogContainerStyle {
     EdgeInsets? dialogPadding,
     EdgeInsets? dialogMargin,
     double? dialogWidth,
+    double? dialogHeight,
+    bool? stretchContent,
     Color? color,
     Color? backgroundColor,
     BorderRadius? borderRadius,
@@ -179,6 +207,8 @@ class DialogContainerStyle {
       dialogPadding: dialogPadding ?? this.dialogPadding,
       dialogMargin: dialogMargin ?? this.dialogMargin,
       dialogWidth: dialogWidth ?? this.dialogWidth,
+      dialogHeight: dialogHeight ?? this.dialogHeight,
+      stretchContent: stretchContent ?? this.stretchContent,
       color: color ?? this.color,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       borderRadius: borderRadius ?? this.borderRadius,
