@@ -48,7 +48,7 @@ class CommonTheme extends InheritedWidget {
 }
 
 /// Shorthand to get CommonTheme from context
-CommonTheme getAppTheme(BuildContext context) => CommonTheme.of<CommonTheme>(context)!;
+CommonTheme getCommonTheme(BuildContext context) => CommonTheme.of<CommonTheme>(context)!;
 
 extension CommonThemeExtension on BuildContext {
   /// Shorthand to get CommonTheme from context
