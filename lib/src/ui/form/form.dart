@@ -1,5 +1,4 @@
-
-
+import 'package:tch_common_widgets/src/ui/form/calendar_widget.dart';
 import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class FormStyle {
@@ -10,6 +9,7 @@ class FormStyle {
   final SwitchToggleWidgetStyle switchToggleWidgetStyle;
   final TextFormFieldStyle textFormFieldStyle;
   final DatePickerFormFieldStyle datePickerFormFieldStyle;
+  final CalendarWidgetStyle calendarWidgetStyle;
 
   /// FormStyle initialization
   const FormStyle({
@@ -20,6 +20,7 @@ class FormStyle {
     this.switchToggleWidgetStyle = const SwitchToggleWidgetStyle(useText: true),
     this.textFormFieldStyle = const TextFormFieldStyle(),
     this.datePickerFormFieldStyle = const DatePickerFormFieldStyle(),
+    this.calendarWidgetStyle = const CalendarWidgetStyle(),
   });
 
   /// Create copy if this style with changes
@@ -31,6 +32,7 @@ class FormStyle {
     SwitchToggleWidgetStyle? switchToggleWidgetStyle,
     TextFormFieldStyle? textFormFieldStyle,
     DatePickerFormFieldStyle? datePickerFormFieldStyle,
+    CalendarWidgetStyle? calendarWidgetStyle,
   }) {
     return FormStyle(
       animatedSizeChanges: animatedSizeChanges ?? this.animatedSizeChanges,
@@ -40,6 +42,7 @@ class FormStyle {
       switchToggleWidgetStyle: switchToggleWidgetStyle ?? this.switchToggleWidgetStyle,
       textFormFieldStyle: textFormFieldStyle ?? this.textFormFieldStyle,
       datePickerFormFieldStyle: datePickerFormFieldStyle ?? this.datePickerFormFieldStyle,
+      calendarWidgetStyle: calendarWidgetStyle ?? this.calendarWidgetStyle,
     );
   }
 }

@@ -20,6 +20,7 @@ export 'src/ui/form/selection_form_field_widget.dart';
 export 'src/ui/form/switch_toggle_widget.dart';
 export 'src/ui/form/text_form_field_widget.dart';
 export 'src/ui/form/date_picker_form_field_widget.dart';
+export 'src/ui/form/calendar_widget.dart';
 
 export 'src/ui/widgets/common_space.dart';
 export 'src/ui/widgets/loading_builder.dart';
