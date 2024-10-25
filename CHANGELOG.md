@@ -1,3 +1,7 @@
+## [0.37.0] - 25.10.2024
+
+* CalendarWidget for simple static/interactive calendar usage
+
 ## [0.36.4] - 5.10.2024
 
 * General dialog improvements
