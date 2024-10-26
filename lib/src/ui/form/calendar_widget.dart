@@ -181,7 +181,13 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
     final checkboxColor = widget.style?.checkboxColor ?? commonTheme?.formStyle.calendarWidgetStyle.checkboxColor ?? defaults.checkboxColor;
     final disabledDaysColor = widget.style?.disabledDaysColor ?? commonTheme?.formStyle.calendarWidgetStyle.disabledDaysColor ?? defaults.disabledDaysColor;
     final selectedDayColor = widget.style?.selectedDayColor ?? commonTheme?.formStyle.calendarWidgetStyle.selectedDayColor ?? defaults.selectedDayColor;
+    final selectedDayTextColor =
+        widget.style?.selectedDayTextColor ?? commonTheme?.formStyle.calendarWidgetStyle.selectedDayTextColor ?? defaults.selectedDayTextColor;
     final todayDayColor = widget.style?.todayDayColor ?? commonTheme?.formStyle.calendarWidgetStyle.todayDayColor ?? defaults.todayDayColor;
+
+    final arrowLeftIcon = widget.style?.arrowLeftIcon ?? commonTheme?.formStyle.calendarWidgetStyle.arrowLeftIcon ?? defaults.arrowLeftIcon;
+    final arrowRightIcon = widget.style?.arrowRightIcon ?? commonTheme?.formStyle.calendarWidgetStyle.arrowRightIcon ?? defaults.arrowRightIcon;
+    final checkIcon = widget.style?.checkIcon ?? commonTheme?.formStyle.calendarWidgetStyle.checkIcon ?? defaults.checkIcon;
 
     addPostFrameCallback((timeStamp) {
       final theContext = _gridKey.currentContext;
@@ -213,8 +219,8 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
               IconButtonWidget(
                 style: arrowsStyle,
                 iconWidget: SvgPicture.asset(
-                  'images/chevron-left.svg',
-                  package: 'tch_common_widgets',
+                  arrowLeftIcon ?? 'images/chevron-left.svg',
+                  package: arrowLeftIcon != null ? null : 'tch_common_widgets',
                   width: arrowsStyle.iconWidth,
                   height: arrowsStyle.iconHeight,
                   color: arrowsStyle.iconColor,
@@ -240,8 +246,8 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
               IconButtonWidget(
                 style: arrowsStyle,
                 iconWidget: SvgPicture.asset(
-                  'images/chevron-right.svg',
-                  package: 'tch_common_widgets',
+                  arrowRightIcon ?? 'images/chevron-right.svg',
+                  package: arrowRightIcon != null ? null : 'tch_common_widgets',
                   width: arrowsStyle.iconWidth,
                   height: arrowsStyle.iconHeight,
                   color: arrowsStyle.iconColor,
@@ -281,6 +287,7 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
                         checkboxColor: checkboxColor,
                         disabledDaysColor: disabledDaysColor,
                         selectedDayColor: selectedDayColor,
+                        selectedDayTextColor: selectedDayTextColor,
                         todayDayColor: todayDayColor,
                         day: day,
                         isSelected: _isSelected(day),
@@ -288,6 +295,7 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
                         isDifferentMonth: _isDayDifferentMonth(day),
                         onSelect: _selectDate,
                         checkbox: widget.daysWithCheckbox.any((element) => element.isSame(day, unit: Unit.day)),
+                        checkIcon: checkIcon,
                       ))
                   .toList(),
             ),
@@ -418,6 +426,7 @@ class _DayWidget extends StatelessWidget {
   final Color checkboxColor;
   final Color disabledDaysColor;
   final Color selectedDayColor;
+  final Color selectedDayTextColor;
   final Color todayDayColor;
   final Jiffy day;
   final bool isSelected;
@@ -425,6 +434,7 @@ class _DayWidget extends StatelessWidget {
   final bool isDifferentMonth;
   final bool checkbox;
   final ValueChanged<Jiffy> onSelect;
+  final String? checkIcon;
 
   /// DayWidget initialization
   const _DayWidget({
@@ -432,6 +442,7 @@ class _DayWidget extends StatelessWidget {
     required this.checkboxColor,
     required this.disabledDaysColor,
     required this.selectedDayColor,
+    required this.selectedDayTextColor,
     required this.todayDayColor,
     required this.day,
     this.isSelected = false,
@@ -439,6 +450,7 @@ class _DayWidget extends StatelessWidget {
     this.isDifferentMonth = false,
     this.checkbox = false,
     required this.onSelect,
+    this.checkIcon,
   });
 
   @override
@@ -471,7 +483,11 @@ class _DayWidget extends StatelessWidget {
               child: Text(
                 day.dateTime.day.toString(),
                 style: dayTextStyle.copyWith(
-                  color: (disabledDay || isDifferentMonth) && !isSelected ? disabledDaysColor : null,
+                  color: isSelected
+                      ? selectedDayTextColor
+                      : (disabledDay || isDifferentMonth) && !isSelected
+                          ? disabledDaysColor
+                          : null,
                 ),
               ),
             ),
@@ -480,8 +496,8 @@ class _DayWidget extends StatelessWidget {
         const SizedBox(height: 2),
         if (checkbox)
           SvgPicture.asset(
-            'images/check.svg',
-            package: 'tch_common_widgets',
+            checkIcon ?? 'images/check.svg',
+            package: checkIcon != null ? null : 'tch_common_widgets',
             width: 14,
             height: 14,
             color: checkboxColor,
@@ -502,7 +518,11 @@ class CalendarWidgetStyle {
   final Color checkboxColor;
   final Color disabledDaysColor;
   final Color selectedDayColor;
+  final Color selectedDayTextColor;
   final Color todayDayColor;
+  final String? arrowLeftIcon;
+  final String? arrowRightIcon;
+  final String? checkIcon;
 
   /// CalendarWidgetStyle initialization
   const CalendarWidgetStyle({
@@ -518,7 +538,11 @@ class CalendarWidgetStyle {
     this.checkboxColor = Colors.green,
     this.disabledDaysColor = Colors.grey,
     this.selectedDayColor = Colors.green,
+    this.selectedDayTextColor = Colors.white,
     this.todayDayColor = Colors.red,
+    this.arrowLeftIcon,
+    this.arrowRightIcon,
+    this.checkIcon,
   });
 
   /// Create copy if this style with changes
@@ -533,7 +557,11 @@ class CalendarWidgetStyle {
     Color? checkboxColor,
     Color? disabledDaysColor,
     Color? selectedDayColor,
+    Color? selectedDayTextColor,
     Color? todayDayColor,
+    String? arrowLeftIcon,
+    String? arrowRightIcon,
+    String? checkIcon,
   }) {
     return CalendarWidgetStyle(
       weekDayStart: weekDayStart ?? this.weekDayStart,
@@ -546,7 +574,11 @@ class CalendarWidgetStyle {
       checkboxColor: checkboxColor ?? this.checkboxColor,
       disabledDaysColor: disabledDaysColor ?? this.disabledDaysColor,
       selectedDayColor: selectedDayColor ?? this.selectedDayColor,
+      selectedDayTextColor: selectedDayTextColor ?? this.selectedDayTextColor,
       todayDayColor: todayDayColor ?? this.todayDayColor,
+      arrowLeftIcon: arrowLeftIcon ?? this.arrowLeftIcon,
+      arrowRightIcon: arrowRightIcon ?? this.arrowRightIcon,
+      checkIcon: checkIcon ?? this.checkIcon,
     );
   }
 }
