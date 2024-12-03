@@ -1,476 +1,480 @@
+## [0.37.1+1] - 3.12.2024
+
+- Fix missing export for DashedLineWidget
+
 ## [0.37.1] - 26.10.2024
 
-* CalendarWidget improvements
+- CalendarWidget improvements
 
 ## [0.37.0] - 25.10.2024
 
-* CalendarWidget for simple static/interactive calendar usage
+- CalendarWidget for simple static/interactive calendar usage
 
 ## [0.36.4] - 5.10.2024
 
-* General dialog improvements
+- General dialog improvements
 
 ## [0.36.3] - 5.10.2024
 
-* DialogHeader & other improvements
+- DialogHeader & other improvements
 
 ## [0.36.2] - 18.9.2024
 
-* Core upgrade
+- Core upgrade
 
 ## [0.36.1] - 17.9.2024
 
-* Updates to dependencies
+- Updates to dependencies
 
 ## [0.36.0] - 16.5.2024
 
-* Core upgrade
+- Core upgrade
 
 ## [0.35.0] - 20.3.2024
 
-* Core upgrade
+- Core upgrade
 
 ## [0.34.0] - 15.3.2024
 
-* Core upgrade
+- Core upgrade
 
 ## [0.33.0] - 26.2.2024
 
-* Core upgrade
+- Core upgrade
 
 ## [0.32.2] - 20.2.2024
 
-* Update to work with latest Flutter version
+- Update to work with latest Flutter version
 
 ## [0.32.1] - 19.2.2024
 
-* IconButtonWidget loading icon
+- IconButtonWidget loading icon
 
 ## [0.32.0] - 13.2.2024
 
-* Core upgrade
+- Core upgrade
 
 ## [0.31.0] - 23.1.2024
 
-* Dependencies update
-* Remove iOS native text fields code
+- Dependencies update
+- Remove iOS native text fields code
 
 ## [0.30.0] - 22.1.2024
 
-* iOS native text fields no longer necessary, Flutter >= 3.16.0
+- iOS native text fields no longer necessary, Flutter >= 3.16.0
 
 ## [0.29.1] - 10.12.2023
 
-* Upgrade Kotling requirements
+- Upgrade Kotling requirements
 
 ## [0.29.0] - 30.11.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.28.0] - 28.11.2023
 
-* Core upgrade
-* DashedLineWidget for creating dynamic dashed lines
+- Core upgrade
+- DashedLineWidget for creating dynamic dashed lines
 
 ## [0.27.2] - 3.11.2023
 
-* Minor fixes for iOS 17
+- Minor fixes for iOS 17
 
 ## [0.27.1] - 6.10.2023
 
-* Ignore interaction with ButtonWidget when loading
+- Ignore interaction with ButtonWidget when loading
 
 ## [0.27.0] - 29.9.2023
 
-* **Warning:** Code refactor to support better current Flutter
+- **Warning:** Code refactor to support better current Flutter
 
 ## [0.26.2] - 6.9.2023
 
-* Fixes to iOS native UITextView used instead of TextFormField
+- Fixes to iOS native UITextView used instead of TextFormField
 
 ## [0.26.1] - 19.6.2023
 
-* Improvements to iOS native UITextView used instead of TextFormField
+- Improvements to iOS native UITextView used instead of TextFormField
 
 ## [0.26.0] - 16.6.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.25.0] - 16.6.2023
 
-* **Warning:** Dependencies upgrade, some may have breaking changes
+- **Warning:** Dependencies upgrade, some may have breaking changes
 
 ## [0.24.0] - 6.6.2023
 
-* Improvements to usage of Dialogs
+- Improvements to usage of Dialogs
 
 ## [0.23.2] - 24.5.2023
 
-* Smoother Button loading animation when changing state
+- Smoother Button loading animation when changing state
 
 ## [0.23.1] - 5.5.2023
 
-* Improve SwitchToggleWidget functionality
+- Improve SwitchToggleWidget functionality
 
 ## [0.23.0] - 5.5.2023
 
-* Add TooltipWidget and innclude with Buttons
+- Add TooltipWidget and innclude with Buttons
 
 ## [0.22.0] - 2.5.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.21.0] - 15.4.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.20.3] - 13.4.2023
 
-* Remove print
+- Remove print
 
 ## [0.20.2] - 7.4.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.20.1] - 29.3.2023
 
-* Add option to show prefix/suffix only on text isNotEmpty
+- Add option to show prefix/suffix only on text isNotEmpty
 
 ## [0.20.0] - 20.3.2023
 
-* Upgrade dependencies with some **breaking changes**
+- Upgrade dependencies with some **breaking changes**
 
 ## [0.19.2] - 7.3.2023
 
-* TextFormField, iOS native, double ensure visible with keyboard
+- TextFormField, iOS native, double ensure visible with keyboard
 
 ## [0.19.1] - 7.3.2023
 
-* TextFormField, compatible with iOS native, support max text length limit, enforced
+- TextFormField, compatible with iOS native, support max text length limit, enforced
 
 ## [0.19.0] - 6.3.2023
 
-* iOS native TextFormField multiple style fixes for hints
+- iOS native TextFormField multiple style fixes for hints
 
 ## [0.18.2] - 1.3.2023
 
-* Add Keys to widgets
+- Add Keys to widgets
 
 ## [0.18.1] - 14.2.2023
 
-* ButtonWidget gradient option
+- ButtonWidget gradient option
 
 ## [0.18.0] - 14.2.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.17.1] - 8.2.2023
 
-* Fix focus issues on iOS with nativate fields
+- Fix focus issues on iOS with nativate fields
 
 ## [0.17.0] - 28.1.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.16.0] - 20.1.2023
 
-* Native iOS TextField should be visisble when keyboard
+- Native iOS TextField should be visisble when keyboard
 
 ## [0.15.0] - 18.1.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.14.0] - 5.1.2023
 
-* Core upgrade
+- Core upgrade
 
 ## [0.13.1] - 30.12.2022
 
-* ButtonWidget improvements
+- ButtonWidget improvements
 
 ## [0.13.0] - 29.12.2022
 
-* Update to latest Core
+- Update to latest Core
 
 ## [0.12.2] - 18.12.2022
 
-* ButtonWidget improvements
+- ButtonWidget improvements
 
 ## [0.12.1] - 16.12.2022
 
-* IconButtonWidget improvements
-* Core update
+- IconButtonWidget improvements
+- Core update
 
 ## [0.12.0] - 6.12.2022
 
-* Update all able dependencies
+- Update all able dependencies
 
 ## [0.11.1] - 21.6.2022
 
-* DatePickerFormFieldWidget improvements
+- DatePickerFormFieldWidget improvements
 
 ## [0.11.0] - 21.6.2022
 
-* DatePickerFormFieldWidget component for selecting Date
+- DatePickerFormFieldWidget component for selecting Date
 
 ## [0.10.0] - 13.6.2022
 
-* Upgrade core
+- Upgrade core
 
 ## [0.9.4] - 22.5.2022
 
-* Update core
+- Update core
 
 ## [0.9.3] - 11.3.2022
 
-* Improve dialogs styling
+- Improve dialogs styling
 
 ## [0.9.2] - 11.3.2022
 
-* SwitchToggleWidget bugfix
+- SwitchToggleWidget bugfix
 
 ## [0.9.1] - 11.3.2022
 
-* Add styling to the SwitchToggleWidget
+- Add styling to the SwitchToggleWidget
 
 ## [0.9.0] - 10.3.2022
 
-* Add layout style option to PreferencesSwitchWidget
-* Wew SwitchToggleWidget for standalone use or as part of PreferencesSwitchWidget
+- Add layout style option to PreferencesSwitchWidget
+- Wew SwitchToggleWidget for standalone use or as part of PreferencesSwitchWidget
 
 ## [0.8.1] - 4.2.2022
 
-* Updates, make sure working with Flutter 2.10
+- Updates, make sure working with Flutter 2.10
 
 ## [0.8.0] - 19.12.2021
 
-* Update Core & dependencies
+- Update Core & dependencies
 
 ## [0.7.4] - 11.11.2021
 
-* TextFormFieldWidget add prefix and suffix
+- TextFormFieldWidget add prefix and suffix
 
 ## [0.7.3] - 15.10.2021
 
-* Updated packages to latest versions
+- Updated packages to latest versions
 
 ## [0.7.2] - 25.9.2021
 
-* Update Scrollbars to support latest Flutter on all platforms
-* **Warning:** Raised Flutter min version
+- Update Scrollbars to support latest Flutter on all platforms
+- **Warning:** Raised Flutter min version
 
 ## [0.7.1] - 24.9.2021
 
-* Update PreferencesSwitchWidget Switch for latest Theme system
+- Update PreferencesSwitchWidget Switch for latest Theme system
 
 ## [0.7.0] - 3.9.2021
 
-* Fix iOS native TextFormField for different situations
-* Core update
+- Fix iOS native TextFormField for different situations
+- Core update
 
 ## [0.6.18] - 26.8.2021
 
-* Fix native iOS TextFormField sync when widget update
+- Fix native iOS TextFormField sync when widget update
 
 ## [0.6.17] - 7.8.2021
 
-* Update Core dependency
+- Update Core dependency
 
 ## [0.6.16] - 6.8.2021
 
-* Update Core dependency
+- Update Core dependency
 
 ## [0.6.15] - 6.8.2021
 
-* Increase min Flutter version because of ButtonWidget - ActivityIndicator
+- Increase min Flutter version because of ButtonWidget - ActivityIndicator
 
 ## [0.6.14] - 21.7.2021
 
-* Update Core dependency
+- Update Core dependency
 
 ## [0.6.13] - 20.7.2021
 
-* ListDialog fix top margin
+- ListDialog fix top margin
 
 ## [0.6.12] - 20.7.2021
 
-* TextFormField add required suffix with options
+- TextFormField add required suffix with options
 
 ## [0.6.11] - 16.7.2021
 
-* Fix TextFormField with native iOS views autofocus
+- Fix TextFormField with native iOS views autofocus
 
 ## [0.6.10] - 15.7.2021
 
-* DialogContainer add content before scroll & ListDialog use of it
+- DialogContainer add content before scroll & ListDialog use of it
 
 ## [0.6.9] - 15.7.2021
 
-* Fix ListDialog situation with bad contraints
+- Fix ListDialog situation with bad contraints
 
 ## [0.6.8] - 11.7.2021
 
-* DialogFooter add other button
+- DialogFooter add other button
 
 ## [0.6.7] - 4.7.2021
 
-* Update Core
+- Update Core
 
 ## [0.6.6] - 4.7.2021
 
-* Convenience method for OS Dark mode is enabled
+- Convenience method for OS Dark mode is enabled
 
 ## [0.6.5] - 29.6.2021
 
-* **Warning:** DialogContainer now scrollable by default, changes to fields
+- **Warning:** DialogContainer now scrollable by default, changes to fields
 
 ## [0.6.4] - 28.6.2021
 
-* **Warning:** Added DialogContainer which changes some styling around dialogs
+- **Warning:** Added DialogContainer which changes some styling around dialogs
 
 ## [0.6.3] - 24.6.2021
 
-* DialogFooter support buttons loading
+- DialogFooter support buttons loading
 
 ## [0.6.2] - 23.6.2021
 
-* Fix ButtonWidget issue with loading animation
+- Fix ButtonWidget issue with loading animation
 
 ## [0.6.1] - 20.6.2021
 
-* Fix ButtonWidget text wrap
+- Fix ButtonWidget text wrap
 
 ## [0.6.0] - 18.6.2021
 
-* Convenience widget LoadingBuilder
-* Both ButtonWidget and LoadingBuilder now support loading Tag/s
+- Convenience widget LoadingBuilder
+- Both ButtonWidget and LoadingBuilder now support loading Tag/s
 
 ## [0.5.4] - 15.6.2021
 
-* Improve styling of ButtonWidget
+- Improve styling of ButtonWidget
 
 ## [0.5.3] - 14.6.2021
 
-* Improve styling of ButtonWidget and TextFormFieldWidget
-* **Warning:** TextFormFieldWidget onChange removed, will be added back with support for iOS native views
+- Improve styling of ButtonWidget and TextFormFieldWidget
+- **Warning:** TextFormFieldWidget onChange removed, will be added back with support for iOS native views
 
 ## [0.5.2] - 14.6.2021
 
-* TextFormFieldWidget update handling when iOS native view with error
+- TextFormFieldWidget update handling when iOS native view with error
 
 ## [0.5.1] - 11.6.2021
 
-* ButtonWidget if Core ScreenDataState use its isLoading
-* ButtonWidget fix loading able only once
+- ButtonWidget if Core ScreenDataState use its isLoading
+- ButtonWidget fix loading able only once
 
 ## [0.5.0] - 11.6.2021
 
-* Subclassable CommonTheme for more dynamic AppTheme styling
+- Subclassable CommonTheme for more dynamic AppTheme styling
 
 ## [0.4.7] - 8.6.2021
 
-* PreferencesSwitchWidget styling improvements
+- PreferencesSwitchWidget styling improvements
 
 ## [0.4.6] - 8.6.2021
 
-* Usability improvements
+- Usability improvements
 
 ## [0.4.5] - 7.6.2021
 
-* ButtonWidget update default style
-* SelectionFormFieldWidget add setValue by GlobalKey
+- ButtonWidget update default style
+- SelectionFormFieldWidget add setValue by GlobalKey
 
 ## [0.4.4] - 7.6.2021
 
-* Buttons styling for border width
+- Buttons styling for border width
 
 ## [0.4.3] - 7.6.2021
 
-* Update Core dependency
-* TextFormFieldWidget separate borderColor with focusedBorderColor
-* ButtonWidget add disabled TextStyle and Colors
+- Update Core dependency
+- TextFormFieldWidget separate borderColor with focusedBorderColor
+- ButtonWidget add disabled TextStyle and Colors
 
 ## [0.4.2] - 7.6.2021
 
-* IconButtonWidget fix weird issue with Filled and BoxShadow
+- IconButtonWidget fix weird issue with Filled and BoxShadow
 
 ## [0.4.1] - 6.6.2021
 
-* TextFormFieldWidget and Style support obscureText for password fields
+- TextFormFieldWidget and Style support obscureText for password fields
 
 ## [0.4.0] - 6.6.2021
 
-* SelectionFormFieldWidget
+- SelectionFormFieldWidget
 
 ## [0.3.0] - 4.6.2021
 
-* CommonSpaces update to work also standalone
-* ButtonWidget styling improvement
-* ConfirmDialog
-* ListDialog
-* ButtonWidget add TextOnly variant
-* BoxShadow on buttons
-* **Warning:** changed ButtonStyle to CommonButtonStyle to avoid conflict with Flutter class
+- CommonSpaces update to work also standalone
+- ButtonWidget styling improvement
+- ConfirmDialog
+- ListDialog
+- ButtonWidget add TextOnly variant
+- BoxShadow on buttons
+- **Warning:** changed ButtonStyle to CommonButtonStyle to avoid conflict with Flutter class
 
 ## [0.2.1] - 2.6.2021
 
-* ButtonWidget apply global font family if CommonTheme is used
+- ButtonWidget apply global font family if CommonTheme is used
 
 ## [0.2.0] - 2.6.2021
 
-* ButtonWidget with variants, Style, loading animation built in
+- ButtonWidget with variants, Style, loading animation built in
 
 ## [0.1.0] - 2.6.2021
 
-* Add more info to Readme and consider package to be beta ready
+- Add more info to Readme and consider package to be beta ready
 
 ## [0.0.11] - 2.6.2021
 
-* TextFormFieldWidget bugfix & more styling options
-* TextFormFieldWidget custom hint/placehoder that works also on iOS NativeView
+- TextFormFieldWidget bugfix & more styling options
+- TextFormFieldWidget custom hint/placehoder that works also on iOS NativeView
 
 ## [0.0.10] - 1.6.2021
 
-* Better validation system for Form fields
-* More styling options for IconButtonWidget & TextFormFieldWidget
+- Better validation system for Form fields
+- More styling options for IconButtonWidget & TextFormFieldWidget
 
 ## [0.0.9] - 31.5.2021
 
-* IconButtonWidget
+- IconButtonWidget
 
 ## [0.0.8] - 31.5.2021
 
-* BugFixes for TextFormFieldWidget styling under certain situations
+- BugFixes for TextFormFieldWidget styling under certain situations
 
 ## [0.0.7] - 31.5.2021
 
-* Implement copyWith on styles for easier templating
+- Implement copyWith on styles for easier templating
 
 ## [0.0.6] - 31.5.2021
 
-* TextFormFieldWidget add TextAlign, change styling
-* Add tip for custom fonts
-* Update Core dependency
+- TextFormFieldWidget add TextAlign, change styling
+- Add tip for custom fonts
+- Update Core dependency
 
 ## [0.0.5] - 30.5.2021
 
-* TextFormFieldWidget add TextFormFieldVariants Material, Cupertino
+- TextFormFieldWidget add TextFormFieldVariants Material, Cupertino
 
 ## [0.0.4] - 30.5.2021
 
-* TextFormFieldWidget use hybrid solution for Flutter iOS autocorrect issue
+- TextFormFieldWidget use hybrid solution for Flutter iOS autocorrect issue
 
 ## [0.0.3] - 24.5.2021
 
-* TextFormFieldWidget
+- TextFormFieldWidget
 
 ## [0.0.2] - 23.5.2021
 
-* CommonTheme with CommonDimens, initial Styling
-* Common space widgets
-* PreferencesSwitchWidget
+- CommonTheme with CommonDimens, initial Styling
+- Common space widgets
+- PreferencesSwitchWidget
 
 ## [0.0.1] - 23.5.2021
 
-* Initial release
-* No features implemented yet
+- Initial release
+- No features implemented yet

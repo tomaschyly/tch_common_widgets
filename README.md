@@ -13,15 +13,16 @@ This package is made to work with and some features require my package [tch_appl
 1. [Installation](#installation)
 2. [Theme](#theme)
 3. [Widgets](#widgets)
-4. [Dialogs](#dialogs)   
+4. [Dialogs](#dialogs)
 5. [Roadmap](#roadmap)
 
 ## Installation
 
 In your project's `pubspec.yaml` add:
+
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.37.1
+  tch_common_widgets: ^0.37.1+1
 ```
 
 If your IDE does not autoImport, add manually:
@@ -242,28 +243,28 @@ Widget build(BuildContext context) {
 
 ### CommonSpaces
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 This is a set of widgets that can be used for easy and standard spaces between other widgets.
 
 ### PreferencesSwitchWidget
 
-* works with **CommonTheme** and **standalone**
-* requires [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core) for preferences
+- works with **CommonTheme** and **standalone**
+- requires [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core) for preferences
 
 Simple settings toggle/switch which gets and toggles int in preferences, uses it as a bool.
 
 ### SwitchToggleWidget
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 Alternative widget for use instead of Switch, wraps IconButtonWidget and styling.
 
 ### TextFormFieldWidget
 
-* works with **CommonTheme** and **standalone**
-* **Custom solution to fix Flutter iOS issue with autocorrect not working!**
-* **This solution is no necessary since Flutter >= 3.16.0**
+- works with **CommonTheme** and **standalone**
+- **Custom solution to fix Flutter iOS issue with autocorrect not working!**
+- **This solution is no necessary since Flutter >= 3.16.0**
 
 Wrapped TextFormField for extra styling, features mainly with CommonTheme. Has 2 variants Material, Cupertino style.
 
@@ -284,25 +285,25 @@ There are some limitations, mainly if you want to use custom font family, you ne
 
 ### SelectionFormFieldWidget
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 Custom replacement for DropdownButton, looks like normal TextFormFieldWidget and supports Focus navigation and Form validation.
 
 ### IconButtonWidget
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 InkWell based button widget for icons, 3 variants.
 
 ### ButtonWidget
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 InkWell based button widget, 2 variants, content supports text or text and preffixIcon. Loading animation built in.
 
 ### DatePickerFormFieldWidget
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 Custom Button that looks like TextFormFieldWidget for selecting Date with Material DatePicker. Supports Focus navigation and Form validation.
 
@@ -310,13 +311,13 @@ Custom Button that looks like TextFormFieldWidget for selecting Date with Materi
 
 ### ConfirmDialog
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 Simple dialog to get user confirmations (bool) with optional text description.
 
 ### ListDialog
 
-* works with **CommonTheme** and **standalone**
+- works with **CommonTheme** and **standalone**
 
 Dialog which displays list of options and allows user to select one.
 

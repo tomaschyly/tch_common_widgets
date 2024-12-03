@@ -23,5 +23,6 @@ export 'src/ui/form/date_picker_form_field_widget.dart';
 export 'src/ui/form/calendar_widget.dart';
 
 export 'src/ui/widgets/common_space.dart';
+export 'src/ui/widgets/dashed_line_widget.dart';
 export 'src/ui/widgets/loading_builder.dart';
 export 'src/ui/widgets/tooltip_widget.dart';
