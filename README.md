@@ -22,7 +22,7 @@ In your project's `pubspec.yaml` add:
 
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.37.1+1
+  tch_common_widgets: ^0.37.2
 ```
 
 If your IDE does not autoImport, add manually:

@@ -1,3 +1,7 @@
+## [0.37.2] - 4.6.2025
+
+- Added disabledInputStyle TextStyle to TextFormFieldWidget
+
 ## [0.37.1+1] - 3.12.2024
 
 - Fix missing export for DashedLineWidget

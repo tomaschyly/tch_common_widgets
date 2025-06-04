@@ -494,17 +494,17 @@ packages:
     dependency: transitive
     description:
       name: tch_appliable_core
-      sha256: dd00754549852e1826e5bbe83afb58c902c8b2b287879b3af90025e199c8e2bf
+      sha256: "2f116a64924cc58d138e0a25ea266e3d2ec882f499bef954fdb48dbf3c1624bd"
       url: "https://pub.dev"
     source: hosted
-    version: "0.33.3"
+    version: "0.34.0"
   tch_common_widgets:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.37.0"
+    version: "0.37.1+1"
   term_glyph:
     dependency: transitive
     description:
