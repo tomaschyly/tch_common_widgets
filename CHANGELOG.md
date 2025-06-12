@@ -1,3 +1,7 @@
+## [0.37.3] - 12.6.2025
+
+- SelectionFormFieldWidget support filtering of options
+
 ## [0.37.2] - 4.6.2025
 
 - Added disabledInputStyle TextStyle to TextFormFieldWidget
