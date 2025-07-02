@@ -1,3 +1,7 @@
+## [0.37.3+1] - 2.7.2025
+
+- Update for Android Gradle 8+
+
 ## [0.37.3] - 12.6.2025
 
 - SelectionFormFieldWidget support filtering of options
