@@ -221,6 +221,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     final suffixIcon = widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon;
 
     TextStyle? textStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
+    TextStyle? disabledTextStyle = widget.style?.disabledInputStyle ?? commonTheme?.formStyle.textFormFieldStyle.disabledInputStyle;
+    if (!widget.enabled && disabledTextStyle != null) {
+      textStyle = disabledTextStyle;
+    }
     if (textStyle != null && commonTheme != null) {
       textStyle = commonTheme.preProcessTextStyle(textStyle);
     }
@@ -401,6 +405,7 @@ class TextFormFieldStyle {
   final bool? fullWidthMobileOnly;
   final TextFormFieldVariant variant;
   final TextStyle inputStyle;
+  final TextStyle disabledInputStyle;
   final String? iOSFontFamily;
   final TextCapitalization textCapitalization;
   final TextAlign textAlign;
@@ -422,6 +427,7 @@ class TextFormFieldStyle {
     this.fullWidthMobileOnly,
     this.variant = TextFormFieldVariant.Material,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16),
+    this.disabledInputStyle = const TextStyle(color: Colors.grey, fontSize: 16),
     this.iOSFontFamily,
     this.textCapitalization = TextCapitalization.none,
     this.textAlign = TextAlign.start,
@@ -485,6 +491,7 @@ class TextFormFieldStyle {
     TextFormFieldVariant? variant,
     bool? iOSUseNativeTextField,
     TextStyle? inputStyle,
+    TextStyle? disabledInputStyle,
     String? iOSFontFamily,
     TextCapitalization? textCapitalization,
     TextAlign? textAlign,
@@ -505,6 +512,7 @@ class TextFormFieldStyle {
       fullWidthMobileOnly: fullWidthMobileOnly ?? this.fullWidthMobileOnly,
       variant: variant ?? this.variant,
       inputStyle: inputStyle ?? this.inputStyle,
+      disabledInputStyle: disabledInputStyle ?? this.disabledInputStyle,
       iOSFontFamily: iOSFontFamily ?? this.iOSFontFamily,
       textCapitalization: textCapitalization ?? this.textCapitalization,
       textAlign: textAlign ?? this.textAlign,

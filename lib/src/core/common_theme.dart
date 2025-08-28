@@ -37,14 +37,23 @@ class CommonTheme extends InheritedWidget {
 
     final theFontFamily = fontFamily;
     if (theFontFamily != null && processedTextStyle.fontFamily == null) {
-      processedTextStyle =
-          processedTextStyle.copyWith(fontFamily: theFontFamily);
+      processedTextStyle = processedTextStyle.copyWith(fontFamily: theFontFamily);
     }
 
     return processedTextStyle;
   }
 
   /// Check if OS Dark mode is enabled
-  static bool isOSDarkMode(BuildContext context) =>
-      MediaQuery.of(context).platformBrightness == Brightness.dark;
+  static bool isOSDarkMode(BuildContext context) => MediaQuery.of(context).platformBrightness == Brightness.dark;
+}
+
+/// Shorthand to get CommonTheme from context
+CommonTheme getCommonTheme(BuildContext context) => CommonTheme.of<CommonTheme>(context)!;
+
+extension CommonThemeExtension on BuildContext {
+  /// Shorthand to get CommonTheme from context
+  CommonTheme get commonTheme => CommonTheme.of<CommonTheme>(this)!;
+
+  /// Shorthand to get nullable CommonTheme from context
+  CommonTheme? get commonThemeOrNull => CommonTheme.of<CommonTheme>(this);
 }

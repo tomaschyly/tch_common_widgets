@@ -18,6 +18,8 @@ class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
   final List<ListDialogOption<T>> options;
   final ValueChanged<T?>? onChange;
   final List<FormFieldValidation<T>>? validations;
+  final bool hasFilter;
+  final String? filterText;
   final SelectionFormFieldCustomOption? customOption;
 
   /// SelectionFormFieldWidget initialization
@@ -36,9 +38,10 @@ class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
     required this.options,
     this.onChange,
     this.validations,
+    this.hasFilter = false,
+    this.filterText,
     this.customOption,
-  })
-      : assert(options.isNotEmpty),
+  })  : assert(options.isNotEmpty),
         assert((focusNode == null && nextFocus == null) || focusNode != null),
         super(key: key);
 
@@ -47,7 +50,8 @@ class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => SelectionFormFieldWidgetState<T>();
 }
 
-class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<SelectionFormFieldWidget<T>> {
+class SelectionFormFieldWidgetState<T>
+    extends AbstractStatefulWidgetState<SelectionFormFieldWidget<T>> {
   T? get value => _value;
 
   final GlobalKey _fieldKey = GlobalKey();
@@ -77,7 +81,8 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
     _value = widget.initialValue;
     if (_value != null) {
-      final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
+      final ListDialogOption? option = _options.firstWhereOrNull(
+          (ListDialogOption option) => option.value == _value);
 
       _controller.text = option?.text ?? '';
     }
@@ -116,7 +121,8 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
     if (oldWidget.options != widget.options) {
       _options = widget.options;
 
-      final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
+      final ListDialogOption? option = _options.firstWhereOrNull(
+          (ListDialogOption option) => option.value == _value);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _controller.text = option?.text ?? _customOptionTextController.text;
@@ -129,11 +135,15 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
+    final bool fullWidthMobileOnly =
+        commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
-    final inputStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.selectionFormFieldStyle.inputStyle ?? const TextFormFieldStyle();
+    final inputStyle = widget.style?.inputStyle ??
+        commonTheme?.formStyle.selectionFormFieldStyle.inputStyle ??
+        const TextFormFieldStyle();
 
-    final borderRadius = widget.style?.borderRadius ?? commonTheme?.formStyle.selectionFormFieldStyle.borderRadius;
+    final borderRadius = widget.style?.borderRadius ??
+        commonTheme?.formStyle.selectionFormFieldStyle.borderRadius;
 
     final theBoundary = _fieldBoundary;
 
@@ -184,7 +194,8 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
               if (theValidations != null)
                 FormFieldValidation(
                   validator: (String? value) {
-                    final validated = validateValidations(theValidations, _value);
+                    final validated =
+                        validateValidations(theValidations, _value);
 
                     _errorText = validated ?? '';
 
@@ -204,9 +215,11 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
   /// Use TextFormFieldWidget height for InkWell height
   void _calculateHeight() {
     if (_fieldKey.currentContext != null && _fieldBoundary == null) {
-      final RenderBox renderBox = _fieldKey.currentContext!.findRenderObject() as RenderBox;
+      final RenderBox renderBox =
+          _fieldKey.currentContext!.findRenderObject() as RenderBox;
 
-      final boundary = Boundary(renderBox.size.width, renderBox.size.height, 0, 0);
+      final boundary =
+          Boundary(renderBox.size.width, renderBox.size.height, 0, 0);
 
       if (boundary.height != _fieldBoundary?.height) {
         setStateNotDisposed(() {
@@ -275,6 +288,8 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
       customOptionTextController: _customOptionTextController,
       customOptionFocusNode: _customOptionFocusNode,
       cancelText: widget.clearText ?? 'Clear',
+      hasFilter: widget.hasFilter,
+      filterText: widget.filterText,
       customOptionFocusChangeNotifier: customOptionFocusChangeNotifier,
       confirmText: widget.confirmText,
       onConfirmTap: widget.customOption == null ? null : (buildContext) =>
@@ -284,9 +299,10 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
     setStateNotDisposed(() {
       _value = newValue;
 
-      final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == _value);
+      final ListDialogOption? option = _options.firstWhereOrNull(
+          (ListDialogOption option) => option.value == _value);
 
-      _controller.text = option?.text ?? _customOptionTextController.text;
+      _controller.text = option?.text ?? _customOptionTextController.text ?? '';
     });
 
     final theOnChange = widget.onChange;
@@ -304,7 +320,8 @@ class SelectionFormFieldWidgetState<T> extends AbstractStatefulWidgetState<Selec
 
   /// Set value to newValue if there is options for it
   void setValue(T? newValue) {
-    final ListDialogOption? option = _options.firstWhereOrNull((ListDialogOption option) => option.value == newValue);
+    final ListDialogOption? option = _options.firstWhereOrNull(
+        (ListDialogOption option) => option.value == newValue);
 
     if (newValue == null || option != null) {
       _controller.text = option?.text ?? '';
