@@ -1,3 +1,7 @@
+## [0.38.0] - 30.8.2025
+
+* Updates to latest Flutter and dependencies
+
 ## [0.37.3+1] - 2.7.2025
 
 - Update for Android Gradle 8+
