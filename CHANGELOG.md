@@ -1,3 +1,7 @@
+## [0.38.1] - 1.10.2025
+
+* Add TextAlign to ButtonWidget
+
 ## [0.38.0] - 30.8.2025
 
 * Updates to latest Flutter and dependencies

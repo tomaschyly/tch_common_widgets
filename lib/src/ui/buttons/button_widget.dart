@@ -267,6 +267,8 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
         textStyle = commonTheme.preProcessTextStyle(textStyle);
       }
 
+      final textAlign = widget.style?.textAlign ?? commonTheme?.buttonsStyle.buttonStyle.textAlign;
+
       inner = Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -281,6 +283,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
             child: Text(
               widget.text,
               style: textStyle,
+              textAlign: textAlign,
             ),
           ),
           if (suffixIcon != null) ...[
@@ -411,6 +414,7 @@ class CommonButtonStyle {
   final double width;
   final double height;
   final AlignmentGeometry? alignment;
+  final TextAlign? textAlign;
   final EdgeInsets contentPadding;
   final bool prefixIconRestricted;
   final double preffixIconWidth;
@@ -447,6 +451,7 @@ class CommonButtonStyle {
     this.width = double.infinity,
     this.height = kMinInteractiveSize,
     this.alignment,
+    this.textAlign,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: kCommonHorizontalMargin),
     this.prefixIconRestricted = true,
     this.preffixIconWidth = kIconSize,
@@ -484,6 +489,7 @@ class CommonButtonStyle {
     double? width,
     double? height,
     AlignmentGeometry? alignment,
+    TextAlign? textAlign,
     EdgeInsets? contentPadding,
     bool? prefixIconRestricted,
     double? preffixIconWidth,
@@ -519,6 +525,7 @@ class CommonButtonStyle {
       width: width ?? this.width,
       height: height ?? this.height,
       alignment: alignment ?? this.alignment,
+      textAlign: textAlign ?? this.textAlign,
       contentPadding: contentPadding ?? this.contentPadding,
       prefixIconRestricted: prefixIconRestricted ?? this.prefixIconRestricted,
       preffixIconWidth: preffixIconWidth ?? this.preffixIconWidth,
