@@ -1,3 +1,7 @@
+## [0.38.2] - 18.3.2026
+
+* Add `textMaxLines`, `textOverflow` and `textSoftWrap` to ButtonWidget/CommonButtonStyle
+
 ## [0.38.1] - 1.10.2025
 
 * Add TextAlign to ButtonWidget

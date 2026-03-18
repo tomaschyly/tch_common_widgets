@@ -268,6 +268,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       }
 
       final textAlign = widget.style?.textAlign ?? commonTheme?.buttonsStyle.buttonStyle.textAlign;
+      final textMaxLines = widget.style?.textMaxLines ?? commonTheme?.buttonsStyle.buttonStyle.textMaxLines;
+      final textOverflow = widget.style?.textOverflow ?? commonTheme?.buttonsStyle.buttonStyle.textOverflow;
+      final textSoftWrap = widget.style?.textSoftWrap ?? commonTheme?.buttonsStyle.buttonStyle.textSoftWrap;
 
       inner = Row(
         mainAxisSize: MainAxisSize.min,
@@ -284,6 +287,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
               widget.text,
               style: textStyle,
               textAlign: textAlign,
+              maxLines: textMaxLines,
+              overflow: textOverflow,
+              softWrap: textSoftWrap,
             ),
           ),
           if (suffixIcon != null) ...[
@@ -415,6 +421,9 @@ class CommonButtonStyle {
   final double height;
   final AlignmentGeometry? alignment;
   final TextAlign? textAlign;
+  final int? textMaxLines;
+  final TextOverflow? textOverflow;
+  final bool? textSoftWrap;
   final EdgeInsets contentPadding;
   final bool prefixIconRestricted;
   final double preffixIconWidth;
@@ -452,6 +461,9 @@ class CommonButtonStyle {
     this.height = kMinInteractiveSize,
     this.alignment,
     this.textAlign,
+    this.textMaxLines,
+    this.textOverflow,
+    this.textSoftWrap,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: kCommonHorizontalMargin),
     this.prefixIconRestricted = true,
     this.preffixIconWidth = kIconSize,
@@ -490,6 +502,9 @@ class CommonButtonStyle {
     double? height,
     AlignmentGeometry? alignment,
     TextAlign? textAlign,
+    int? textMaxLines,
+    TextOverflow? textOverflow,
+    bool? textSoftWrap,
     EdgeInsets? contentPadding,
     bool? prefixIconRestricted,
     double? preffixIconWidth,
@@ -526,6 +541,9 @@ class CommonButtonStyle {
       height: height ?? this.height,
       alignment: alignment ?? this.alignment,
       textAlign: textAlign ?? this.textAlign,
+      textMaxLines: textMaxLines ?? this.textMaxLines,
+      textOverflow: textOverflow ?? this.textOverflow,
+      textSoftWrap: textSoftWrap ?? this.textSoftWrap,
       contentPadding: contentPadding ?? this.contentPadding,
       prefixIconRestricted: prefixIconRestricted ?? this.prefixIconRestricted,
       preffixIconWidth: preffixIconWidth ?? this.preffixIconWidth,

@@ -15,6 +15,7 @@ This package is made to work with and some features require my package [tch_appl
 3. [Widgets](#widgets)
 4. [Dialogs](#dialogs)
 5. [Roadmap](#roadmap)
+6. [Agent instructions](#agent-instructions)
 
 ## Installation
 
@@ -22,7 +23,7 @@ In your project's `pubspec.yaml` add:
 
 ```yaml
 dependencies:
-  tch_common_widgets: ^0.38.1
+  tch_common_widgets: ^0.38.2
 ```
 
 If your IDE does not autoImport, add manually:
@@ -324,3 +325,11 @@ Dialog which displays list of options and allows user to select one.
 ## Roadmap
 
 Until version 1.0.0 there will not be predictable roadmap. Instead development is dependant on requirements of projects where this package is used.
+
+## Agent instructions
+
+Project-wide agent instructions are defined in `AGENTS.md`.
+
+- Treat `AGENTS.md` as the source of truth for coding and translation rules.
+- Root `AGENTS.md` applies to the whole repository.
+- More specific `AGENTS.md` files in subdirectories override root rules for their subtree.
