@@ -1,7 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/boundary.dart';
-import 'package:tch_appliable_core/utils/form.dart';
-import 'package:tch_appliable_core/utils/list.dart';
 import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
@@ -74,8 +73,8 @@ class SelectionFormFieldWidgetState<T>
 
     _value = widget.initialValue;
     if (_value != null) {
-      final ListDialogOption? option = _options.firstWhereOrNull(
-          (ListDialogOption option) => option.value == _value);
+      final ListDialogOption<T>? option =
+          _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == _value);
 
       _controller.text = option?.text ?? '';
     }
@@ -108,8 +107,8 @@ class SelectionFormFieldWidgetState<T>
     if (oldWidget.options != widget.options) {
       _options = widget.options;
 
-      final ListDialogOption? option = _options.firstWhereOrNull(
-          (ListDialogOption option) => option.value == _value);
+      final ListDialogOption<T>? option =
+          _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == _value);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _controller.text = option?.text ?? '';
@@ -232,7 +231,7 @@ class SelectionFormFieldWidgetState<T>
     }
     _selectingOption = true;
 
-    clearFocus(context);
+    FocusManager.instance.primaryFocus?.unfocus();
 
     _options.forEach((ListDialogOption option) {
       option.isSelected = _value == option.value;
@@ -250,8 +249,8 @@ class SelectionFormFieldWidgetState<T>
     setStateNotDisposed(() {
       _value = newValue;
 
-      final ListDialogOption? option = _options.firstWhereOrNull(
-          (ListDialogOption option) => option.value == _value);
+      final ListDialogOption<T>? option =
+          _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == _value);
 
       _controller.text = option?.text ?? '';
     });
@@ -271,8 +270,8 @@ class SelectionFormFieldWidgetState<T>
 
   /// Set value to newValue if there is options for it
   void setValue(T? newValue) {
-    final ListDialogOption? option = _options.firstWhereOrNull(
-        (ListDialogOption option) => option.value == newValue);
+    final ListDialogOption<T>? option =
+        _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == newValue);
 
     if (newValue == null || option != null) {
       _controller.text = option?.text ?? '';
