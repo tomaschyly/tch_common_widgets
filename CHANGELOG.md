@@ -1,3 +1,8 @@
+## [0.40.0] - 6.4.2026
+
+* Add `mouseCursor` style option to `ButtonWidget` and `IconButtonWidget` (`CommonButtonStyle` and `IconButtonStyle`)
+* Default cursor for both widgets is now pointer (`SystemMouseCursors.click`) with style override support
+
 ## [0.39.0] - 6.4.2026
 
 * **Warning:** Breaking change — renamed enum values to `lowerCamelCase`
