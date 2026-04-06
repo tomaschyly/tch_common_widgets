@@ -9,6 +9,7 @@ class DialogHeader extends StatelessWidget {
 
   /// DialogHeader initialization
   const DialogHeader({
+    super.key,
     required this.style,
     required this.title,
     this.leading,
@@ -28,7 +29,7 @@ class DialogHeader extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        if (leading != null) leading!,
+        ?leading,
         Expanded(
           child: Text(
             title,
@@ -36,7 +37,7 @@ class DialogHeader extends StatelessWidget {
             textAlign: style.textAlign,
           ),
         ),
-        if (trailing != null) trailing!,
+        ?trailing,
       ],
     );
   }
@@ -49,7 +50,7 @@ class DialogHeaderStyle {
   /// DialogHeaderStyle initialization
   const DialogHeaderStyle({
     this.textStyle = const TextStyle(color: Colors.black, fontSize: 20),
-    this.textAlign = TextAlign.start,
+    this.textAlign = .start,
   });
 
   /// Create copy of this tyle with changes

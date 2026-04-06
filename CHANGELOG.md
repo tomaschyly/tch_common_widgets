@@ -1,3 +1,13 @@
+## [0.39.0] - 6.4.2026
+
+* **Warning:** Breaking change — renamed enum values to `lowerCamelCase`
+  * `TextFormFieldVariant`: `None`/`Material`/`Cupertino` → `none`/`material`/`cupertino`
+  * `ShowRequiredLabelSuffix`: `ByValidateRequired`/`Never`/`Always` → `byValidateRequired`/`never`/`always`
+* Flutter/Dart baseline update: `flutter >= 3.38.0`, `dart >= 3.10.0`
+* Core compatibility update: `tch_appliable_core` to `^0.37.0+2`
+* Added direct dependencies: `collection` (for `firstWhereOrNull`) and `web` (for web platform API)
+* Web plugin migration from deprecated `dart:html` to `package:web`
+
 ## [0.38.2] - 18.3.2026
 
 * Add `textMaxLines`, `textOverflow` and `textSoftWrap` to ButtonWidget/CommonButtonStyle

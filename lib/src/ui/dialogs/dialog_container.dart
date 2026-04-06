@@ -9,7 +9,8 @@ class DialogContainer extends AbstractStatefulWidget {
   final DialogFooter dialogFooter;
 
   /// DialogContainer initialization
-  DialogContainer({
+  const DialogContainer({
+    super.key,
     required this.style,
     this.isScrollable = true,
     this.contentBeforeScroll,
@@ -41,7 +42,7 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
     final bool fullWidthMobileOnly = commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
     final double dialogWidth =
         widget.style.dialogWidth ?? commonTheme?.dialogsStyle.dialogWidth ?? (fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity);
-    final double? dialogHeight = widget.style.dialogHeight ?? commonTheme?.dialogsStyle.dialogHeight ?? null;
+    final double? dialogHeight = widget.style.dialogHeight ?? commonTheme?.dialogsStyle.dialogHeight;
     final bool stretchContent = widget.style.stretchContent ? true : commonTheme?.dialogsStyle.stretchContent ?? false;
 
     final borderRadius = widget.style.borderRadius;
@@ -179,15 +180,15 @@ class DialogContainerStyle {
 
   /// DialogContainerStyle initialization
   const DialogContainerStyle({
-    this.mainAxisAlignment = MainAxisAlignment.start,
-    this.dialogPadding = const EdgeInsets.all(12),
-    this.dialogMargin = const EdgeInsets.all(kCommonPrimaryMargin),
+    this.mainAxisAlignment = .start,
+    this.dialogPadding = const .all(12),
+    this.dialogMargin = const .all(kCommonPrimaryMargin),
     this.dialogWidth,
     this.dialogHeight,
     this.stretchContent = false,
     this.color = Colors.transparent,
     this.backgroundColor = Colors.white,
-    this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.borderRadius = const BorderRadius.all(.circular(8)),
   });
 
   /// Create copy of this tyle with changes

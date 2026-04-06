@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
-import 'package:tch_appliable_core/utils/color.dart';
 import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class TextFormFieldWidget extends AbstractStatefulWidget {
@@ -10,7 +9,6 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final bool autofocus;
   final FocusNode? focusNode;
   final FocusNode? nextFocus;
-  // final ValueChanged<String>? onChanged; //TODO needs to also support iOS native views
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -29,10 +27,10 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final bool? obscureText;
 
   /// TextFormFieldWidget initialization
-  TextFormFieldWidget({
+  const TextFormFieldWidget({
+    super.key,
     this.style,
     this.iOSFontFamily,
-    Key? key,
     required this.controller,
     this.autofocus = false,
     this.focusNode,
@@ -54,8 +52,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.enabled = true,
     this.autocorrect = true,
     this.obscureText,
-  })  : assert((focusNode == null && nextFocus == null) || focusNode != null),
-        super(key: key);
+  }) : assert((focusNode == null && nextFocus == null) || focusNode != null);
 
   /// Create state for widget
   @override
@@ -106,7 +103,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final TextFormFieldVariant theVariant = widget.style?.variant ?? commonTheme?.formStyle.textFormFieldStyle.variant ?? TextFormFieldVariant.Material;
+    final TextFormFieldVariant theVariant =
+        widget.style?.variant ??
+        commonTheme?.formStyle.textFormFieldStyle.variant ??
+        .material;
 
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = widget.style?.fullWidthMobileOnly ?? commonTheme?.formStyle.fullWidthMobileOnly ?? true;
@@ -187,10 +187,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       final theRequiredLabelSuffix = widget.style?.requiredLabelSuffix ?? commonTheme?.formStyle.textFormFieldStyle.requiredLabelSuffix ?? ' *';
       final theShowRequiredLabelSuffix = widget.style?.showRequiredLabelSuffix ??
           commonTheme?.formStyle.textFormFieldStyle.showRequiredLabelSuffix ??
-          ShowRequiredLabelSuffix.ByValidateRequired;
+          .byValidateRequired;
 
       switch (theShowRequiredLabelSuffix) {
-        case ShowRequiredLabelSuffix.ByValidateRequired:
+        case ShowRequiredLabelSuffix.byValidateRequired:
           if (theValidations != null) {
             for (FormFieldValidation<String> validation in theValidations) {
               if (validation.validator == validateRequired) {
@@ -200,10 +200,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
             }
           }
           break;
-        case ShowRequiredLabelSuffix.Always:
+        case ShowRequiredLabelSuffix.always:
           theLabel = '$theLabel$theRequiredLabelSuffix';
           break;
-        case ShowRequiredLabelSuffix.Never:
+        case ShowRequiredLabelSuffix.never:
           // do nothing
           break;
       }
@@ -251,7 +251,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       textInputAction: theTextInputAction,
       style: textStyle,
       decoration: theDecoration.copyWith(
-        labelText: theVariant != TextFormFieldVariant.Cupertino ? theLabel : null,
+        labelText: theVariant != TextFormFieldVariant.cupertino ? theLabel : null,
         prefix: thePrefix != null
             ? ValueListenableBuilder(
                 valueListenable: _displayPrefix,
@@ -301,8 +301,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
               )
             : null,
       ),
-      textCapitalization: (widget.style?.textCapitalization ?? commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ?? TextCapitalization.none,
-      textAlign: (widget.style?.textAlign ?? commonTheme?.formStyle.textFormFieldStyle.textAlign) ?? TextAlign.start,
+      textCapitalization:
+          (widget.style?.textCapitalization ??
+              commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ??
+          .none,
+      textAlign:
+          (widget.style?.textAlign ??
+              commonTheme?.formStyle.textFormFieldStyle.textAlign) ??
+          .start,
       minLines: theLines,
       maxLines: theLines,
       maxLength: widget.maxLength,
@@ -327,7 +333,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 
     Widget content = field;
 
-    if (theVariant == TextFormFieldVariant.Cupertino && theLabel != null) {
+    if (theVariant == TextFormFieldVariant.cupertino && theLabel != null) {
       content = Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -347,7 +353,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     if (fullWidthMobileOnly) {
-      content = Container(
+      content = SizedBox(
         width: kPhoneStopBreakpoint,
         child: content,
       );
@@ -390,15 +396,15 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
 }
 
 enum TextFormFieldVariant {
-  None,
-  Material,
-  Cupertino,
+  none,
+  material,
+  cupertino,
 }
 
 enum ShowRequiredLabelSuffix {
-  ByValidateRequired,
-  Never,
-  Always,
+  byValidateRequired,
+  never,
+  always,
 }
 
 class TextFormFieldStyle {
@@ -425,64 +431,64 @@ class TextFormFieldStyle {
   /// TextFormFieldStyle initialization
   const TextFormFieldStyle({
     this.fullWidthMobileOnly,
-    this.variant = TextFormFieldVariant.Material,
+    this.variant = .material,
     this.inputStyle = const TextStyle(color: Colors.black, fontSize: 16),
     this.disabledInputStyle = const TextStyle(color: Colors.grey, fontSize: 16),
     this.iOSFontFamily,
-    this.textCapitalization = TextCapitalization.none,
-    this.textAlign = TextAlign.start,
+    this.textCapitalization = .none,
+    this.textAlign = .start,
     this.keyboardType,
     this.inputDecoration = const InputDecoration(
       isDense: true,
-      labelStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-      contentPadding: const EdgeInsets.symmetric(
+      labelStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+      contentPadding: EdgeInsets.symmetric(
         horizontal: kCommonHorizontalMarginHalf,
         vertical: 12,
       ),
       filled: true,
       fillColor: Colors.transparent,
-      enabledBorder: const OutlineInputBorder(
-        borderSide: const BorderSide(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
           width: 1,
         ),
-        borderRadius: const BorderRadius.all(const Radius.circular(8)),
+        borderRadius: BorderRadius.all(.circular(8)),
       ),
-      disabledBorder: const OutlineInputBorder(
-        borderSide: const BorderSide(
+      disabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
           width: 1,
         ),
-        borderRadius: const BorderRadius.all(const Radius.circular(8)),
+        borderRadius: BorderRadius.all(.circular(8)),
       ),
-      focusedBorder: const OutlineInputBorder(
-        borderSide: const BorderSide(
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
           width: 1,
         ),
-        borderRadius: const BorderRadius.all(const Radius.circular(8)),
+        borderRadius: BorderRadius.all(.circular(8)),
       ),
-      errorBorder: const OutlineInputBorder(
-        borderSide: const BorderSide(
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
           width: 1,
         ),
-        borderRadius: const BorderRadius.all(const Radius.circular(8)),
+        borderRadius: BorderRadius.all(.circular(8)),
       ),
-      focusedErrorBorder: const OutlineInputBorder(
-        borderSide: const BorderSide(
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
           width: 1,
         ),
-        borderRadius: const BorderRadius.all(const Radius.circular(8)),
+        borderRadius: BorderRadius.all(.circular(8)),
       ),
-      errorStyle: const TextStyle(fontSize: 16),
+      errorStyle: TextStyle(fontSize: 16),
     ),
     this.borderColor = Colors.black,
     this.fillColorDisabled = Colors.grey,
     this.disabledBorderColor = Colors.grey,
     this.focusedBorderColor = Colors.black,
     this.errorColor = Colors.red,
-    this.cupertinoLabelPadding = const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+    this.cupertinoLabelPadding = const .only(left: 8, right: 8, bottom: 8),
     this.validations = const <FormFieldValidation<String>>[],
     this.obscureText,
     this.requiredLabelSuffix = ' *',
-    this.showRequiredLabelSuffix = ShowRequiredLabelSuffix.ByValidateRequired,
+    this.showRequiredLabelSuffix = .byValidateRequired,
   });
 
   /// Create copy of this style with changes
@@ -529,78 +535,5 @@ class TextFormFieldStyle {
       requiredLabelSuffix: requiredLabelSuffix ?? this.requiredLabelSuffix,
       showRequiredLabelSuffix: showRequiredLabelSuffix ?? this.showRequiredLabelSuffix,
     );
-  }
-}
-
-class _IOSUseNativeTextFieldParams extends DataModel {
-  String? iOSFontFamily;
-  String text;
-  TextStyle? inputStyle;
-  String? hintText;
-  TextStyle? hintStyle;
-  int maxLines;
-  int? maxLength;
-  TextInputType? keyboardType;
-  TextInputAction? textInputAction;
-  TextCapitalization textCapitalization;
-  TextAlign textAlign;
-  bool autocorrect;
-  bool obscureText;
-
-  /// IOSUseNativeTextFieldParams initialization
-  _IOSUseNativeTextFieldParams({
-    this.iOSFontFamily,
-    required this.text,
-    this.inputStyle,
-    this.hintText,
-    this.hintStyle,
-    required this.maxLines,
-    this.maxLength,
-    this.keyboardType,
-    this.textInputAction,
-    this.textCapitalization = TextCapitalization.none,
-    this.textAlign = TextAlign.start,
-    this.autocorrect = true,
-    this.obscureText = false,
-  }) : super.fromJson(<String, dynamic>{});
-
-  /// Convert into JSON map
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic>? _inputStyle;
-    if (inputStyle != null) {
-      _inputStyle = <String, dynamic>{
-        'color': inputStyle!.color?.toHex(),
-        'fontSize': inputStyle!.fontSize,
-        'fontWeightBold': inputStyle!.fontWeight == FontWeight.bold,
-        'fontFamily': inputStyle!.fontFamily ?? "",
-      };
-    }
-
-    Map<String, dynamic>? _hintStyle;
-    if (hintStyle != null) {
-      _hintStyle = <String, dynamic>{
-        'color': hintStyle!.color?.toHex(),
-        'fontSize': hintStyle!.fontSize,
-        'fontWeightBold': hintStyle!.fontWeight == FontWeight.bold,
-        'fontFamily': hintStyle!.fontFamily ?? "",
-      };
-    }
-
-    return <String, dynamic>{
-      'iOSFontFamily': iOSFontFamily ?? '',
-      'text': text,
-      'inputStyle': _inputStyle,
-      'hintText': hintText,
-      'hintStyle': _hintStyle,
-      'maxLines': maxLines,
-      'maxLength': maxLength ?? 0,
-      'keyboardType': keyboardType?.toJson()['name'],
-      'textInputAction': textInputAction?.toString(),
-      'textCapitalization': textCapitalization.toString(),
-      'textAlign': textAlign.toString(),
-      'autocorrect': autocorrect,
-      'obscureText': obscureText,
-    };
   }
 }

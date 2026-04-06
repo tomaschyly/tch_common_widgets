@@ -1,5 +1,3 @@
-library tch_common_widgets;
-
 export 'src/core/common_dimens.dart';
 export 'src/core/common_theme.dart';
 

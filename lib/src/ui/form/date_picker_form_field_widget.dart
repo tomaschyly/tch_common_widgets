@@ -26,8 +26,8 @@ class DatePickerFormFieldWidget extends AbstractStatefulWidget {
   final List<FormFieldValidation<DateTime>>? validations;
 
   /// DatePickerFormFieldWidget initialization
-  DatePickerFormFieldWidget({
-    GlobalKey<DatePickerFormFieldWidgetState>? key,
+  const DatePickerFormFieldWidget({
+    super.key,
     this.style,
     this.dateFormat,
     this.focusNode,
@@ -47,8 +47,7 @@ class DatePickerFormFieldWidget extends AbstractStatefulWidget {
     this.lastDate,
     this.onChange,
     this.validations,
-  })  : assert((focusNode == null && nextFocus == null) || focusNode != null),
-        super(key: key);
+  }) : assert((focusNode == null && nextFocus == null) || focusNode != null);
 
   /// Create state for widget
   @override
@@ -71,9 +70,7 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
     super.initState();
 
     _focusNode = widget.focusNode;
-    if (_focusNode == null) {
-      _focusNode = FocusNode();
-    }
+    _focusNode ??= FocusNode();
     _focusNode!.addListener(_focusChanged);
 
     _value = widget.initialValue;
@@ -98,9 +95,7 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
 
     _focusNode!.removeListener(_focusChanged);
     _focusNode = widget.focusNode;
-    if (_focusNode == null) {
-      _focusNode = FocusNode();
-    }
+    _focusNode ??= FocusNode();
     _focusNode!.addListener(_focusChanged);
   }
 
@@ -125,7 +120,7 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
       if (_value != null) {
         _controller.text = dateFormat.format(_value!);
       } else {
-        _controller.text = "";
+        _controller.text = '';
       }
     });
 
@@ -135,7 +130,7 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
       control = Material(
         color: Colors.transparent,
         child: InkWell(
-          child: Container(
+          child: SizedBox(
             width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
             height: theBoundary.height,
           ),
@@ -184,7 +179,7 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
             ],
           ),
         ),
-        if (control != null) control,
+        ?control,
       ],
     );
   }
@@ -305,7 +300,7 @@ class DatePickerFormFieldStyle {
   /// DatePickerFormFieldStyle initialization
   const DatePickerFormFieldStyle({
     this.inputStyle = const TextFormFieldStyle(),
-    this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.borderRadius = const BorderRadius.all(.circular(8)),
     this.dateFormat,
     this.cancelClearsValue = true,
     this.backgroundColor = Colors.black,
