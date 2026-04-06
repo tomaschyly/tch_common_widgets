@@ -35,8 +35,8 @@ class ButtonWidget extends AbstractStatefulWidget {
     this.tooltip,
     this.ignoreInteractionsWhenLoading,
   }) : loadingTags = [
-          if (tag != null) tag,
-          if (tags != null) ...tags,
+          ?tag,
+          ...?tags,
         ];
 
   /// Create state for widget
@@ -97,10 +97,13 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
     final bool fullWidthMobileOnly = widget.style?.fullWidthMobileOnly ?? commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
-    final theVariant = widget.style?.variant ?? commonTheme?.buttonsStyle.buttonStyle.variant ?? ButtonVariant.Outlined;
+    final theVariant =
+        widget.style?.variant ??
+        commonTheme?.buttonsStyle.buttonStyle.variant ??
+        .outlined;
 
     Color color = widget.style?.color ?? commonTheme?.buttonsStyle.buttonStyle.color ?? Colors.black;
-    Gradient? gradient = widget.style?.gradient ?? commonTheme?.buttonsStyle.buttonStyle.gradient ?? null;
+    Gradient? gradient = widget.style?.gradient ?? commonTheme?.buttonsStyle.buttonStyle.gradient;
     if (isDisabled) {
       color = widget.style?.disabledColor ?? commonTheme?.buttonsStyle.buttonStyle.disabledColor ?? Colors.grey;
       gradient = widget.style?.disabledGradient ?? commonTheme?.buttonsStyle.buttonStyle.disabledGradient ?? gradient;
@@ -135,7 +138,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       Widget? icon;
       if (loadingIcon != null) {
         if (loadingIconRestricted) {
-          icon = Container(
+          icon = SizedBox(
             width: loadingIconWidth,
             height: loadingIconHeight,
             child: loadingIcon,
@@ -149,12 +152,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
             loadingIconSvgAssetPath,
             width: loadingIconWidth,
             height: loadingIconHeight,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
           icon = SvgPicture.asset(
             loadingIconSvgAssetPath,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         }
       }
@@ -174,7 +177,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
               } else {
                 return Transform.rotate(
                   angle: _animationController!.value * 2 * pi,
-                  child: Container(
+                  child: SizedBox(
                     width: loadingIconWidth,
                     height: loadingIconHeight,
                     child: CircularProgressIndicator(
@@ -202,7 +205,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 
       if (widget.prefixIcon != null) {
         if (prefixIconRestricted) {
-          prefixIcon = Container(
+          prefixIcon = SizedBox(
             width: preffixIconWidth,
             height: preffixIconHeight,
             child: widget.prefixIcon,
@@ -216,19 +219,19 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
             widget.prefixIconSvgAssetPath!,
             width: preffixIconWidth,
             height: preffixIconHeight,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
           prefixIcon = SvgPicture.asset(
             widget.prefixIconSvgAssetPath!,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         }
       }
 
       if (widget.suffixIcon != null) {
         if (suffixIconRestricted) {
-          suffixIcon = Container(
+          suffixIcon = SizedBox(
             width: suffixIconWidth,
             height: suffixIconHeight,
             child: widget.suffixIcon,
@@ -242,12 +245,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
             widget.suffixIconSvgAssetPath!,
             width: suffixIconWidth,
             height: suffixIconHeight,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
           suffixIcon = SvgPicture.asset(
             widget.suffixIconSvgAssetPath!,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         }
       }
@@ -258,7 +261,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
       TextStyle? textStyle;
       if (isDisabled) {
         textStyle = widget.style?.disabledTextStyle ?? commonTheme?.buttonsStyle.buttonStyle.disabledTextStyle;
-      } else if (theVariant == ButtonVariant.Filled) {
+      } else if (theVariant == ButtonVariant.filled) {
         textStyle = widget.style?.filledTextStyle ?? commonTheme?.buttonsStyle.buttonStyle.filledTextStyle;
       } else {
         textStyle = widget.style?.textStyle ?? commonTheme?.buttonsStyle.buttonStyle.textStyle;
@@ -278,7 +281,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
         children: [
           if (prefixIcon != null) ...[
             prefixIcon,
-            Container(
+            SizedBox(
               width: prefixIconSpacing,
             ),
           ],
@@ -293,7 +296,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
             ),
           ),
           if (suffixIcon != null) ...[
-            Container(
+            SizedBox(
               width: suffixIconSpacing,
             ),
             suffixIcon,
@@ -311,8 +314,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
     Widget content = IgnorePointer(
       ignoring: theIsLoading && ignoreInteractionsWhenLoading,
       child: Material(
-        color: theVariant == ButtonVariant.Filled ? color : Colors.transparent,
+        color: theVariant == ButtonVariant.filled ? color : Colors.transparent,
         child: InkWell(
+          onTap: widget.onTap,
           child: Container(
             width: widthWrapContent ? null : (fullWidthMobileOnly ? kPhoneStopBreakpoint : width),
             height: height,
@@ -321,14 +325,13 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
             decoration: BoxDecoration(
               color: Colors.transparent,
               border: Border.all(
-                color: theVariant == ButtonVariant.TextOnly ? Colors.transparent : color,
+                color: theVariant == ButtonVariant.textOnly ? Colors.transparent : color,
                 width: theBorderWidth,
               ),
               borderRadius: borderRadius,
             ),
             child: inner,
           ),
-          onTap: widget.onTap,
         ),
       ),
     );
@@ -404,10 +407,10 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget> with 
 }
 
 enum ButtonVariant {
-  None,
-  Outlined,
-  Filled,
-  TextOnly,
+  none,
+  outlined,
+  filled,
+  textOnly,
 }
 
 class CommonButtonStyle {
@@ -452,7 +455,7 @@ class CommonButtonStyle {
   /// CommonButtonStyle initialization
   const CommonButtonStyle({
     this.fullWidthMobileOnly,
-    this.variant = ButtonVariant.Outlined,
+    this.variant = .outlined,
     this.textStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.filledTextStyle = const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
     this.disabledTextStyle = const TextStyle(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.bold),
@@ -480,7 +483,7 @@ class CommonButtonStyle {
     this.prefixIconSpacing = kCommonHorizontalMargin,
     this.suffixIconSpacing = kCommonHorizontalMargin,
     this.borderWidth = 1,
-    this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.borderRadius = const BorderRadius.all(.circular(8)),
     this.boxShadow,
     this.loadingIconSvgAssetPath,
     this.loadingIcon,

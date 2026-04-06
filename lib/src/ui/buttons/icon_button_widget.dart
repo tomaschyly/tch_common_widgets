@@ -29,8 +29,8 @@ class IconButtonWidget extends AbstractStatefulWidget {
     this.ignoreInteractionsWhenLoading,
   })  : assert(svgAssetPath != null || iconWidget != null),
         loadingTags = [
-          if (tag != null) tag,
-          if (tags != null) ...tags,
+          ?tag,
+          ...?tags,
         ];
 
   /// Create state for widget
@@ -87,7 +87,9 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final IconButtonVariant variant = (widget.style?.variant ?? commonTheme?.buttonsStyle.iconButtonStyle.variant) ?? IconButtonVariant.Outlined;
+    final IconButtonVariant variant =
+        (widget.style?.variant ?? commonTheme?.buttonsStyle.iconButtonStyle.variant) ??
+        .outlined;
 
     final width = (widget.style?.width ?? commonTheme?.buttonsStyle.iconButtonStyle.width) ?? kMinInteractiveSize;
     final height = (widget.style?.height ?? commonTheme?.buttonsStyle.iconButtonStyle.height) ?? kMinInteractiveSize;
@@ -118,7 +120,7 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
       Widget? loadingIconWidget;
       if (loadingIcon != null) {
         if (loadingIconRestricted) {
-          loadingIconWidget = Container(
+          loadingIconWidget = SizedBox(
             width: loadingIconWidth,
             height: loadingIconHeight,
             child: loadingIcon,
@@ -132,12 +134,12 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
             loadingIconSvgAssetPath,
             width: loadingIconWidth,
             height: loadingIconHeight,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
           loadingIconWidget = SvgPicture.asset(
             loadingIconSvgAssetPath,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         }
       }
@@ -153,7 +155,7 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
           } else {
             return Transform.rotate(
               angle: _animationController!.value * 2 * pi,
-              child: Container(
+              child: SizedBox(
                 width: loadingIconWidth,
                 height: loadingIconHeight,
                 child: CircularProgressIndicator(
@@ -169,7 +171,7 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
     } else {
       if (widget.iconWidget != null) {
         if (iconRestricted) {
-          icon = Container(
+          icon = SizedBox(
             width: iconWidth,
             height: iconHeight,
             child: widget.iconWidget,
@@ -183,12 +185,12 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
             widget.svgAssetPath!,
             width: iconWidth,
             height: iconHeight,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
           icon = SvgPicture.asset(
             widget.svgAssetPath!,
-            color: iconColor,
+            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         }
       }
@@ -201,15 +203,16 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
     Widget content = IgnorePointer(
       ignoring: theIsLoading && ignoreInteractionsWhenLoading,
       child: Material(
-        color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
+        color: variant == IconButtonVariant.filled ? color : Colors.transparent,
         child: InkWell(
+          onTap: widget.onTap,
           child: Container(
             width: width,
             height: height,
-            decoration: variant == IconButtonVariant.IconOnly
+            decoration: variant == IconButtonVariant.iconOnly
                 ? null
                 : BoxDecoration(
-                    color: variant == IconButtonVariant.Filled ? color : Colors.transparent,
+                    color: variant == IconButtonVariant.filled ? color : Colors.transparent,
                     border: Border.all(
                       color: color,
                       width: theBorderWidth,
@@ -221,7 +224,6 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
               child: icon,
             ),
           ),
-          onTap: widget.onTap,
         ),
       ),
     );
@@ -245,7 +247,7 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
 
     final bool canBeStretched = widget.style?.canBeStretched ?? commonTheme?.buttonsStyle.iconButtonStyle.canBeStretched ?? false;
     if (!canBeStretched) {
-      content = Container(
+      content = SizedBox(
         width: width,
         height: height,
         child: Center(child: content),
@@ -306,10 +308,10 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
 }
 
 enum IconButtonVariant {
-  None,
-  Outlined,
-  Filled,
-  IconOnly,
+  none,
+  outlined,
+  filled,
+  iconOnly,
 }
 
 class IconButtonStyle {
@@ -334,7 +336,7 @@ class IconButtonStyle {
 
   /// IconButtonStyle initialization
   const IconButtonStyle({
-    this.variant = IconButtonVariant.Outlined,
+    this.variant = .outlined,
     this.width = kMinInteractiveSize,
     this.height = kMinInteractiveSize,
     this.iconRestricted = true,
@@ -343,7 +345,7 @@ class IconButtonStyle {
     this.color = Colors.black,
     this.iconColor,
     this.borderWidth = 1,
-    this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.borderRadius = const BorderRadius.all(.circular(8)),
     this.boxShadow,
     this.canBeStretched,
     this.loadingIconSvgAssetPath,

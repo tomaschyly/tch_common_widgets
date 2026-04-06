@@ -13,6 +13,7 @@ class ListDialog<T> extends AbstractStatefulWidget {
 
   /// ListDialog initialization
   ListDialog({
+    super.key,
     this.style,
     this.title,
     this.cancelText,
@@ -108,7 +109,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
     final selectedOptionStyle = widget.style?.selectedOptionStyle ??
         commonTheme?.dialogsStyle.listDialogStyle.selectedOptionStyle ??
         const CommonButtonStyle(
-          variant: ButtonVariant.Filled,
+          variant: .filled,
         );
 
     return DialogContainer(
@@ -137,7 +138,7 @@ class _ListDialogState<T> extends AbstractStatefulWidgetState<ListDialog<T>> {
               double optionsHeight = ((_options.length * optionHeight) + ((_options.length - 1) * optionsSpacing)).toDouble();
               optionsHeight = optionsHeight > 0 ? optionsHeight : 0;
 
-              return Container(
+              return SizedBox(
                 height: optionsHeight < constraints.maxHeight ? optionsHeight : constraints.maxHeight,
                 child: Scrollbar(
                   controller: _scrollController,
@@ -212,10 +213,10 @@ class ListDialogStyle {
     this.dialogFooterStyle = const DialogFooterStyle(),
     this.filterStyle = const TextFormFieldStyle(),
     this.optionStyle = const CommonButtonStyle(
-      variant: ButtonVariant.TextOnly,
+      variant: .textOnly,
     ),
     this.selectedOptionStyle = const CommonButtonStyle(
-      variant: ButtonVariant.Filled,
+      variant: .filled,
     ),
     this.optionsSpacing = kCommonVerticalMarginQuarter,
   });

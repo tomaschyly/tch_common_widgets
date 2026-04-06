@@ -9,7 +9,7 @@ class SwitchToggleWidget extends AbstractStatefulWidget {
   final String? offText;
 
   /// SwitchToggleWidget initialization
-  SwitchToggleWidget({
+  const SwitchToggleWidget({
     super.key,
     this.style,
     this.onChange,
@@ -132,7 +132,7 @@ class SwitchToggleWidgetState
                 boxShadow: [
                   BoxShadow(
                     color: (_value ? semaphoreOnColor : semaphoreOffColor)
-                        .withOpacity(0.7),
+                        .withValues(alpha: 0.7),
                     blurRadius: 3,
                     spreadRadius: 1,
                     offset: Offset(0, -1),

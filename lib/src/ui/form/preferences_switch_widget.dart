@@ -13,7 +13,7 @@ class PreferencesSwitchWidget extends AbstractStatefulWidget {
   final String? offText;
 
   /// PreferencesSwitchWidget initialization
-  PreferencesSwitchWidget({
+  const PreferencesSwitchWidget({
     super.key,
     this.style,
     required this.label,
@@ -50,13 +50,15 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
     final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
     final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
-    final PreferencesSwitchLayout layout = (widget.style?.layout ?? commonTheme?.formStyle.preferencesSwitchStyle.layout) ?? PreferencesSwitchLayout.Horizontal;
+    final PreferencesSwitchLayout layout =
+        (widget.style?.layout ?? commonTheme?.formStyle.preferencesSwitchStyle.layout) ??
+        .horizontal;
     final bool useSwitchToggleWidget = (widget.style?.useSwitchToggleWidget ?? commonTheme?.formStyle.preferencesSwitchStyle.useSwitchToggleWidget) ?? false;
 
     String? description = _value ? widget.descriptionOn : widget.descriptionOff;
 
     List<Widget> mainWidgets = [
-      if (layout == PreferencesSwitchLayout.Horizontal)
+      if (layout == PreferencesSwitchLayout.horizontal)
         Expanded(
           child: Text(
             widget.label,
@@ -68,21 +70,21 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
           widget.label,
           style: widget.style?.labelStyle ?? commonTheme?.preProcessTextStyle(commonTheme.formStyle.preferencesSwitchStyle.labelStyle),
         ),
-      if (layout == PreferencesSwitchLayout.Horizontal) CommonSpaceH(),
+      if (layout == PreferencesSwitchLayout.horizontal) CommonSpaceH(),
       if (useSwitchToggleWidget) ...[
-        if (layout == PreferencesSwitchLayout.Vertical) CommonSpaceVHalf(),
+        if (layout == PreferencesSwitchLayout.vertical) CommonSpaceVHalf(),
         SwitchToggleWidget(
           onText: widget.onText,
           offText: widget.offText,
           onChange: _onChange,
           initialValue: _value,
         ),
-        if (layout == PreferencesSwitchLayout.Vertical) CommonSpaceVHalf(),
+        if (layout == PreferencesSwitchLayout.vertical) CommonSpaceVHalf(),
       ] else
         Switch(
           value: _value,
           onChanged: _onChange,
-          activeColor: theme.colorScheme.secondary,
+          activeThumbColor: theme.colorScheme.secondary,
         ),
     ];
 
@@ -90,14 +92,14 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: widget.style?.crossAxisAlignment ?? commonTheme?.formStyle.preferencesSwitchStyle.crossAxisAlignment ?? CrossAxisAlignment.start,
       children: [
-        if (layout == PreferencesSwitchLayout.Horizontal)
+        if (layout == PreferencesSwitchLayout.horizontal)
           Row(
             mainAxisSize: MainAxisSize.max,
             children: mainWidgets,
           )
         else
           ...mainWidgets,
-        if (useSwitchToggleWidget && layout == PreferencesSwitchLayout.Horizontal) CommonSpaceVHalf(),
+        if (useSwitchToggleWidget && layout == PreferencesSwitchLayout.horizontal) CommonSpaceVHalf(),
         if (description != null)
           Text(
             description,
@@ -110,7 +112,7 @@ class _PreferencesSwitchWidgetState extends AbstractStatefulWidgetState<Preferen
     Widget content = field;
 
     if (fullWidthMobileOnly) {
-      content = Container(
+      content = SizedBox(
         width: kPhoneStopBreakpoint,
         child: content,
       );
@@ -152,10 +154,10 @@ class PreferencesSwitchStyle {
 
   /// PreferencesSwitchStyle initialization
   const PreferencesSwitchStyle({
-    this.layout = PreferencesSwitchLayout.Horizontal,
+    this.layout = .horizontal,
     this.labelStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.descriptionStyle = const TextStyle(color: Colors.black, fontSize: 16, height: 1.5),
-    this.crossAxisAlignment = CrossAxisAlignment.start,
+    this.crossAxisAlignment = .start,
     this.useSwitchToggleWidget = false,
   });
 
@@ -176,7 +178,7 @@ class PreferencesSwitchStyle {
 }
 
 enum PreferencesSwitchLayout {
-  None,
-  Horizontal,
-  Vertical,
+  none,
+  horizontal,
+  vertical,
 }

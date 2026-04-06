@@ -17,6 +17,7 @@ class DialogFooter extends StatelessWidget {
 
   /// DialogFooter initialization
   const DialogFooter({
+    super.key,
     required this.style,
     required this.noText,
     required this.yesText,
@@ -40,7 +41,7 @@ class DialogFooter extends StatelessWidget {
 
     CommonButtonStyle yesButtonStyle = style.yesButtonStyle ??
         style.buttonStyle.copyWith(
-          variant: ButtonVariant.Filled,
+          variant: .filled,
           color: yesIsDanger ? style.dangerColor : style.buttonStyle.color,
         );
     CommonButtonStyle noButtonStyle = style.noButtonStyle ?? style.buttonStyle;
