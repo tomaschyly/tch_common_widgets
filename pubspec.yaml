@@ -6,8 +6,8 @@ repository: https://github.com/tomaschyly/tch_common_widgets
 issue_tracker: https://github.com/tomaschyly/tch_common_widgets/issues
 
 environment:
-  sdk: ">=2.18.6 <4.0.0"
-  flutter: ">=2.5.0"
+  sdk: '>=3.6.0 <4.0.0'
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
@@ -17,9 +17,12 @@ dependencies:
 
   tch_appliable_core: ^0.35.0
 
-  flutter_svg: ^2.2.0
+  flutter_svg: ^2.2.4
   intl: ^0.20.2
-  jiffy: ^6.4.3
+  jiffy: ^6.4.4
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
 
 #dependency_overrides:
 #  intl: ^0.18.1
