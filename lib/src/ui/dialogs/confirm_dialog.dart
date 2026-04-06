@@ -10,7 +10,8 @@ class ConfirmDialog extends StatelessWidget {
   final bool isDanger;
 
   /// ConfirmDialog initialization
-  ConfirmDialog({
+  const ConfirmDialog({
+    super.key,
     this.style,
     this.title,
     this.text,

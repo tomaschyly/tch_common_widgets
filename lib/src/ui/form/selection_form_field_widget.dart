@@ -1,7 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:tch_appliable_core/tch_appliable_core.dart';
 import 'package:tch_appliable_core/utils/boundary.dart';
-import 'package:tch_appliable_core/utils/form.dart';
-import 'package:tch_appliable_core/utils/list.dart';
 import 'package:tch_common_widgets/tch_common_widgets.dart';
 
 class SelectionFormFieldWidget<T> extends AbstractStatefulWidget {
@@ -65,17 +64,15 @@ class SelectionFormFieldWidgetState<T>
     super.initState();
 
     _focusNode = widget.focusNode;
-    if (_focusNode == null) {
-      _focusNode = FocusNode();
-    }
+    _focusNode ??= FocusNode();
     _focusNode!.addListener(_focusChanged);
 
     _options = widget.options;
 
     _value = widget.initialValue;
     if (_value != null) {
-      final ListDialogOption? option = _options.firstWhereOrNull(
-          (ListDialogOption option) => option.value == _value);
+      final ListDialogOption<T>? option =
+          _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == _value);
 
       _controller.text = option?.text ?? '';
     }
@@ -100,16 +97,14 @@ class SelectionFormFieldWidgetState<T>
 
     _focusNode!.removeListener(_focusChanged);
     _focusNode = widget.focusNode;
-    if (_focusNode == null) {
-      _focusNode = FocusNode();
-    }
+    _focusNode ??= FocusNode();
     _focusNode!.addListener(_focusChanged);
 
     if (oldWidget.options != widget.options) {
       _options = widget.options;
 
-      final ListDialogOption? option = _options.firstWhereOrNull(
-          (ListDialogOption option) => option.value == _value);
+      final ListDialogOption<T>? option =
+          _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == _value);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _controller.text = option?.text ?? '';
@@ -144,7 +139,7 @@ class SelectionFormFieldWidgetState<T>
       control = Material(
         color: Colors.transparent,
         child: InkWell(
-          child: Container(
+          child: SizedBox(
             width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
             height: theBoundary.height,
           ),
@@ -194,7 +189,7 @@ class SelectionFormFieldWidgetState<T>
             ],
           ),
         ),
-        if (control != null) control,
+        ?control,
       ],
     );
   }
@@ -232,11 +227,11 @@ class SelectionFormFieldWidgetState<T>
     }
     _selectingOption = true;
 
-    clearFocus(context);
+    FocusManager.instance.primaryFocus?.unfocus();
 
-    _options.forEach((ListDialogOption option) {
+    for (final ListDialogOption option in _options) {
       option.isSelected = _value == option.value;
-    });
+    }
 
     final T? newValue = await ListDialog.show(
       context,
@@ -247,11 +242,15 @@ class SelectionFormFieldWidgetState<T>
       filterText: widget.filterText,
     );
 
+    if (!context.mounted) {
+      return;
+    }
+
     setStateNotDisposed(() {
       _value = newValue;
 
-      final ListDialogOption? option = _options.firstWhereOrNull(
-          (ListDialogOption option) => option.value == _value);
+      final ListDialogOption<T>? option =
+          _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == _value);
 
       _controller.text = option?.text ?? '';
     });
@@ -271,8 +270,8 @@ class SelectionFormFieldWidgetState<T>
 
   /// Set value to newValue if there is options for it
   void setValue(T? newValue) {
-    final ListDialogOption? option = _options.firstWhereOrNull(
-        (ListDialogOption option) => option.value == newValue);
+    final ListDialogOption<T>? option =
+        _options.firstWhereOrNull((ListDialogOption<T> option) => option.value == newValue);
 
     if (newValue == null || option != null) {
       _controller.text = option?.text ?? '';
@@ -291,7 +290,7 @@ class SelectionFormFieldStyle {
   /// SelectionFormFieldStyle initialization
   const SelectionFormFieldStyle({
     this.inputStyle = const TextFormFieldStyle(),
-    this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.borderRadius = const BorderRadius.all(.circular(8)),
   });
 
   /// Create copy of this style with changes

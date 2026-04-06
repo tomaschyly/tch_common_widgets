@@ -1,3 +1,21 @@
+## [0.39.0] - 6.4.2026
+
+* **Warning:** Breaking change — renamed enum values to `lowerCamelCase`
+  * `TextFormFieldVariant`: `None`/`Material`/`Cupertino` → `none`/`material`/`cupertino`
+  * `ShowRequiredLabelSuffix`: `ByValidateRequired`/`Never`/`Always` → `byValidateRequired`/`never`/`always`
+  * `ButtonVariant`: `None`/`Outlined`/`Filled`/`TextOnly` → `none`/`outlined`/`filled`/`textOnly`
+  * `IconButtonVariant`: `None`/`Outlined`/`Filled`/`IconOnly` → `none`/`outlined`/`filled`/`iconOnly`
+  * `PreferencesSwitchLayout`: `None`/`Horizontal`/`Vertical` → `none`/`horizontal`/`vertical`
+* Flutter/Dart baseline update: `flutter >= 3.38.0`, `dart >= 3.10.0`
+* Core compatibility update: `tch_appliable_core` to `^0.37.0+2`
+* Added direct dependencies: `collection` (for `firstWhereOrNull`) and `web` (for web platform API)
+* Web plugin migration from deprecated `dart:html` to `package:web`
+* Important API/lint migrations for modern Flutter:
+  * `SvgPicture.asset(color: ...)` → `SvgPicture.asset(colorFilter: ...)`
+  * `Switch.activeColor` → `Switch.activeThumbColor`
+  * `Color.withOpacity(...)` → `Color.withValues(alpha: ...)`
+* `flutter analyze lib` is clean (no issues)
+
 ## [0.38.2] - 18.3.2026
 
 * Add `textMaxLines`, `textOverflow` and `textSoftWrap` to ButtonWidget/CommonButtonStyle

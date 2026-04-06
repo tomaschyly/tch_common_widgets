@@ -26,7 +26,7 @@ class CalendarWidget extends AbstractStatefulWidget {
   final List<Jiffy> daysWithCheckbox;
 
   /// CalendarWidget initialization
-  CalendarWidget({
+  const CalendarWidget({
     super.key,
     this.style,
     this.singleSelection = true,
@@ -223,7 +223,10 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
                   package: arrowLeftIcon != null ? null : 'tch_common_widgets',
                   width: arrowsStyle.iconWidth,
                   height: arrowsStyle.iconHeight,
-                  color: arrowsStyle.iconColor,
+                  colorFilter:
+                      arrowsStyle.iconColor != null
+                          ? ColorFilter.mode(arrowsStyle.iconColor!, BlendMode.srcIn)
+                          : null,
                 ),
                 onTap: () => _changeMonth(prev: true),
               ),
@@ -250,7 +253,10 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
                   package: arrowRightIcon != null ? null : 'tch_common_widgets',
                   width: arrowsStyle.iconWidth,
                   height: arrowsStyle.iconHeight,
-                  color: arrowsStyle.iconColor,
+                  colorFilter:
+                      arrowsStyle.iconColor != null
+                          ? ColorFilter.mode(arrowsStyle.iconColor!, BlendMode.srcIn)
+                          : null,
                 ),
                 onTap: () => _changeMonth(next: true),
               ),
@@ -500,7 +506,7 @@ class _DayWidget extends StatelessWidget {
             package: checkIcon != null ? null : 'tch_common_widgets',
             width: 14,
             height: 14,
-            color: checkboxColor,
+            colorFilter: ColorFilter.mode(checkboxColor, BlendMode.srcIn),
           ),
       ],
     );
@@ -528,7 +534,7 @@ class CalendarWidgetStyle {
   const CalendarWidgetStyle({
     this.weekDayStart = DateTime.monday,
     this.arrowsStyle = const IconButtonStyle(
-      variant: IconButtonVariant.IconOnly,
+      variant: .iconOnly,
     ),
     this.dayTextStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
     this.weekdayTextStyle = const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal),

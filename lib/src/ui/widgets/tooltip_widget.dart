@@ -8,7 +8,8 @@ class TooltipWidget extends StatelessWidget {
   final TooltipStyle? style;
 
   /// TooltipWidget initialization
-  TooltipWidget({
+  const TooltipWidget({
+    super.key,
     this.message,
     this.richMessage,
     required this.child,
@@ -23,18 +24,17 @@ class TooltipWidget extends StatelessWidget {
 
     final padding = style?.padding ??
         commonTheme?.tooltipStyle.padding ??
-        const EdgeInsets.symmetric(horizontal: 6, vertical: 4);
-    final margin = style?.margin ?? commonTheme?.tooltipStyle.margin ?? null;
+        const .symmetric(horizontal: 6, vertical: 4);
+    final margin = style?.margin ?? commonTheme?.tooltipStyle.margin;
     final verticalOffset = style?.verticalOffset ??
-        commonTheme?.tooltipStyle.verticalOffset ??
-        null;
+        commonTheme?.tooltipStyle.verticalOffset;
     final preferBelow =
         style?.preferBelow ?? commonTheme?.tooltipStyle.preferBelow ?? true;
     final decoration = style?.decoration ??
         commonTheme?.tooltipStyle.decoration ??
         BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(4),
+          color: Colors.black.withValues(alpha: 0.8),
+          borderRadius: .circular(4),
         );
     final textStyle = style?.textStyle ??
         commonTheme?.tooltipStyle.textStyle ??
@@ -44,11 +44,10 @@ class TooltipWidget extends StatelessWidget {
         );
     final textAlign = style?.textAlign ??
         commonTheme?.tooltipStyle.textAlign ??
-        TextAlign.center;
+        .center;
 
     return Tooltip(
       message: message,
-      child: child,
       padding: padding,
       margin: margin,
       verticalOffset: verticalOffset,
@@ -56,6 +55,7 @@ class TooltipWidget extends StatelessWidget {
       decoration: decoration,
       textStyle: textStyle,
       textAlign: textAlign,
+      child: child,
     );
   }
 }

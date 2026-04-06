@@ -13,8 +13,8 @@ class LoadingBuilder extends StatelessWidget {
     String? tag,
     List<String>? tags,
   }) : loadingTags = [
-          if (tag != null) tag,
-          if (tags != null) ...tags,
+          ?tag,
+          ...?tags,
         ];
 
   /// Create view layout from widgets

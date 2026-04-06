@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
+/// Run the example application.
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
+/// Root widget for the example app.
+class MyApp extends StatelessWidget {
+  /// Initialize [MyApp].
+  const MyApp({super.key});
 
-class _MyAppState extends State<MyApp> {
+  /// Build the example app shell.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

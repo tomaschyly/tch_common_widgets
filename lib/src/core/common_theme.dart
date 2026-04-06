@@ -12,7 +12,8 @@ class CommonTheme extends InheritedWidget {
 
   /// CommonTheme initialization
   const CommonTheme({
-    required Widget child,
+    super.key,
+    required super.child,
     this.commonDimens = const CommonDimens(),
     this.fontFamily,
     this.iOSFontFamily,
@@ -20,7 +21,7 @@ class CommonTheme extends InheritedWidget {
     this.dialogsStyle = const DialogsStyle(),
     this.formStyle = const FormStyle(),
     this.tooltipStyle = const TooltipStyle(),
-  }) : super(child: child);
+  });
 
   /// Access current CommonTheme anywhere from BuildContext
   static T? of<T extends CommonTheme>(BuildContext context) {
