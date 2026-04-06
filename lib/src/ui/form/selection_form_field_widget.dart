@@ -228,6 +228,7 @@ class SelectionFormFieldWidgetState<T>
     _selectingOption = true;
 
     FocusManager.instance.primaryFocus?.unfocus();
+    final focusScope = FocusScope.of(context);
 
     for (final ListDialogOption option in _options) {
       option.isSelected = _value == option.value;
@@ -241,10 +242,6 @@ class SelectionFormFieldWidgetState<T>
       hasFilter: widget.hasFilter,
       filterText: widget.filterText,
     );
-
-    if (!context.mounted) {
-      return;
-    }
 
     setStateNotDisposed(() {
       _value = newValue;
@@ -262,7 +259,7 @@ class SelectionFormFieldWidgetState<T>
 
     final theNextFocus = widget.nextFocus;
     if (newValue != null && theNextFocus != null) {
-      FocusScope.of(context).requestFocus(theNextFocus);
+      focusScope.requestFocus(theNextFocus);
     }
 
     _selectingOption = false;

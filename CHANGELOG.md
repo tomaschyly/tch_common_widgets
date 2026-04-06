@@ -1,3 +1,7 @@
+## [0.40.0+1] - 6.4.2026
+
+* `SelectionFormFieldWidget` fix for option not selecting under certain conditions
+
 ## [0.40.0] - 6.4.2026
 
 * Add `mouseCursor` style option to `ButtonWidget` and `IconButtonWidget` (`CommonButtonStyle` and `IconButtonStyle`)
