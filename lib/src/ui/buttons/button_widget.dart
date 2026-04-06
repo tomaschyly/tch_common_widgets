@@ -44,6 +44,7 @@ class ButtonWidget extends AbstractStatefulWidget {
 class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
     with TickerProviderStateMixin {
   AnimationController? _animationController;
+  bool _isHovered = false;
 
   /// Manually dispose of resources
   @override
@@ -133,14 +134,14 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
           color;
     }
 
-    final theBorderWidth =
+    double theBorderWidth =
         widget.style?.borderWidth ??
         commonTheme?.buttonsStyle.buttonStyle.borderWidth ??
         1;
-    final BorderRadius? borderRadius =
+    BorderRadius? borderRadius =
         widget.style?.borderRadius ??
         commonTheme?.buttonsStyle.buttonStyle.borderRadius;
-    final boxShadow =
+    List<BoxShadow>? boxShadow =
         widget.style?.boxShadow ??
         commonTheme?.buttonsStyle.buttonStyle.boxShadow;
 
@@ -151,13 +152,27 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         widget.ignoreInteractionsWhenLoading ??
         commonTheme?.buttonsStyle.ignoreInteractionsWhenLoading ??
         true;
-    final mouseCursor =
+    MouseCursor mouseCursor =
         widget.style?.mouseCursor ??
         commonTheme?.buttonsStyle.buttonStyle.mouseCursor ??
         SystemMouseCursors.click;
     final isInteractive =
         widget.onTap != null &&
         !(theIsLoading && ignoreInteractionsWhenLoading);
+    final hoverStyle =
+        widget.style?.hoverStyle ??
+        commonTheme?.buttonsStyle.buttonStyle.hoverStyle;
+    final isHoverActive = isInteractive && _isHovered;
+
+    if (isHoverActive && hoverStyle != null) {
+      color = hoverStyle.color ?? color;
+      gradient = hoverStyle.gradient ?? gradient;
+      mouseCursor = hoverStyle.mouseCursor ?? mouseCursor;
+      iconColor = hoverStyle.iconColor ?? iconColor;
+      theBorderWidth = hoverStyle.borderWidth ?? theBorderWidth;
+      borderRadius = hoverStyle.borderRadius ?? borderRadius;
+      boxShadow = hoverStyle.boxShadow ?? boxShadow;
+    }
 
     if (theIsLoading) {
       if (_animationController == null) {
@@ -336,6 +351,12 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         textStyle =
             widget.style?.disabledTextStyle ??
             commonTheme?.buttonsStyle.buttonStyle.disabledTextStyle;
+      } else if (isHoverActive &&
+          theVariant == ButtonVariant.filled &&
+          hoverStyle?.filledTextStyle != null) {
+        textStyle = hoverStyle!.filledTextStyle;
+      } else if (isHoverActive && hoverStyle?.textStyle != null) {
+        textStyle = hoverStyle!.textStyle;
       } else if (theVariant == ButtonVariant.filled) {
         textStyle =
             widget.style?.filledTextStyle ??
@@ -411,6 +432,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         color: theVariant == ButtonVariant.filled ? color : Colors.transparent,
         child: InkWell(
           onTap: isInteractive ? widget.onTap : null,
+          onHover: (isHovered) {
+            _setHoverState(isInteractive ? isHovered : false);
+          },
           mouseCursor: isInteractive ? mouseCursor : SystemMouseCursors.basic,
           child: Container(
             width: widthWrapContent
@@ -506,9 +530,70 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
 
     _animationController = null;
   }
+
+  /// Update hover state and rebuild only when value changes
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setStateNotDisposed(() {
+      _isHovered = isHovered;
+    });
+  }
 }
 
 enum ButtonVariant { none, outlined, filled, textOnly }
+
+class CommonButtonHoverStyle {
+  final TextStyle? textStyle;
+  final TextStyle? filledTextStyle;
+  final Color? color;
+  final Gradient? gradient;
+  final MouseCursor? mouseCursor;
+  final Color? iconColor;
+  final double? borderWidth;
+  final BorderRadius? borderRadius;
+  final List<BoxShadow>? boxShadow;
+
+  /// CommonButtonHoverStyle initialization
+  const CommonButtonHoverStyle({
+    this.textStyle,
+    this.filledTextStyle,
+    this.color,
+    this.gradient,
+    this.mouseCursor,
+    this.iconColor,
+    this.borderWidth,
+    this.borderRadius,
+    this.boxShadow,
+  });
+
+  /// Create copy of this hover style with changes
+  CommonButtonHoverStyle copyWith({
+    TextStyle? textStyle,
+    TextStyle? filledTextStyle,
+    Color? color,
+    Gradient? gradient,
+    MouseCursor? mouseCursor,
+    Color? iconColor,
+    double? borderWidth,
+    BorderRadius? borderRadius,
+    List<BoxShadow>? boxShadow,
+  }) {
+    return CommonButtonHoverStyle(
+      textStyle: textStyle ?? this.textStyle,
+      filledTextStyle: filledTextStyle ?? this.filledTextStyle,
+      color: color ?? this.color,
+      gradient: gradient ?? this.gradient,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
+      iconColor: iconColor ?? this.iconColor,
+      borderWidth: borderWidth ?? this.borderWidth,
+      borderRadius: borderRadius ?? this.borderRadius,
+      boxShadow: boxShadow ?? this.boxShadow,
+    );
+  }
+}
 
 class CommonButtonStyle {
   final bool? fullWidthMobileOnly;
@@ -534,6 +619,7 @@ class CommonButtonStyle {
   final Color? color;
   final Gradient? gradient;
   final Gradient? disabledGradient;
+  final CommonButtonHoverStyle? hoverStyle;
   final MouseCursor mouseCursor;
   final Color? iconColor;
   final Color? disabledColor;
@@ -589,6 +675,7 @@ class CommonButtonStyle {
     this.color = Colors.black,
     this.gradient,
     this.disabledGradient,
+    this.hoverStyle,
     this.mouseCursor = SystemMouseCursors.click,
     this.iconColor,
     this.disabledColor = Colors.grey,
@@ -631,6 +718,7 @@ class CommonButtonStyle {
     Color? color,
     Gradient? gradient,
     Gradient? disabledGradient,
+    CommonButtonHoverStyle? hoverStyle,
     MouseCursor? mouseCursor,
     Color? iconColor,
     Color? disabledColor,
@@ -671,6 +759,7 @@ class CommonButtonStyle {
       color: color ?? this.color,
       gradient: gradient ?? this.gradient,
       disabledGradient: disabledGradient ?? this.disabledGradient,
+      hoverStyle: hoverStyle ?? this.hoverStyle,
       mouseCursor: mouseCursor ?? this.mouseCursor,
       iconColor: iconColor ?? this.iconColor,
       disabledColor: disabledColor ?? this.disabledColor,

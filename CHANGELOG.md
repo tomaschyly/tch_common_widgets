@@ -2,6 +2,8 @@
 
 * Add `mouseCursor` style option to `ButtonWidget` and `IconButtonWidget` (`CommonButtonStyle` and `IconButtonStyle`)
 * Default cursor for both widgets is now pointer (`SystemMouseCursors.click`) with style override support
+* Add hover state tracking for `ButtonWidget` and `IconButtonWidget`
+* Add `CommonButtonHoverStyle` and `IconButtonHoverStyle` with per-widget hover visual overrides
 
 ## [0.39.0] - 6.4.2026
 

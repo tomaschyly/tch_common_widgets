@@ -39,6 +39,7 @@ class _IconButtonWidgetState
     extends AbstractStatefulWidgetState<IconButtonWidget>
     with TickerProviderStateMixin {
   AnimationController? _animationController;
+  bool _isHovered = false;
 
   /// Manually dispose of resources
   @override
@@ -109,11 +110,11 @@ class _IconButtonWidgetState
             commonTheme?.buttonsStyle.iconButtonStyle.iconHeight) ??
         kIconSize;
 
-    final color =
+    Color color =
         widget.style?.color ??
         commonTheme?.buttonsStyle.iconButtonStyle.color ??
         Colors.black;
-    final iconColor =
+    Color iconColor =
         widget.style?.iconColor ??
         commonTheme?.buttonsStyle.iconButtonStyle.iconColor ??
         color;
@@ -129,13 +130,23 @@ class _IconButtonWidgetState
         widget.ignoreInteractionsWhenLoading ??
         commonTheme?.buttonsStyle.ignoreInteractionsWhenLoading ??
         true;
-    final mouseCursor =
+    MouseCursor mouseCursor =
         widget.style?.mouseCursor ??
         commonTheme?.buttonsStyle.iconButtonStyle.mouseCursor ??
         SystemMouseCursors.click;
     final isInteractive =
         widget.onTap != null &&
         !(theIsLoading && ignoreInteractionsWhenLoading);
+    final hoverStyle =
+        widget.style?.hoverStyle ??
+        commonTheme?.buttonsStyle.iconButtonStyle.hoverStyle;
+    final isHoverActive = isInteractive && _isHovered;
+
+    if (isHoverActive && hoverStyle != null) {
+      color = hoverStyle.color ?? color;
+      mouseCursor = hoverStyle.mouseCursor ?? mouseCursor;
+      iconColor = hoverStyle.iconColor ?? iconColor;
+    }
 
     if (theIsLoading) {
       if (_animationController == null) {
@@ -241,16 +252,22 @@ class _IconButtonWidgetState
       }
     }
 
-    final theBorderWidth =
+    double theBorderWidth =
         widget.style?.borderWidth ??
         commonTheme?.buttonsStyle.iconButtonStyle.borderWidth ??
         1;
-    final BorderRadius? borderRadius =
+    BorderRadius? borderRadius =
         widget.style?.borderRadius ??
         commonTheme?.buttonsStyle.iconButtonStyle.borderRadius;
-    final boxShadow =
+    List<BoxShadow>? boxShadow =
         widget.style?.boxShadow ??
         commonTheme?.buttonsStyle.iconButtonStyle.boxShadow;
+
+    if (isHoverActive && hoverStyle != null) {
+      theBorderWidth = hoverStyle.borderWidth ?? theBorderWidth;
+      borderRadius = hoverStyle.borderRadius ?? borderRadius;
+      boxShadow = hoverStyle.boxShadow ?? boxShadow;
+    }
 
     Widget content = IgnorePointer(
       ignoring: theIsLoading && ignoreInteractionsWhenLoading,
@@ -258,6 +275,9 @@ class _IconButtonWidgetState
         color: variant == IconButtonVariant.filled ? color : Colors.transparent,
         child: InkWell(
           onTap: isInteractive ? widget.onTap : null,
+          onHover: (isHovered) {
+            _setHoverState(isInteractive ? isHovered : false);
+          },
           mouseCursor: isInteractive ? mouseCursor : SystemMouseCursors.basic,
           child: Container(
             width: width,
@@ -358,9 +378,58 @@ class _IconButtonWidgetState
 
     _animationController = null;
   }
+
+  /// Update hover state and rebuild only when value changes
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setStateNotDisposed(() {
+      _isHovered = isHovered;
+    });
+  }
 }
 
 enum IconButtonVariant { none, outlined, filled, iconOnly }
+
+class IconButtonHoverStyle {
+  final Color? color;
+  final MouseCursor? mouseCursor;
+  final Color? iconColor;
+  final double? borderWidth;
+  final BorderRadius? borderRadius;
+  final List<BoxShadow>? boxShadow;
+
+  /// IconButtonHoverStyle initialization
+  const IconButtonHoverStyle({
+    this.color,
+    this.mouseCursor,
+    this.iconColor,
+    this.borderWidth,
+    this.borderRadius,
+    this.boxShadow,
+  });
+
+  /// Create copy of this hover style with changes
+  IconButtonHoverStyle copyWith({
+    Color? color,
+    MouseCursor? mouseCursor,
+    Color? iconColor,
+    double? borderWidth,
+    BorderRadius? borderRadius,
+    List<BoxShadow>? boxShadow,
+  }) {
+    return IconButtonHoverStyle(
+      color: color ?? this.color,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
+      iconColor: iconColor ?? this.iconColor,
+      borderWidth: borderWidth ?? this.borderWidth,
+      borderRadius: borderRadius ?? this.borderRadius,
+      boxShadow: boxShadow ?? this.boxShadow,
+    );
+  }
+}
 
 class IconButtonStyle {
   final IconButtonVariant variant;
@@ -370,6 +439,7 @@ class IconButtonStyle {
   final double iconWidth;
   final double iconHeight;
   final Color? color;
+  final IconButtonHoverStyle? hoverStyle;
   final MouseCursor mouseCursor;
   final Color? iconColor;
   final double borderWidth;
@@ -392,6 +462,7 @@ class IconButtonStyle {
     this.iconWidth = kIconSize,
     this.iconHeight = kIconSize,
     this.color = Colors.black,
+    this.hoverStyle,
     this.mouseCursor = SystemMouseCursors.click,
     this.iconColor,
     this.borderWidth = 1,
@@ -415,6 +486,7 @@ class IconButtonStyle {
     double? iconWidth,
     double? iconHeight,
     Color? color,
+    IconButtonHoverStyle? hoverStyle,
     MouseCursor? mouseCursor,
     Color? iconColor,
     double? borderWidth,
@@ -436,6 +508,7 @@ class IconButtonStyle {
       iconWidth: iconWidth ?? this.iconWidth,
       iconHeight: iconHeight ?? this.iconHeight,
       color: color ?? this.color,
+      hoverStyle: hoverStyle ?? this.hoverStyle,
       mouseCursor: mouseCursor ?? this.mouseCursor,
       iconColor: iconColor ?? this.iconColor,
       borderWidth: borderWidth ?? this.borderWidth,
