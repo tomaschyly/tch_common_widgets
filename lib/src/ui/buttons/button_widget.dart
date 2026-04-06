@@ -162,6 +162,14 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
     final hoverStyle =
         widget.style?.hoverStyle ??
         commonTheme?.buttonsStyle.buttonStyle.hoverStyle;
+    final animationDuration =
+        widget.style?.animationDuration ??
+        commonTheme?.buttonsStyle.buttonStyle.animationDuration ??
+        kThemeAnimationDuration;
+    final animationCurve =
+        widget.style?.animationCurve ??
+        commonTheme?.buttonsStyle.buttonStyle.animationCurve ??
+        Curves.easeOut;
     final isHoverActive = isInteractive && _isHovered;
 
     if (isHoverActive && hoverStyle != null) {
@@ -212,16 +220,20 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         }
       } else if (loadingIconSvgAssetPath != null) {
         if (loadingIconRestricted) {
-          icon = SvgPicture.asset(
-            loadingIconSvgAssetPath,
+          icon = _buildAnimatedSvgAsset(
+            assetPath: loadingIconSvgAssetPath,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
             width: loadingIconWidth,
             height: loadingIconHeight,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
-          icon = SvgPicture.asset(
-            loadingIconSvgAssetPath,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          icon = _buildAnimatedSvgAsset(
+            assetPath: loadingIconSvgAssetPath,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
           );
         }
       }
@@ -297,16 +309,20 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         }
       } else if (widget.prefixIconSvgAssetPath != null) {
         if (prefixIconRestricted) {
-          prefixIcon = SvgPicture.asset(
-            widget.prefixIconSvgAssetPath!,
+          prefixIcon = _buildAnimatedSvgAsset(
+            assetPath: widget.prefixIconSvgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
             width: preffixIconWidth,
             height: preffixIconHeight,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
-          prefixIcon = SvgPicture.asset(
-            widget.prefixIconSvgAssetPath!,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          prefixIcon = _buildAnimatedSvgAsset(
+            assetPath: widget.prefixIconSvgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
           );
         }
       }
@@ -323,16 +339,20 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         }
       } else if (widget.suffixIconSvgAssetPath != null) {
         if (suffixIconRestricted) {
-          suffixIcon = SvgPicture.asset(
-            widget.suffixIconSvgAssetPath!,
+          suffixIcon = _buildAnimatedSvgAsset(
+            assetPath: widget.suffixIconSvgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
             width: suffixIconWidth,
             height: suffixIconHeight,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
-          suffixIcon = SvgPicture.asset(
-            widget.suffixIconSvgAssetPath!,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          suffixIcon = _buildAnimatedSvgAsset(
+            assetPath: widget.suffixIconSvgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
           );
         }
       }
@@ -392,13 +412,17 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
             SizedBox(width: prefixIconSpacing),
           ],
           Flexible(
-            child: Text(
-              widget.text,
-              style: textStyle,
-              textAlign: textAlign,
-              maxLines: textMaxLines,
-              overflow: textOverflow,
-              softWrap: textSoftWrap,
+            child: AnimatedDefaultTextStyle(
+              duration: animationDuration,
+              curve: animationCurve,
+              style: DefaultTextStyle.of(context).style.merge(textStyle),
+              child: Text(
+                widget.text,
+                textAlign: textAlign,
+                maxLines: textMaxLines,
+                overflow: textOverflow,
+                softWrap: textSoftWrap,
+              ),
             ),
           ),
           if (suffixIcon != null) ...[
@@ -436,7 +460,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
             _setHoverState(isInteractive ? isHovered : false);
           },
           mouseCursor: isInteractive ? mouseCursor : SystemMouseCursors.basic,
-          child: Container(
+          child: AnimatedContainer(
+            duration: animationDuration,
+            curve: animationCurve,
             width: widthWrapContent
                 ? null
                 : (fullWidthMobileOnly ? kPhoneStopBreakpoint : width),
@@ -466,7 +492,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
     }
 
     if (boxShadow != null || gradient != null) {
-      content = Container(
+      content = AnimatedContainer(
+        duration: animationDuration,
+        curve: animationCurve,
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           boxShadow: boxShadow,
@@ -540,6 +568,33 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
     setStateNotDisposed(() {
       _isHovered = isHovered;
     });
+  }
+
+  /// Build SVG asset icon with implicit color animation for hover/state changes
+  Widget _buildAnimatedSvgAsset({
+    required String assetPath,
+    required Color color,
+    required Duration animationDuration,
+    required Curve animationCurve,
+    double? width,
+    double? height,
+  }) {
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(end: color),
+      duration: animationDuration,
+      curve: animationCurve,
+      child: SvgPicture.asset(assetPath, width: width, height: height),
+      builder: (context, animatedColor, child) {
+        if (child == null || animatedColor == null) {
+          return child ?? const SizedBox.shrink();
+        }
+
+        return ColorFiltered(
+          colorFilter: ColorFilter.mode(animatedColor, BlendMode.srcIn),
+          child: child,
+        );
+      },
+    );
   }
 }
 
@@ -620,6 +675,8 @@ class CommonButtonStyle {
   final Gradient? gradient;
   final Gradient? disabledGradient;
   final CommonButtonHoverStyle? hoverStyle;
+  final Duration animationDuration;
+  final Curve animationCurve;
   final MouseCursor mouseCursor;
   final Color? iconColor;
   final Color? disabledColor;
@@ -676,6 +733,8 @@ class CommonButtonStyle {
     this.gradient,
     this.disabledGradient,
     this.hoverStyle,
+    this.animationDuration = kThemeAnimationDuration,
+    this.animationCurve = Curves.easeOut,
     this.mouseCursor = SystemMouseCursors.click,
     this.iconColor,
     this.disabledColor = Colors.grey,
@@ -719,6 +778,8 @@ class CommonButtonStyle {
     Gradient? gradient,
     Gradient? disabledGradient,
     CommonButtonHoverStyle? hoverStyle,
+    Duration? animationDuration,
+    Curve? animationCurve,
     MouseCursor? mouseCursor,
     Color? iconColor,
     Color? disabledColor,
@@ -760,6 +821,8 @@ class CommonButtonStyle {
       gradient: gradient ?? this.gradient,
       disabledGradient: disabledGradient ?? this.disabledGradient,
       hoverStyle: hoverStyle ?? this.hoverStyle,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
       mouseCursor: mouseCursor ?? this.mouseCursor,
       iconColor: iconColor ?? this.iconColor,
       disabledColor: disabledColor ?? this.disabledColor,

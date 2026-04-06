@@ -140,6 +140,14 @@ class _IconButtonWidgetState
     final hoverStyle =
         widget.style?.hoverStyle ??
         commonTheme?.buttonsStyle.iconButtonStyle.hoverStyle;
+    final animationDuration =
+        widget.style?.animationDuration ??
+        commonTheme?.buttonsStyle.iconButtonStyle.animationDuration ??
+        kThemeAnimationDuration;
+    final animationCurve =
+        widget.style?.animationCurve ??
+        commonTheme?.buttonsStyle.iconButtonStyle.animationCurve ??
+        Curves.easeOut;
     final isHoverActive = isInteractive && _isHovered;
 
     if (isHoverActive && hoverStyle != null) {
@@ -189,16 +197,20 @@ class _IconButtonWidgetState
         }
       } else if (loadingIconSvgAssetPath != null) {
         if (loadingIconRestricted) {
-          loadingIconWidget = SvgPicture.asset(
-            loadingIconSvgAssetPath,
+          loadingIconWidget = _buildAnimatedSvgAsset(
+            assetPath: loadingIconSvgAssetPath,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
             width: loadingIconWidth,
             height: loadingIconHeight,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
-          loadingIconWidget = SvgPicture.asset(
-            loadingIconSvgAssetPath,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          loadingIconWidget = _buildAnimatedSvgAsset(
+            assetPath: loadingIconSvgAssetPath,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
           );
         }
       }
@@ -237,16 +249,20 @@ class _IconButtonWidgetState
         }
       } else {
         if (iconRestricted) {
-          icon = SvgPicture.asset(
-            widget.svgAssetPath!,
+          icon = _buildAnimatedSvgAsset(
+            assetPath: widget.svgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
             width: iconWidth,
             height: iconHeight,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
-          icon = SvgPicture.asset(
-            widget.svgAssetPath!,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          icon = _buildAnimatedSvgAsset(
+            assetPath: widget.svgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
           );
         }
       }
@@ -279,7 +295,9 @@ class _IconButtonWidgetState
             _setHoverState(isInteractive ? isHovered : false);
           },
           mouseCursor: isInteractive ? mouseCursor : SystemMouseCursors.basic,
-          child: Container(
+          child: AnimatedContainer(
+            duration: animationDuration,
+            curve: animationCurve,
             width: width,
             height: height,
             decoration: variant == IconButtonVariant.iconOnly
@@ -303,7 +321,9 @@ class _IconButtonWidgetState
     }
 
     if (boxShadow != null) {
-      content = Container(
+      content = AnimatedContainer(
+        duration: animationDuration,
+        curve: animationCurve,
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           boxShadow: boxShadow,
@@ -389,6 +409,33 @@ class _IconButtonWidgetState
       _isHovered = isHovered;
     });
   }
+
+  /// Build SVG asset icon with implicit color animation for hover/state changes
+  Widget _buildAnimatedSvgAsset({
+    required String assetPath,
+    required Color color,
+    required Duration animationDuration,
+    required Curve animationCurve,
+    double? width,
+    double? height,
+  }) {
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(end: color),
+      duration: animationDuration,
+      curve: animationCurve,
+      child: SvgPicture.asset(assetPath, width: width, height: height),
+      builder: (context, animatedColor, child) {
+        if (child == null || animatedColor == null) {
+          return child ?? const SizedBox.shrink();
+        }
+
+        return ColorFiltered(
+          colorFilter: ColorFilter.mode(animatedColor, BlendMode.srcIn),
+          child: child,
+        );
+      },
+    );
+  }
 }
 
 enum IconButtonVariant { none, outlined, filled, iconOnly }
@@ -440,6 +487,8 @@ class IconButtonStyle {
   final double iconHeight;
   final Color? color;
   final IconButtonHoverStyle? hoverStyle;
+  final Duration animationDuration;
+  final Curve animationCurve;
   final MouseCursor mouseCursor;
   final Color? iconColor;
   final double borderWidth;
@@ -463,6 +512,8 @@ class IconButtonStyle {
     this.iconHeight = kIconSize,
     this.color = Colors.black,
     this.hoverStyle,
+    this.animationDuration = kThemeAnimationDuration,
+    this.animationCurve = Curves.easeOut,
     this.mouseCursor = SystemMouseCursors.click,
     this.iconColor,
     this.borderWidth = 1,
@@ -487,6 +538,8 @@ class IconButtonStyle {
     double? iconHeight,
     Color? color,
     IconButtonHoverStyle? hoverStyle,
+    Duration? animationDuration,
+    Curve? animationCurve,
     MouseCursor? mouseCursor,
     Color? iconColor,
     double? borderWidth,
@@ -509,6 +562,8 @@ class IconButtonStyle {
       iconHeight: iconHeight ?? this.iconHeight,
       color: color ?? this.color,
       hoverStyle: hoverStyle ?? this.hoverStyle,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
       mouseCursor: mouseCursor ?? this.mouseCursor,
       iconColor: iconColor ?? this.iconColor,
       borderWidth: borderWidth ?? this.borderWidth,

@@ -4,6 +4,9 @@
 * Default cursor for both widgets is now pointer (`SystemMouseCursors.click`) with style override support
 * Add hover state tracking for `ButtonWidget` and `IconButtonWidget`
 * Add `CommonButtonHoverStyle` and `IconButtonHoverStyle` with per-widget hover visual overrides
+* Add implicit hover animations for style transitions using `kThemeAnimationDuration`
+* Add implicit icon color animation for SVG asset-path icons (custom widget icons remain unchanged)
+* Add `animationDuration` and `animationCurve` overrides to `CommonButtonStyle` and `IconButtonStyle`
 
 ## [0.39.0] - 6.4.2026
 
