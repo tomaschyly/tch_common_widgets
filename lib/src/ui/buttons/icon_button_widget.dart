@@ -27,19 +27,19 @@ class IconButtonWidget extends AbstractStatefulWidget {
     List<String>? tags,
     this.tooltip,
     this.ignoreInteractionsWhenLoading,
-  })  : assert(svgAssetPath != null || iconWidget != null),
-        loadingTags = [
-          ?tag,
-          ...?tags,
-        ];
+  }) : assert(svgAssetPath != null || iconWidget != null),
+       loadingTags = [?tag, ...?tags];
 
   /// Create state for widget
   @override
   State<StatefulWidget> createState() => _IconButtonWidgetState();
 }
 
-class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidget> with TickerProviderStateMixin {
+class _IconButtonWidgetState
+    extends AbstractStatefulWidgetState<IconButtonWidget>
+    with TickerProviderStateMixin {
   AnimationController? _animationController;
+  bool _isHovered = false;
 
   /// Manually dispose of resources
   @override
@@ -57,7 +57,8 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
 
     final screenDataState = ScreenDataState.of(context);
 
-    final theIsLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
+    final theIsLoading =
+        widget.isLoading ?? screenDataState?.isLoading ?? false;
 
     if (widget.isLoading != oldWidget.isLoading) {
       if (theIsLoading) {
@@ -88,34 +89,100 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
     final commonTheme = CommonTheme.of(context);
 
     final IconButtonVariant variant =
-        (widget.style?.variant ?? commonTheme?.buttonsStyle.iconButtonStyle.variant) ??
+        (widget.style?.variant ??
+            commonTheme?.buttonsStyle.iconButtonStyle.variant) ??
         .outlined;
 
-    final width = (widget.style?.width ?? commonTheme?.buttonsStyle.iconButtonStyle.width) ?? kMinInteractiveSize;
-    final height = (widget.style?.height ?? commonTheme?.buttonsStyle.iconButtonStyle.height) ?? kMinInteractiveSize;
-    final iconWidth = (widget.style?.iconWidth ?? commonTheme?.buttonsStyle.iconButtonStyle.iconWidth) ?? kIconSize;
-    final iconHeight = (widget.style?.iconHeight ?? commonTheme?.buttonsStyle.iconButtonStyle.iconHeight) ?? kIconSize;
+    final width =
+        (widget.style?.width ??
+            commonTheme?.buttonsStyle.iconButtonStyle.width) ??
+        kMinInteractiveSize;
+    final height =
+        (widget.style?.height ??
+            commonTheme?.buttonsStyle.iconButtonStyle.height) ??
+        kMinInteractiveSize;
+    final iconWidth =
+        (widget.style?.iconWidth ??
+            commonTheme?.buttonsStyle.iconButtonStyle.iconWidth) ??
+        kIconSize;
+    final iconHeight =
+        (widget.style?.iconHeight ??
+            commonTheme?.buttonsStyle.iconButtonStyle.iconHeight) ??
+        kIconSize;
 
-    final color = widget.style?.color ?? commonTheme?.buttonsStyle.iconButtonStyle.color ?? Colors.black;
-    final iconColor = widget.style?.iconColor ?? commonTheme?.buttonsStyle.iconButtonStyle.iconColor ?? color;
+    Color color =
+        widget.style?.color ??
+        commonTheme?.buttonsStyle.iconButtonStyle.color ??
+        Colors.black;
+    Color iconColor =
+        widget.style?.iconColor ??
+        commonTheme?.buttonsStyle.iconButtonStyle.iconColor ??
+        color;
 
-    bool iconRestricted = (widget.style?.iconRestricted ?? commonTheme?.buttonsStyle.iconButtonStyle.iconRestricted) ?? true;
+    bool iconRestricted =
+        (widget.style?.iconRestricted ??
+            commonTheme?.buttonsStyle.iconButtonStyle.iconRestricted) ??
+        true;
     late Widget icon;
 
     final theIsLoading = _isLoading(context);
-    final ignoreInteractionsWhenLoading = widget.ignoreInteractionsWhenLoading ?? commonTheme?.buttonsStyle.ignoreInteractionsWhenLoading ?? true;
+    final ignoreInteractionsWhenLoading =
+        widget.ignoreInteractionsWhenLoading ??
+        commonTheme?.buttonsStyle.ignoreInteractionsWhenLoading ??
+        true;
+    MouseCursor mouseCursor =
+        widget.style?.mouseCursor ??
+        commonTheme?.buttonsStyle.iconButtonStyle.mouseCursor ??
+        SystemMouseCursors.click;
+    final isInteractive =
+        widget.onTap != null &&
+        !(theIsLoading && ignoreInteractionsWhenLoading);
+    final hoverStyle =
+        widget.style?.hoverStyle ??
+        commonTheme?.buttonsStyle.iconButtonStyle.hoverStyle;
+    final animationDuration =
+        widget.style?.animationDuration ??
+        commonTheme?.buttonsStyle.iconButtonStyle.animationDuration ??
+        kThemeAnimationDuration;
+    final animationCurve =
+        widget.style?.animationCurve ??
+        commonTheme?.buttonsStyle.iconButtonStyle.animationCurve ??
+        Curves.easeOut;
+    final isHoverActive = isInteractive && _isHovered;
+
+    if (isHoverActive && hoverStyle != null) {
+      color = hoverStyle.color ?? color;
+      mouseCursor = hoverStyle.mouseCursor ?? mouseCursor;
+      iconColor = hoverStyle.iconColor ?? iconColor;
+    }
 
     if (theIsLoading) {
       if (_animationController == null) {
         _initLoadingAnimation(context);
       }
 
-      final loadingIconSvgAssetPath = widget.style?.loadingIconSvgAssetPath ?? commonTheme?.buttonsStyle.iconButtonStyle.loadingIconSvgAssetPath;
-      final loadingIcon = widget.style?.loadingIcon ?? commonTheme?.buttonsStyle.iconButtonStyle.loadingIcon;
-      final loadingIconWidth = widget.style?.loadingIconWidth ?? commonTheme?.buttonsStyle.iconButtonStyle.loadingIconWidth ?? kIconSize;
-      final loadingIconHeight = widget.style?.loadingIconHeight ?? commonTheme?.buttonsStyle.iconButtonStyle.loadingIconHeight ?? kIconSize;
+      final loadingIconSvgAssetPath =
+          widget.style?.loadingIconSvgAssetPath ??
+          commonTheme?.buttonsStyle.iconButtonStyle.loadingIconSvgAssetPath;
+      final loadingIcon =
+          widget.style?.loadingIcon ??
+          commonTheme?.buttonsStyle.iconButtonStyle.loadingIcon;
+      final loadingIconWidth =
+          widget.style?.loadingIconWidth ??
+          commonTheme?.buttonsStyle.iconButtonStyle.loadingIconWidth ??
+          kIconSize;
+      final loadingIconHeight =
+          widget.style?.loadingIconHeight ??
+          commonTheme?.buttonsStyle.iconButtonStyle.loadingIconHeight ??
+          kIconSize;
 
-      bool loadingIconRestricted = (widget.style?.loadingIconRestricted ?? commonTheme?.buttonsStyle.iconButtonStyle.loadingIconRestricted) ?? true;
+      bool loadingIconRestricted =
+          (widget.style?.loadingIconRestricted ??
+              commonTheme
+                  ?.buttonsStyle
+                  .iconButtonStyle
+                  .loadingIconRestricted) ??
+          true;
 
       Widget? loadingIconWidget;
       if (loadingIcon != null) {
@@ -130,16 +197,20 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
         }
       } else if (loadingIconSvgAssetPath != null) {
         if (loadingIconRestricted) {
-          loadingIconWidget = SvgPicture.asset(
-            loadingIconSvgAssetPath,
+          loadingIconWidget = _buildAnimatedSvgAsset(
+            assetPath: loadingIconSvgAssetPath,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
             width: loadingIconWidth,
             height: loadingIconHeight,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
-          loadingIconWidget = SvgPicture.asset(
-            loadingIconSvgAssetPath,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          loadingIconWidget = _buildAnimatedSvgAsset(
+            assetPath: loadingIconSvgAssetPath,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
           );
         }
       }
@@ -158,10 +229,7 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
               child: SizedBox(
                 width: loadingIconWidth,
                 height: loadingIconHeight,
-                child: CircularProgressIndicator(
-                  color: iconColor,
-                  value: 0.25,
-                ),
+                child: CircularProgressIndicator(color: iconColor, value: 0.25),
               ),
             );
           }
@@ -181,62 +249,81 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
         }
       } else {
         if (iconRestricted) {
-          icon = SvgPicture.asset(
-            widget.svgAssetPath!,
+          icon = _buildAnimatedSvgAsset(
+            assetPath: widget.svgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
             width: iconWidth,
             height: iconHeight,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           );
         } else {
-          icon = SvgPicture.asset(
-            widget.svgAssetPath!,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          icon = _buildAnimatedSvgAsset(
+            assetPath: widget.svgAssetPath!,
+            color: iconColor,
+            animationDuration: animationDuration,
+            animationCurve: animationCurve,
           );
         }
       }
     }
 
-    final theBorderWidth = widget.style?.borderWidth ?? commonTheme?.buttonsStyle.iconButtonStyle.borderWidth ?? 1;
-    final BorderRadius? borderRadius = widget.style?.borderRadius ?? commonTheme?.buttonsStyle.iconButtonStyle.borderRadius;
-    final boxShadow = widget.style?.boxShadow ?? commonTheme?.buttonsStyle.iconButtonStyle.boxShadow;
+    double theBorderWidth =
+        widget.style?.borderWidth ??
+        commonTheme?.buttonsStyle.iconButtonStyle.borderWidth ??
+        1;
+    BorderRadius? borderRadius =
+        widget.style?.borderRadius ??
+        commonTheme?.buttonsStyle.iconButtonStyle.borderRadius;
+    List<BoxShadow>? boxShadow =
+        widget.style?.boxShadow ??
+        commonTheme?.buttonsStyle.iconButtonStyle.boxShadow;
+
+    if (isHoverActive && hoverStyle != null) {
+      theBorderWidth = hoverStyle.borderWidth ?? theBorderWidth;
+      borderRadius = hoverStyle.borderRadius ?? borderRadius;
+      boxShadow = hoverStyle.boxShadow ?? boxShadow;
+    }
 
     Widget content = IgnorePointer(
       ignoring: theIsLoading && ignoreInteractionsWhenLoading,
       child: Material(
         color: variant == IconButtonVariant.filled ? color : Colors.transparent,
         child: InkWell(
-          onTap: widget.onTap,
-          child: Container(
+          onTap: isInteractive ? widget.onTap : null,
+          onHover: (isHovered) {
+            _setHoverState(isInteractive ? isHovered : false);
+          },
+          mouseCursor: isInteractive ? mouseCursor : SystemMouseCursors.basic,
+          child: AnimatedContainer(
+            duration: animationDuration,
+            curve: animationCurve,
             width: width,
             height: height,
             decoration: variant == IconButtonVariant.iconOnly
                 ? null
                 : BoxDecoration(
-                    color: variant == IconButtonVariant.filled ? color : Colors.transparent,
-                    border: Border.all(
-                      color: color,
-                      width: theBorderWidth,
-                    ),
+                    color: variant == IconButtonVariant.filled
+                        ? color
+                        : Colors.transparent,
+                    border: Border.all(color: color, width: theBorderWidth),
                     borderRadius: borderRadius,
                     boxShadow: boxShadow,
                   ),
-            child: Center(
-              child: icon,
-            ),
+            child: Center(child: icon),
           ),
         ),
       ),
     );
 
     if (borderRadius != null) {
-      content = ClipRRect(
-        borderRadius: borderRadius,
-        child: content,
-      );
+      content = ClipRRect(borderRadius: borderRadius, child: content);
     }
 
     if (boxShadow != null) {
-      content = Container(
+      content = AnimatedContainer(
+        duration: animationDuration,
+        curve: animationCurve,
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           boxShadow: boxShadow,
@@ -245,7 +332,10 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
       );
     }
 
-    final bool canBeStretched = widget.style?.canBeStretched ?? commonTheme?.buttonsStyle.iconButtonStyle.canBeStretched ?? false;
+    final bool canBeStretched =
+        widget.style?.canBeStretched ??
+        commonTheme?.buttonsStyle.iconButtonStyle.canBeStretched ??
+        false;
     if (!canBeStretched) {
       content = SizedBox(
         width: width,
@@ -255,10 +345,7 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
     }
 
     if (widget.tooltip != null) {
-      content = TooltipWidget(
-        message: widget.tooltip!,
-        child: content,
-      );
+      content = TooltipWidget(message: widget.tooltip!, child: content);
     }
 
     return content;
@@ -272,7 +359,10 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
 
     if (screenDataState == null ||
         (screenDataState.loadingTags.isEmpty && widget.loadingTags.isEmpty) ||
-        (screenDataState.loadingTags.isNotEmpty && widget.loadingTags.any((tag) => screenDataState.loadingTags.contains(tag)))) {
+        (screenDataState.loadingTags.isNotEmpty &&
+            widget.loadingTags.any(
+              (tag) => screenDataState.loadingTags.contains(tag),
+            ))) {
       isLoading = widget.isLoading ?? screenDataState?.isLoading ?? false;
     }
 
@@ -281,8 +371,11 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
 
   /// Initialize loading animation and start repeating
   void _initLoadingAnimation(BuildContext context) {
-    final loadingAnimationDuration = widget.style?.loadingAnimationDuration ??
-        CommonTheme.of(context)?.buttonsStyle.iconButtonStyle.loadingAnimationDuration ??
+    final loadingAnimationDuration =
+        widget.style?.loadingAnimationDuration ??
+        CommonTheme.of(
+          context,
+        )?.buttonsStyle.iconButtonStyle.loadingAnimationDuration ??
         Duration(milliseconds: 1200);
 
     final resumeValue = _animationController?.value ?? 0.0;
@@ -305,13 +398,84 @@ class _IconButtonWidgetState extends AbstractStatefulWidgetState<IconButtonWidge
 
     _animationController = null;
   }
+
+  /// Update hover state and rebuild only when value changes
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setStateNotDisposed(() {
+      _isHovered = isHovered;
+    });
+  }
+
+  /// Build SVG asset icon with implicit color animation for hover/state changes
+  Widget _buildAnimatedSvgAsset({
+    required String assetPath,
+    required Color color,
+    required Duration animationDuration,
+    required Curve animationCurve,
+    double? width,
+    double? height,
+  }) {
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(end: color),
+      duration: animationDuration,
+      curve: animationCurve,
+      child: SvgPicture.asset(assetPath, width: width, height: height),
+      builder: (context, animatedColor, child) {
+        if (child == null || animatedColor == null) {
+          return child ?? const SizedBox.shrink();
+        }
+
+        return ColorFiltered(
+          colorFilter: ColorFilter.mode(animatedColor, BlendMode.srcIn),
+          child: child,
+        );
+      },
+    );
+  }
 }
 
-enum IconButtonVariant {
-  none,
-  outlined,
-  filled,
-  iconOnly,
+enum IconButtonVariant { none, outlined, filled, iconOnly }
+
+class IconButtonHoverStyle {
+  final Color? color;
+  final MouseCursor? mouseCursor;
+  final Color? iconColor;
+  final double? borderWidth;
+  final BorderRadius? borderRadius;
+  final List<BoxShadow>? boxShadow;
+
+  /// IconButtonHoverStyle initialization
+  const IconButtonHoverStyle({
+    this.color,
+    this.mouseCursor,
+    this.iconColor,
+    this.borderWidth,
+    this.borderRadius,
+    this.boxShadow,
+  });
+
+  /// Create copy of this hover style with changes
+  IconButtonHoverStyle copyWith({
+    Color? color,
+    MouseCursor? mouseCursor,
+    Color? iconColor,
+    double? borderWidth,
+    BorderRadius? borderRadius,
+    List<BoxShadow>? boxShadow,
+  }) {
+    return IconButtonHoverStyle(
+      color: color ?? this.color,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
+      iconColor: iconColor ?? this.iconColor,
+      borderWidth: borderWidth ?? this.borderWidth,
+      borderRadius: borderRadius ?? this.borderRadius,
+      boxShadow: boxShadow ?? this.boxShadow,
+    );
+  }
 }
 
 class IconButtonStyle {
@@ -322,6 +486,10 @@ class IconButtonStyle {
   final double iconWidth;
   final double iconHeight;
   final Color? color;
+  final IconButtonHoverStyle? hoverStyle;
+  final Duration animationDuration;
+  final Curve animationCurve;
+  final MouseCursor mouseCursor;
   final Color? iconColor;
   final double borderWidth;
   final BorderRadius? borderRadius;
@@ -343,6 +511,10 @@ class IconButtonStyle {
     this.iconWidth = kIconSize,
     this.iconHeight = kIconSize,
     this.color = Colors.black,
+    this.hoverStyle,
+    this.animationDuration = kThemeAnimationDuration,
+    this.animationCurve = Curves.easeOut,
+    this.mouseCursor = SystemMouseCursors.click,
     this.iconColor,
     this.borderWidth = 1,
     this.borderRadius = const BorderRadius.all(.circular(8)),
@@ -365,6 +537,10 @@ class IconButtonStyle {
     double? iconWidth,
     double? iconHeight,
     Color? color,
+    IconButtonHoverStyle? hoverStyle,
+    Duration? animationDuration,
+    Curve? animationCurve,
+    MouseCursor? mouseCursor,
     Color? iconColor,
     double? borderWidth,
     BorderRadius? borderRadius,
@@ -385,17 +561,24 @@ class IconButtonStyle {
       iconWidth: iconWidth ?? this.iconWidth,
       iconHeight: iconHeight ?? this.iconHeight,
       color: color ?? this.color,
+      hoverStyle: hoverStyle ?? this.hoverStyle,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
       iconColor: iconColor ?? this.iconColor,
       borderWidth: borderWidth ?? this.borderWidth,
       borderRadius: borderRadius ?? this.borderRadius,
       boxShadow: boxShadow ?? this.boxShadow,
       canBeStretched: canBeStretched ?? this.canBeStretched,
-      loadingIconSvgAssetPath: loadingIconSvgAssetPath ?? this.loadingIconSvgAssetPath,
+      loadingIconSvgAssetPath:
+          loadingIconSvgAssetPath ?? this.loadingIconSvgAssetPath,
       loadingIcon: loadingIcon ?? this.loadingIcon,
-      loadingIconRestricted: loadingIconRestricted ?? this.loadingIconRestricted,
+      loadingIconRestricted:
+          loadingIconRestricted ?? this.loadingIconRestricted,
       loadingIconWidth: loadingIconWidth ?? this.loadingIconWidth,
       loadingIconHeight: loadingIconHeight ?? this.loadingIconHeight,
-      loadingAnimationDuration: loadingAnimationDuration ?? this.loadingAnimationDuration,
+      loadingAnimationDuration:
+          loadingAnimationDuration ?? this.loadingAnimationDuration,
     );
   }
 }
