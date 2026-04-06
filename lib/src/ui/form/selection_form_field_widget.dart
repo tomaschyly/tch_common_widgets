@@ -64,9 +64,7 @@ class SelectionFormFieldWidgetState<T>
     super.initState();
 
     _focusNode = widget.focusNode;
-    if (_focusNode == null) {
-      _focusNode = FocusNode();
-    }
+    _focusNode ??= FocusNode();
     _focusNode!.addListener(_focusChanged);
 
     _options = widget.options;
@@ -99,9 +97,7 @@ class SelectionFormFieldWidgetState<T>
 
     _focusNode!.removeListener(_focusChanged);
     _focusNode = widget.focusNode;
-    if (_focusNode == null) {
-      _focusNode = FocusNode();
-    }
+    _focusNode ??= FocusNode();
     _focusNode!.addListener(_focusChanged);
 
     if (oldWidget.options != widget.options) {
@@ -143,7 +139,7 @@ class SelectionFormFieldWidgetState<T>
       control = Material(
         color: Colors.transparent,
         child: InkWell(
-          child: Container(
+          child: SizedBox(
             width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
             height: theBoundary.height,
           ),
@@ -193,7 +189,7 @@ class SelectionFormFieldWidgetState<T>
             ],
           ),
         ),
-        if (control != null) control,
+        ?control,
       ],
     );
   }
@@ -233,9 +229,9 @@ class SelectionFormFieldWidgetState<T>
 
     FocusManager.instance.primaryFocus?.unfocus();
 
-    _options.forEach((ListDialogOption option) {
+    for (final ListDialogOption option in _options) {
       option.isSelected = _value == option.value;
-    });
+    }
 
     final T? newValue = await ListDialog.show(
       context,
@@ -245,6 +241,10 @@ class SelectionFormFieldWidgetState<T>
       hasFilter: widget.hasFilter,
       filterText: widget.filterText,
     );
+
+    if (!context.mounted) {
+      return;
+    }
 
     setStateNotDisposed(() {
       _value = newValue;
@@ -290,7 +290,7 @@ class SelectionFormFieldStyle {
   /// SelectionFormFieldStyle initialization
   const SelectionFormFieldStyle({
     this.inputStyle = const TextFormFieldStyle(),
-    this.borderRadius = const BorderRadius.all(const Radius.circular(8)),
+    this.borderRadius = const BorderRadius.all(.circular(8)),
   });
 
   /// Create copy of this style with changes
