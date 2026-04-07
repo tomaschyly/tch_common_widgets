@@ -9,9 +9,15 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final bool autofocus;
   final FocusNode? focusNode;
   final FocusNode? nextFocus;
+  final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
+  final VoidCallback? onEditingComplete;
+  final VoidCallback? onTap;
+  final TapRegionCallback? onTapOutside;
+  final FormFieldSetter<String>? onSaved;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+  final List<TextInputFormatter>? inputFormatters;
   final String? label;
   final Widget? prefix;
   final Widget? prefixIcon;
@@ -24,6 +30,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   final List<FormFieldValidation<String>>? validations;
   final bool enabled;
   final bool autocorrect;
+  final bool? readOnly;
   final bool? obscureText;
 
   /// TextFormFieldWidget initialization
@@ -35,10 +42,15 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.nextFocus,
-    // this.onChanged,
+    this.onChanged,
     this.onFieldSubmitted,
+    this.onEditingComplete,
+    this.onTap,
+    this.onTapOutside,
+    this.onSaved,
     this.keyboardType,
     this.textInputAction,
+    this.inputFormatters,
     this.label,
     this.prefix,
     this.prefixIcon,
@@ -51,6 +63,7 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
     this.validations,
     this.enabled = true,
     this.autocorrect = true,
+    this.readOnly,
     this.obscureText,
   }) : assert((focusNode == null && nextFocus == null) || focusNode != null);
 
@@ -59,7 +72,8 @@ class TextFormFieldWidget extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => _TextFormFieldWidgetState();
 }
 
-class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFieldWidget> {
+class _TextFormFieldWidgetState
+    extends AbstractStatefulWidgetState<TextFormFieldWidget> {
   final _wrapperKey = GlobalKey();
   late FocusNode _focusNode;
   bool _isError = false;
@@ -87,6 +101,10 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   void dispose() {
     widget.controller.removeListener(_controllerTextChanged);
 
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
+
     super.dispose();
   }
 
@@ -108,57 +126,84 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         commonTheme?.formStyle.textFormFieldStyle.variant ??
         .material;
 
-    final bool animatedSizeChanges = commonTheme?.formStyle.animatedSizeChanges ?? true;
-    final bool fullWidthMobileOnly = widget.style?.fullWidthMobileOnly ?? commonTheme?.formStyle.fullWidthMobileOnly ?? true;
+    final bool animatedSizeChanges =
+        commonTheme?.formStyle.animatedSizeChanges ?? true;
+    final bool fullWidthMobileOnly =
+        widget.style?.fullWidthMobileOnly ??
+        commonTheme?.formStyle.fullWidthMobileOnly ??
+        true;
 
     final theNextFocus = widget.nextFocus;
     final theOnFieldSubmitted = widget.onFieldSubmitted;
 
-    InputDecoration theDecoration = widget.style?.inputDecoration ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration ?? InputDecoration();
+    InputDecoration theDecoration =
+        widget.style?.inputDecoration ??
+        commonTheme?.formStyle.textFormFieldStyle.inputDecoration ??
+        InputDecoration();
 
-    if ((widget.style?.inputDecoration ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration) != null) {
+    if ((widget.style?.inputDecoration ??
+            commonTheme?.formStyle.textFormFieldStyle.inputDecoration) !=
+        null) {
       theDecoration = theDecoration.copyWith(
         enabledBorder: theDecoration.enabledBorder?.copyWith(
           borderSide: theDecoration.enabledBorder!.borderSide.copyWith(
-            color: widget.style?.borderColor ?? commonTheme?.formStyle.textFormFieldStyle.borderColor,
+            color:
+                widget.style?.borderColor ??
+                commonTheme?.formStyle.textFormFieldStyle.borderColor,
           ),
         ),
         disabledBorder: theDecoration.disabledBorder?.copyWith(
           borderSide: theDecoration.disabledBorder!.borderSide.copyWith(
-            color: widget.style?.disabledBorderColor ?? commonTheme?.formStyle.textFormFieldStyle.disabledBorderColor,
+            color:
+                widget.style?.disabledBorderColor ??
+                commonTheme?.formStyle.textFormFieldStyle.disabledBorderColor,
           ),
         ),
         focusedBorder: theDecoration.focusedBorder?.copyWith(
           borderSide: theDecoration.focusedBorder!.borderSide.copyWith(
-            color: widget.style?.focusedBorderColor ?? commonTheme?.formStyle.textFormFieldStyle.focusedBorderColor,
+            color:
+                widget.style?.focusedBorderColor ??
+                commonTheme?.formStyle.textFormFieldStyle.focusedBorderColor,
           ),
         ),
         errorBorder: theDecoration.errorBorder?.copyWith(
           borderSide: theDecoration.errorBorder!.borderSide.copyWith(
-            color: widget.style?.errorColor ?? commonTheme?.formStyle.textFormFieldStyle.errorColor,
+            color:
+                widget.style?.errorColor ??
+                commonTheme?.formStyle.textFormFieldStyle.errorColor,
           ),
         ),
         focusedErrorBorder: theDecoration.focusedErrorBorder?.copyWith(
           borderSide: theDecoration.focusedErrorBorder!.borderSide.copyWith(
-            color: widget.style?.errorColor ?? commonTheme?.formStyle.textFormFieldStyle.errorColor,
+            color:
+                widget.style?.errorColor ??
+                commonTheme?.formStyle.textFormFieldStyle.errorColor,
           ),
         ),
         errorStyle: theDecoration.errorStyle?.copyWith(
-          color: widget.style?.errorColor ?? commonTheme?.formStyle.textFormFieldStyle.errorColor,
+          color:
+              widget.style?.errorColor ??
+              commonTheme?.formStyle.textFormFieldStyle.errorColor,
         ),
       );
 
       if (commonTheme != null) {
         theDecoration = theDecoration.copyWith(
-          labelStyle: theDecoration.labelStyle != null ? commonTheme.preProcessTextStyle(theDecoration.labelStyle!) : null,
-          errorStyle: theDecoration.errorStyle != null ? commonTheme.preProcessTextStyle(theDecoration.errorStyle!) : null,
+          labelStyle: theDecoration.labelStyle != null
+              ? commonTheme.preProcessTextStyle(theDecoration.labelStyle!)
+              : null,
+          errorStyle: theDecoration.errorStyle != null
+              ? commonTheme.preProcessTextStyle(theDecoration.errorStyle!)
+              : null,
         );
       }
     }
 
     if (!widget.enabled) {
       theDecoration = theDecoration.copyWith(
-        fillColor: widget.style?.fillColorDisabled ?? commonTheme?.formStyle.textFormFieldStyle.fillColorDisabled,
+        fillColor:
+            widget.style?.fillColorDisabled ??
+            commonTheme?.formStyle.textFormFieldStyle.fillColorDisabled,
       );
     }
 
@@ -171,21 +216,32 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     final theLines = widget.lines > 0 ? widget.lines : 1;
-    final theKeyboardType = widget.keyboardType ??
+    final theKeyboardType =
+        widget.keyboardType ??
         widget.style?.keyboardType ??
         commonTheme?.formStyle.textFormFieldStyle.keyboardType ??
         (theLines > 1 ? TextInputType.multiline : null);
-    final theTextInputAction = widget.textInputAction ?? (theLines > 1 ? TextInputAction.newline : null);
+    final theTextInputAction =
+        widget.textInputAction ??
+        (theLines > 1 ? TextInputAction.newline : null);
 
     final List<FormFieldValidation<String>>? theValidations =
-        widget.validations ?? widget.style?.validations ?? commonTheme?.formStyle.textFormFieldStyle.validations;
+        widget.validations ??
+        widget.style?.validations ??
+        commonTheme?.formStyle.textFormFieldStyle.validations;
 
     String? theLabel = widget.label;
-    final theHintText = widget.style?.inputDecoration.hintText ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintText;
+    final theHintText =
+        widget.style?.inputDecoration.hintText ??
+        commonTheme?.formStyle.textFormFieldStyle.inputDecoration.hintText;
 
     if (theLabel != null) {
-      final theRequiredLabelSuffix = widget.style?.requiredLabelSuffix ?? commonTheme?.formStyle.textFormFieldStyle.requiredLabelSuffix ?? ' *';
-      final theShowRequiredLabelSuffix = widget.style?.showRequiredLabelSuffix ??
+      final theRequiredLabelSuffix =
+          widget.style?.requiredLabelSuffix ??
+          commonTheme?.formStyle.textFormFieldStyle.requiredLabelSuffix ??
+          ' *';
+      final theShowRequiredLabelSuffix =
+          widget.style?.showRequiredLabelSuffix ??
           commonTheme?.formStyle.textFormFieldStyle.showRequiredLabelSuffix ??
           .byValidateRequired;
 
@@ -213,15 +269,44 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       hintText: theLabel == null || theLabel.isEmpty ? theHintText : '',
     );
 
-    final theObscureText = widget.obscureText ?? widget.style?.obscureText ?? commonTheme?.formStyle.textFormFieldStyle.obscureText ?? false;
+    final theObscureText =
+        widget.obscureText ??
+        widget.style?.obscureText ??
+        commonTheme?.formStyle.textFormFieldStyle.obscureText ??
+        false;
+    final theInputFormatters =
+        widget.inputFormatters ??
+        widget.style?.inputFormatters ??
+        commonTheme?.formStyle.textFormFieldStyle.inputFormatters;
+    final theReadOnly =
+        widget.readOnly ??
+        widget.style?.readOnly ??
+        commonTheme?.formStyle.textFormFieldStyle.readOnly ??
+        false;
 
-    final thePrefix = widget.prefix ?? widget.style?.inputDecoration.prefix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefix;
-    final thePrefixIcon = widget.prefixIcon ?? widget.style?.inputDecoration.prefixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon;
-    final theSuffix = widget.suffix ?? widget.style?.inputDecoration.suffix ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix;
-    final suffixIcon = widget.suffixIcon ?? widget.style?.inputDecoration.suffixIcon ?? commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon;
+    final thePrefix =
+        widget.prefix ??
+        widget.style?.inputDecoration.prefix ??
+        commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefix;
+    final thePrefixIcon =
+        widget.prefixIcon ??
+        widget.style?.inputDecoration.prefixIcon ??
+        commonTheme?.formStyle.textFormFieldStyle.inputDecoration.prefixIcon;
+    final theSuffix =
+        widget.suffix ??
+        widget.style?.inputDecoration.suffix ??
+        commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffix;
+    final suffixIcon =
+        widget.suffixIcon ??
+        widget.style?.inputDecoration.suffixIcon ??
+        commonTheme?.formStyle.textFormFieldStyle.inputDecoration.suffixIcon;
 
-    TextStyle? textStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.textFormFieldStyle.inputStyle;
-    TextStyle? disabledTextStyle = widget.style?.disabledInputStyle ?? commonTheme?.formStyle.textFormFieldStyle.disabledInputStyle;
+    TextStyle? textStyle =
+        widget.style?.inputStyle ??
+        commonTheme?.formStyle.textFormFieldStyle.inputStyle;
+    TextStyle? disabledTextStyle =
+        widget.style?.disabledInputStyle ??
+        commonTheme?.formStyle.textFormFieldStyle.disabledInputStyle;
     if (!widget.enabled && disabledTextStyle != null) {
       textStyle = disabledTextStyle;
     }
@@ -233,7 +318,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       autofocus: widget.autofocus,
       controller: widget.controller,
       focusNode: _focusNode,
-      // onChanged: widget.onChanged,
+      onChanged: widget.onChanged,
       onFieldSubmitted: (String value) {
         if (theNextFocus != null) {
           final focusScope = FocusScope.of(context);
@@ -247,11 +332,18 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
           theOnFieldSubmitted(value);
         }
       },
+      onEditingComplete: widget.onEditingComplete,
+      onTap: widget.onTap,
+      onTapOutside: widget.onTapOutside,
+      onSaved: widget.onSaved,
       keyboardType: theKeyboardType,
       textInputAction: theTextInputAction,
+      inputFormatters: theInputFormatters,
       style: textStyle,
       decoration: theDecoration.copyWith(
-        labelText: theVariant != TextFormFieldVariant.cupertino ? theLabel : null,
+        labelText: theVariant != TextFormFieldVariant.cupertino
+            ? theLabel
+            : null,
         prefix: thePrefix != null
             ? ValueListenableBuilder(
                 valueListenable: _displayPrefix,
@@ -312,7 +404,9 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       minLines: theLines,
       maxLines: theLines,
       maxLength: widget.maxLength,
-      maxLengthEnforcement: widget.maxLength != null ? MaxLengthEnforcement.enforced : null,
+      maxLengthEnforcement: widget.maxLength != null
+          ? MaxLengthEnforcement.enforced
+          : null,
       validator: (String? value) {
         if (theValidations != null) {
           final validated = validateValidations(theValidations, value);
@@ -328,6 +422,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       },
       autocorrect: widget.autocorrect,
       enabled: widget.enabled,
+      readOnly: theReadOnly,
       obscureText: theObscureText,
     );
 
@@ -340,12 +435,14 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: (widget.style?.cupertinoLabelPadding ?? commonTheme?.formStyle.textFormFieldStyle.cupertinoLabelPadding) ??
+            padding:
+                (widget.style?.cupertinoLabelPadding ??
+                    commonTheme
+                        ?.formStyle
+                        .textFormFieldStyle
+                        .cupertinoLabelPadding) ??
                 const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: Text(
-              theLabel,
-              style: theDecoration.labelStyle,
-            ),
+            child: Text(theLabel, style: theDecoration.labelStyle),
           ),
           content,
         ],
@@ -353,10 +450,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
     }
 
     if (fullWidthMobileOnly) {
-      content = SizedBox(
-        width: kPhoneStopBreakpoint,
-        child: content,
-      );
+      content = SizedBox(width: kPhoneStopBreakpoint, child: content);
     }
 
     if (animatedSizeChanges) {
@@ -367,10 +461,7 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
       );
     }
 
-    return Container(
-      key: _wrapperKey,
-      child: content,
-    );
+    return Container(key: _wrapperKey, child: content);
   }
 
   /// Listen to text changes on TextEditingController and update prefix/suffix display
@@ -395,17 +486,9 @@ class _TextFormFieldWidgetState extends AbstractStatefulWidgetState<TextFormFiel
   }
 }
 
-enum TextFormFieldVariant {
-  none,
-  material,
-  cupertino,
-}
+enum TextFormFieldVariant { none, material, cupertino }
 
-enum ShowRequiredLabelSuffix {
-  byValidateRequired,
-  never,
-  always,
-}
+enum ShowRequiredLabelSuffix { byValidateRequired, never, always }
 
 class TextFormFieldStyle {
   final bool? fullWidthMobileOnly;
@@ -424,6 +507,8 @@ class TextFormFieldStyle {
   final Color errorColor;
   final EdgeInsets cupertinoLabelPadding;
   final List<FormFieldValidation<String>>? validations;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool? readOnly;
   final bool? obscureText;
   final String requiredLabelSuffix;
   final ShowRequiredLabelSuffix showRequiredLabelSuffix;
@@ -440,7 +525,11 @@ class TextFormFieldStyle {
     this.keyboardType,
     this.inputDecoration = const InputDecoration(
       isDense: true,
-      labelStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+      labelStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
       contentPadding: EdgeInsets.symmetric(
         horizontal: kCommonHorizontalMarginHalf,
         vertical: 12,
@@ -448,33 +537,23 @@ class TextFormFieldStyle {
       filled: true,
       fillColor: Colors.transparent,
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1,
-        ),
+        borderSide: BorderSide(width: 1),
         borderRadius: BorderRadius.all(.circular(8)),
       ),
       disabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1,
-        ),
+        borderSide: BorderSide(width: 1),
         borderRadius: BorderRadius.all(.circular(8)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1,
-        ),
+        borderSide: BorderSide(width: 1),
         borderRadius: BorderRadius.all(.circular(8)),
       ),
       errorBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1,
-        ),
+        borderSide: BorderSide(width: 1),
         borderRadius: BorderRadius.all(.circular(8)),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          width: 1,
-        ),
+        borderSide: BorderSide(width: 1),
         borderRadius: BorderRadius.all(.circular(8)),
       ),
       errorStyle: TextStyle(fontSize: 16),
@@ -486,6 +565,8 @@ class TextFormFieldStyle {
     this.errorColor = Colors.red,
     this.cupertinoLabelPadding = const .only(left: 8, right: 8, bottom: 8),
     this.validations = const <FormFieldValidation<String>>[],
+    this.inputFormatters,
+    this.readOnly,
     this.obscureText,
     this.requiredLabelSuffix = ' *',
     this.showRequiredLabelSuffix = .byValidateRequired,
@@ -510,6 +591,8 @@ class TextFormFieldStyle {
     Color? errorColor,
     EdgeInsets? cupertinoLabelPadding,
     List<FormFieldValidation<String>>? validations,
+    List<TextInputFormatter>? inputFormatters,
+    bool? readOnly,
     bool? obscureText,
     String? requiredLabelSuffix,
     ShowRequiredLabelSuffix? showRequiredLabelSuffix,
@@ -529,11 +612,15 @@ class TextFormFieldStyle {
       disabledBorderColor: disabledBorderColor ?? this.disabledBorderColor,
       focusedBorderColor: focusedBorderColor ?? this.focusedBorderColor,
       errorColor: errorColor ?? this.errorColor,
-      cupertinoLabelPadding: cupertinoLabelPadding ?? this.cupertinoLabelPadding,
+      cupertinoLabelPadding:
+          cupertinoLabelPadding ?? this.cupertinoLabelPadding,
       validations: validations ?? this.validations,
+      inputFormatters: inputFormatters ?? this.inputFormatters,
+      readOnly: readOnly ?? this.readOnly,
       obscureText: obscureText ?? this.obscureText,
       requiredLabelSuffix: requiredLabelSuffix ?? this.requiredLabelSuffix,
-      showRequiredLabelSuffix: showRequiredLabelSuffix ?? this.showRequiredLabelSuffix,
+      showRequiredLabelSuffix:
+          showRequiredLabelSuffix ?? this.showRequiredLabelSuffix,
     );
   }
 }

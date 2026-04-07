@@ -1,3 +1,9 @@
+## [0.40.1] - 7.4.2026
+
+* `TextFormFieldWidget` add support for `inputFormatters`
+* `TextFormFieldWidget` add passthrough support for `onChanged`, `onEditingComplete`, `onTap`, `onTapOutside`, `onSaved`, and `readOnly`
+* `TextFormFieldStyle` add `inputFormatters` and `readOnly` defaults
+
 ## [0.40.0+1] - 6.4.2026
 
 * `SelectionFormFieldWidget` fix for option not selecting under certain conditions
