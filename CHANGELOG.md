@@ -1,3 +1,8 @@
+## [0.40.2] - 9.4.2026
+
+* `validateRequired` now uses trim to treat whitespace-only strings as invalid
+* Add `validateRequiredAllowWhitespaceOnly` for validation that allows whitespace-only strings
+
 ## [0.40.1] - 7.4.2026
 
 * `TextFormFieldWidget` add support for `inputFormatters`

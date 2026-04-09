@@ -80,8 +80,11 @@ String? validateValidations<T>(List<FormFieldValidation<T>> validations, T? valu
   return null;
 }
 
-/// Validate String value is not empty
-bool validateRequired(String? value) => value != null && value.isNotEmpty;
+/// Validate String value is not empty (whitespace-only strings are also considered empty)
+bool validateRequired(String? value) => value != null && value.trim().isNotEmpty;
+
+/// Validate String value is not empty (whitespace-only strings are considered valid)
+bool validateRequiredAllowWhitespaceOnly(String? value) => value != null && value.isNotEmpty;
 
 const kEmailPattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
 
