@@ -1,3 +1,7 @@
+## [0.40.3] - 10.4.2026
+
+* Core compatibility update: `tch_appliable_core` to `^0.37.1`
+
 ## [0.40.2] - 9.4.2026
 
 * `validateRequired` now uses trim to treat whitespace-only strings as invalid
