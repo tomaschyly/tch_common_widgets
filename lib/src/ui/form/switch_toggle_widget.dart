@@ -26,6 +26,7 @@ class SwitchToggleWidget extends AbstractStatefulWidget {
 class SwitchToggleWidgetState
     extends AbstractStatefulWidgetState<SwitchToggleWidget> {
   bool _value = false;
+  bool _isHovered = false;
 
   /// State initialization
   @override
@@ -47,6 +48,17 @@ class SwitchToggleWidgetState
         commonTheme?.formStyle.switchToggleWidgetStyle.onSvgAssetPath;
     final String? offSvgAssetPath = widget.style?.offSvgAssetPath ??
         commonTheme?.formStyle.switchToggleWidgetStyle.offSvgAssetPath;
+    final SwitchToggleWidgetHoverStyle? hoverStyle =
+        widget.style?.hoverStyle ??
+            commonTheme?.formStyle.switchToggleWidgetStyle.hoverStyle;
+    final Duration animationDuration =
+        widget.style?.animationDuration ??
+            commonTheme?.formStyle.switchToggleWidgetStyle.animationDuration ??
+            iconButtonStyle.animationDuration;
+    final Curve animationCurve =
+        widget.style?.animationCurve ??
+            commonTheme?.formStyle.switchToggleWidgetStyle.animationCurve ??
+            iconButtonStyle.animationCurve;
 
     final Widget? onIconWidget = widget.style?.onIconWidget ??
         commonTheme?.formStyle.switchToggleWidgetStyle.onIconWidget;
@@ -67,6 +79,14 @@ class SwitchToggleWidgetState
         textStyle = commonTheme.preProcessTextStyle(textStyle);
       }
 
+      TextStyle? hoverTextStyle = hoverStyle?.textStyle;
+      if (hoverTextStyle != null && commonTheme != null) {
+        hoverTextStyle = commonTheme.preProcessTextStyle(hoverTextStyle);
+      }
+
+      final TextStyle effectiveTextStyle =
+          (_isHovered ? hoverTextStyle : null) ?? textStyle ?? const TextStyle();
+
       final String onText = (widget.onText ??
               widget.style?.onText ??
               commonTheme?.formStyle.switchToggleWidgetStyle.onText) ??
@@ -76,10 +96,14 @@ class SwitchToggleWidgetState
               commonTheme?.formStyle.switchToggleWidgetStyle.offText) ??
           'Off';
 
-      iconWidget = Text(
-        _value ? onText : offText,
-        style: textStyle,
-        textAlign: TextAlign.center,
+      iconWidget = AnimatedDefaultTextStyle(
+        duration: animationDuration,
+        curve: animationCurve,
+        style: DefaultTextStyle.of(context).style.merge(effectiveTextStyle),
+        child: Text(
+          _value ? onText : offText,
+          textAlign: TextAlign.center,
+        ),
       );
     } else if (onSvgAssetPath != null && offSvgAssetPath != null) {
       svgAssetPath = _value ? onSvgAssetPath : offSvgAssetPath;
@@ -101,31 +125,37 @@ class SwitchToggleWidgetState
       alignment: Alignment.center,
       clipBehavior: Clip.none,
       children: [
-        IconButtonWidget(
-          style: iconButtonStyle,
-          svgAssetPath: svgAssetPath,
-          iconWidget: iconWidget,
-          onTap: () {
-            _value = !_value;
+        MouseRegion(
+          onEnter: (event) => _setHoverState(true),
+          onExit: (event) => _setHoverState(false),
+          child: IconButtonWidget(
+            style: iconButtonStyle,
+            svgAssetPath: svgAssetPath,
+            iconWidget: iconWidget,
+            onTap: () {
+              _value = !_value;
 
-            setStateNotDisposed(() {});
+              setStateNotDisposed(() {});
 
-            final theOnChange = widget.onChange;
+              final theOnChange = widget.onChange;
 
-            if (theOnChange != null) {
-              theOnChange(_value);
-            }
-          },
+              if (theOnChange != null) {
+                theOnChange(_value);
+              }
+            },
+          ),
         ),
         if (semaphore)
           Positioned(
             bottom: 1,
-            child: Container(
+            child: AnimatedContainer(
+              duration: animationDuration,
+              curve: animationCurve,
               width: iconButtonStyle.width / 2,
               height: 3,
               decoration: BoxDecoration(
                 color: _value ? semaphoreOnColor : semaphoreOffColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(4),
                   topRight: Radius.circular(4),
                 ),
@@ -151,6 +181,17 @@ class SwitchToggleWidgetState
 
     setStateNotDisposed(() {});
   }
+
+  /// Change hover state
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setStateNotDisposed(() {
+      _isHovered = isHovered;
+    });
+  }
 }
 
 class SwitchToggleWidgetStyle {
@@ -161,11 +202,14 @@ class SwitchToggleWidgetStyle {
   final Widget? offIconWidget;
   final bool useText;
   final TextStyle textStyle;
+  final SwitchToggleWidgetHoverStyle? hoverStyle;
   final String? onText;
   final String? offText;
   final bool semaphore;
   final Color semaphoreOnColor;
   final Color semaphoreOffColor;
+  final Duration animationDuration;
+  final Curve animationCurve;
 
   /// SwitchToggleWidgetStyle initialization
   const SwitchToggleWidgetStyle({
@@ -177,11 +221,14 @@ class SwitchToggleWidgetStyle {
     this.useText = false,
     this.textStyle = const TextStyle(
         color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+    this.hoverStyle,
     this.onText,
     this.offText,
     this.semaphore = true,
     this.semaphoreOnColor = Colors.green,
     this.semaphoreOffColor = Colors.red,
+    this.animationDuration = kThemeAnimationDuration,
+    this.animationCurve = Curves.easeOut,
   }) : assert((onSvgAssetPath != null && offSvgAssetPath != null) ||
             (onIconWidget != null && offIconWidget != null) ||
             useText);
@@ -195,11 +242,14 @@ class SwitchToggleWidgetStyle {
     Widget? offIconWidget,
     bool? useText,
     TextStyle? textStyle,
+    SwitchToggleWidgetHoverStyle? hoverStyle,
     String? onText,
     String? offText,
     bool? semaphore,
     Color? semaphoreOnColor,
     Color? semaphoreOffColor,
+    Duration? animationDuration,
+    Curve? animationCurve,
   }) {
     return SwitchToggleWidgetStyle(
       iconButtonStyle: iconButtonStyle ?? this.iconButtonStyle,
@@ -209,11 +259,32 @@ class SwitchToggleWidgetStyle {
       offIconWidget: offIconWidget ?? this.offIconWidget,
       useText: useText ?? this.useText,
       textStyle: textStyle ?? this.textStyle,
+      hoverStyle: hoverStyle ?? this.hoverStyle,
       onText: onText ?? this.onText,
       offText: offText ?? this.offText,
       semaphore: semaphore ?? this.semaphore,
       semaphoreOnColor: semaphoreOnColor ?? this.semaphoreOnColor,
       semaphoreOffColor: semaphoreOffColor ?? this.semaphoreOffColor,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
+    );
+  }
+}
+
+class SwitchToggleWidgetHoverStyle {
+  final TextStyle? textStyle;
+
+  /// SwitchToggleWidgetHoverStyle initialization
+  const SwitchToggleWidgetHoverStyle({
+    this.textStyle,
+  });
+
+  /// Create copy of this hover style with changes
+  SwitchToggleWidgetHoverStyle copyWith({
+    TextStyle? textStyle,
+  }) {
+    return SwitchToggleWidgetHoverStyle(
+      textStyle: textStyle ?? this.textStyle,
     );
   }
 }
