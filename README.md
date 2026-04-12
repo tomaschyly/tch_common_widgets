@@ -242,28 +242,26 @@ Widget build(BuildContext context) {
 
 ## Widgets
 
-### CommonSpaces
+This section lists currently exported widget APIs from the package.
 
-- works with **CommonTheme** and **standalone**
+### Form widgets
 
-This is a set of widgets that can be used for easy and standard spaces between other widgets.
+#### PreferencesSwitchWidget
 
-### PreferencesSwitchWidget
-
-- works with **CommonTheme** and **standalone**
+- works **standalone**; **CommonTheme** is optional
 - requires [tch_appliable_core](https://github.com/tomaschyly/tch_appliable_core) for preferences
 
 Simple settings toggle/switch which gets and toggles int in preferences, uses it as a bool.
 
-### SwitchToggleWidget
+#### SwitchToggleWidget
 
-- works with **CommonTheme** and **standalone**
+- works **standalone**; **CommonTheme** is optional
 
 Alternative widget for use instead of Switch, wraps IconButtonWidget and styling.
 
-### TextFormFieldWidget
+#### TextFormFieldWidget
 
-- works with **CommonTheme** and **standalone**
+- works **standalone**; **CommonTheme** is optional
 - **Custom solution to fix Flutter iOS issue with autocorrect not working!**
 - **This solution is no necessary since Flutter >= 3.16.0**
 
@@ -284,43 +282,99 @@ There are some limitations, mainly if you want to use custom font family, you ne
 
 **Tip:** if your custom font does not work, remember that iOS does not use filenames, but actual font family name.
 
-### SelectionFormFieldWidget
+#### SelectionFormFieldWidget
 
-- works with **CommonTheme** and **standalone**
+- works **standalone**; **CommonTheme** is optional
 
 Custom replacement for DropdownButton, looks like normal TextFormFieldWidget and supports Focus navigation and Form validation.
 
-### IconButtonWidget
+#### DatePickerFormFieldWidget
 
-- works with **CommonTheme** and **standalone**
-
-InkWell based button widget for icons, 3 variants.
-
-### ButtonWidget
-
-- works with **CommonTheme** and **standalone**
-
-InkWell based button widget, 2 variants, content supports text or text and preffixIcon. Loading animation built in.
-
-### DatePickerFormFieldWidget
-
-- works with **CommonTheme** and **standalone**
+- works **standalone**; **CommonTheme** is optional
 
 Custom Button that looks like TextFormFieldWidget for selecting Date with Material DatePicker. Supports Focus navigation and Form validation.
 
+#### CalendarWidget
+
+- works **standalone**; **CommonTheme** is optional
+
+Coming soon.
+
+### Button widgets
+
+#### IconButtonWidget
+
+- works **standalone**; **CommonTheme** is optional
+
+InkWell based button widget for icons, 3 variants.
+
+#### ButtonWidget
+
+- works **standalone**; **CommonTheme** is optional
+
+InkWell based button widget, 2 variants, content supports text or text and preffixIcon. Loading animation built in.
+
+### Utility widgets
+
+#### CommonSpace widgets (`CommonSpace`, `CommonSpaceH`, `CommonSpaceHDouble`, `CommonSpaceHHalf`, `CommonSpaceV`, `CommonSpaceVDouble`, `CommonSpaceVHalf`)
+
+- works **standalone**; reads spacing defaults from **CommonTheme** when available
+
+This is a set of widgets that can be used for easy and standard spaces between other widgets.
+
+#### DashedLineWidget
+
+- works **standalone** (does not use **CommonTheme**)
+
+Coming soon.
+
+#### LoadingBuilder
+
+- works **standalone** (does not use **CommonTheme**)
+
+Coming soon.
+
+#### TooltipWidget
+
+- works **standalone**; reads tooltip defaults from **CommonTheme** when available
+
+Coming soon.
+
 ## Dialogs
 
-### ConfirmDialog
+### Ready-to-use dialog widgets
 
-- works with **CommonTheme** and **standalone**
+#### ConfirmDialog
+
+- works **standalone**; reads dialog defaults from **CommonTheme** when available
 
 Simple dialog to get user confirmations (bool) with optional text description.
 
-### ListDialog
+#### ListDialog
 
-- works with **CommonTheme** and **standalone**
+- works **standalone**; reads dialog defaults from **CommonTheme** when available
 
 Dialog which displays list of options and allows user to select one.
+
+### Dialog building block widgets
+
+#### DialogContainer
+
+- works **standalone** with required `style`; **CommonTheme** adds optional dialog defaults
+
+Coming soon.
+
+#### DialogHeader
+
+- works **standalone** with required `style`; **CommonTheme** only pre-processes text style
+
+Coming soon.
+
+#### DialogFooter
+
+- works **standalone** with required `style`; **CommonTheme** is optional via nested buttons
+
+Coming soon.
 
 ## Roadmap
 
