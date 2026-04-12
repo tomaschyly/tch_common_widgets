@@ -50,6 +50,7 @@ class SelectionFormFieldWidgetState<T>
   T? get value => _value;
 
   final GlobalKey _fieldKey = GlobalKey();
+  bool _isHovered = false;
   bool _selectingOption = false;
   FocusNode? _focusNode;
   late List<ListDialogOption<T>> _options;
@@ -120,12 +121,25 @@ class SelectionFormFieldWidgetState<T>
     final bool fullWidthMobileOnly =
         commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
-    final inputStyle = widget.style?.inputStyle ??
+    TextFormFieldStyle inputStyle = widget.style?.inputStyle ??
         commonTheme?.formStyle.selectionFormFieldStyle.inputStyle ??
         const TextFormFieldStyle();
 
-    final borderRadius = widget.style?.borderRadius ??
+    BorderRadius? borderRadius = widget.style?.borderRadius ??
         commonTheme?.formStyle.selectionFormFieldStyle.borderRadius;
+    MouseCursor mouseCursor =
+        widget.style?.mouseCursor ??
+        commonTheme?.formStyle.selectionFormFieldStyle.mouseCursor ??
+        SystemMouseCursors.click;
+    final hoverStyle =
+        widget.style?.hoverStyle ??
+        commonTheme?.formStyle.selectionFormFieldStyle.hoverStyle;
+
+    if (_isHovered && hoverStyle != null) {
+      inputStyle = hoverStyle.inputStyle ?? inputStyle;
+      borderRadius = hoverStyle.borderRadius ?? borderRadius;
+      mouseCursor = hoverStyle.mouseCursor ?? mouseCursor;
+    }
 
     final theBoundary = _fieldBoundary;
 
@@ -139,13 +153,15 @@ class SelectionFormFieldWidgetState<T>
       control = Material(
         color: Colors.transparent,
         child: InkWell(
+          mouseCursor: mouseCursor,
+          onHover: _setHoverState,
+          onTap: () {
+            selectOption(context);
+          },
           child: SizedBox(
             width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
             height: theBoundary.height,
           ),
-          onTap: () {
-            selectOption(context);
-          },
         ),
       );
 
@@ -220,6 +236,17 @@ class SelectionFormFieldWidgetState<T>
     }
   }
 
+  /// Update hover state and rebuild only when value changes
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setStateNotDisposed(() {
+      _isHovered = isHovered;
+    });
+  }
+
   /// Select option using ListDialog
   Future<void> selectOption(BuildContext context) async {
     if (_selectingOption) {
@@ -283,21 +310,55 @@ class SelectionFormFieldWidgetState<T>
 class SelectionFormFieldStyle {
   final TextFormFieldStyle inputStyle;
   final BorderRadius? borderRadius;
+  final SelectionFormFieldHoverStyle? hoverStyle;
+  final MouseCursor mouseCursor;
 
   /// SelectionFormFieldStyle initialization
   const SelectionFormFieldStyle({
     this.inputStyle = const TextFormFieldStyle(),
     this.borderRadius = const BorderRadius.all(.circular(8)),
+    this.hoverStyle,
+    this.mouseCursor = SystemMouseCursors.click,
   });
 
   /// Create copy of this style with changes
   SelectionFormFieldStyle copyWith({
     TextFormFieldStyle? inputStyle,
     BorderRadius? borderRadius,
+    SelectionFormFieldHoverStyle? hoverStyle,
+    MouseCursor? mouseCursor,
   }) {
     return SelectionFormFieldStyle(
       inputStyle: inputStyle ?? this.inputStyle,
       borderRadius: borderRadius ?? this.borderRadius,
+      hoverStyle: hoverStyle ?? this.hoverStyle,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
+    );
+  }
+}
+
+class SelectionFormFieldHoverStyle {
+  final TextFormFieldStyle? inputStyle;
+  final BorderRadius? borderRadius;
+  final MouseCursor? mouseCursor;
+
+  /// SelectionFormFieldHoverStyle initialization
+  const SelectionFormFieldHoverStyle({
+    this.inputStyle,
+    this.borderRadius,
+    this.mouseCursor,
+  });
+
+  /// Create copy of this hover style with changes
+  SelectionFormFieldHoverStyle copyWith({
+    TextFormFieldStyle? inputStyle,
+    BorderRadius? borderRadius,
+    MouseCursor? mouseCursor,
+  }) {
+    return SelectionFormFieldHoverStyle(
+      inputStyle: inputStyle ?? this.inputStyle,
+      borderRadius: borderRadius ?? this.borderRadius,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
     );
   }
 }

@@ -1,3 +1,9 @@
+## [0.41.0] - 12.4.2026
+
+* `SelectionFormFieldWidget` add `mouseCursor` style option via `SelectionFormFieldStyle`
+* Add hover-state styling support for `SelectionFormFieldWidget` with `SelectionFormFieldHoverStyle`
+* Hover style can override `inputStyle`, `borderRadius`, and `mouseCursor`
+
 ## [0.40.3] - 10.4.2026
 
 * Core compatibility update: `tch_appliable_core` to `^0.37.1`
