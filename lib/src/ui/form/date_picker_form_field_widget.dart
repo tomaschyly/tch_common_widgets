@@ -54,10 +54,12 @@ class DatePickerFormFieldWidget extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => DatePickerFormFieldWidgetState();
 }
 
-class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePickerFormFieldWidget> {
+class DatePickerFormFieldWidgetState
+    extends AbstractStatefulWidgetState<DatePickerFormFieldWidget> {
   DateTime? get value => _value;
 
   final GlobalKey _fieldKey = GlobalKey();
+  bool _isHovered = false;
   FocusNode? _focusNode;
   DateTime? _value;
   final TextEditingController _controller = TextEditingController();
@@ -104,13 +106,41 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final bool fullWidthMobileOnly = commonTheme?.formStyle.fullWidthMobileOnly ?? true;
+    final bool fullWidthMobileOnly =
+        commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
-    final inputStyle = widget.style?.inputStyle ?? commonTheme?.formStyle.selectionFormFieldStyle.inputStyle ?? const TextFormFieldStyle();
+    final baseInputStyle =
+        widget.style?.inputStyle ??
+        commonTheme?.formStyle.datePickerFormFieldStyle.inputStyle ??
+        const TextFormFieldStyle();
 
-    final borderRadius = widget.style?.borderRadius ?? commonTheme?.formStyle.selectionFormFieldStyle.borderRadius;
+    final baseBorderRadius =
+        widget.style?.borderRadius ??
+        commonTheme?.formStyle.datePickerFormFieldStyle.borderRadius;
+    final baseMouseCursor =
+        widget.style?.mouseCursor ??
+        commonTheme?.formStyle.datePickerFormFieldStyle.mouseCursor ??
+        SystemMouseCursors.click;
+    final hoverStyle =
+        widget.style?.hoverStyle ??
+        commonTheme?.formStyle.datePickerFormFieldStyle.hoverStyle;
+    final hoverInputStyle = hoverStyle?.inputStyle ?? baseInputStyle;
+    final hoverBorderRadius = hoverStyle?.borderRadius ?? baseBorderRadius;
+    final hoverMouseCursor = hoverStyle?.mouseCursor ?? baseMouseCursor;
+    final animationDuration =
+        widget.style?.animationDuration ??
+        commonTheme?.formStyle.datePickerFormFieldStyle.animationDuration ??
+        kThemeAnimationDuration;
+    final animationCurve =
+        widget.style?.animationCurve ??
+        commonTheme?.formStyle.datePickerFormFieldStyle.animationCurve ??
+        Curves.easeOut;
 
-    final dateFormat = widget.dateFormat ?? widget.style?.dateFormat ?? commonTheme?.formStyle.datePickerFormFieldStyle.dateFormat ?? DateFormat.yMMMMEEEEd();
+    final dateFormat =
+        widget.dateFormat ??
+        widget.style?.dateFormat ??
+        commonTheme?.formStyle.datePickerFormFieldStyle.dateFormat ??
+        DateFormat.yMMMMEEEEd();
 
     final theBoundary = _fieldBoundary;
 
@@ -124,63 +154,89 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
       }
     });
 
-    Widget? control;
-
-    if (theBoundary != null) {
-      control = Material(
-        color: Colors.transparent,
-        child: InkWell(
-          child: SizedBox(
-            width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
-            height: theBoundary.height,
-          ),
-          onTap: () {
-            _selectDate(context);
-          },
-        ),
-      );
-
-      if (borderRadius != null) {
-        control = ClipRRect(
-          borderRadius: borderRadius,
-          child: control,
-        );
-      }
-    }
-
     final theValidations = widget.validations;
+    final isHoverActive = _isHovered && hoverStyle != null;
 
-    return Stack(
-      children: [
-        IgnorePointer(
-          ignoring: true,
-          child: TextFormFieldWidget(
-            key: _fieldKey,
-            style: inputStyle,
-            controller: _controller,
-            focusNode: _focusNode,
-            nextFocus: widget.nextFocus,
-            label: widget.label,
-            prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.suffixIcon,
-            validations: [
-              if (theValidations != null)
-                FormFieldValidation(
-                  validator: (String? value) {
-                    final validated = validateValidations(theValidations, _value);
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(end: isHoverActive ? 1 : 0),
+      duration: animationDuration,
+      curve: animationCurve,
+      builder: (BuildContext context, double hoverProgress, Widget? child) {
+        final inputStyle = _interpolateInputStyle(
+          baseInputStyle,
+          hoverInputStyle,
+          hoverProgress,
+        );
+        final borderRadius = BorderRadius.lerp(
+          baseBorderRadius,
+          hoverBorderRadius,
+          hoverProgress,
+        );
+        final mouseCursor =
+            hoverProgress < 0.5 ? baseMouseCursor : hoverMouseCursor;
 
-                    _errorText = validated ?? '';
+        Widget? control;
 
-                    return validated == null;
-                  },
-                  errorText: '',
-                  dynamicErrorText: () => _errorText,
-                ),
-            ],
-          ),
-        ),
-        ?control,
-      ],
+        if (theBoundary != null) {
+          control = Material(
+            color: Colors.transparent,
+            child: InkWell(
+              mouseCursor: mouseCursor,
+              onHover: _setHoverState,
+              onTap: () {
+                _selectDate(context);
+              },
+              child: SizedBox(
+                width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
+                height: theBoundary.height,
+              ),
+            ),
+          );
+
+          if (borderRadius != null) {
+            control = ClipRRect(
+              borderRadius: borderRadius,
+              child: control,
+            );
+          }
+        }
+
+        return Stack(
+          children: [
+            IgnorePointer(
+              ignoring: true,
+              child: TextFormFieldWidget(
+                key: _fieldKey,
+                style: inputStyle,
+                controller: _controller,
+                focusNode: _focusNode,
+                nextFocus: widget.nextFocus,
+                label: widget.label,
+                prefixIcon: widget.prefixIcon,
+                suffixIcon: widget.suffixIcon,
+                validations: [
+                  if (theValidations != null)
+                    FormFieldValidation(
+                      validator: (String? value) {
+                        final validated = validateValidations(
+                          theValidations,
+                          _value,
+                        );
+
+                        _errorText = validated ?? '';
+
+                        return validated == null;
+                      },
+                      errorText: '',
+                      dynamicErrorText: () => _errorText,
+                    ),
+                ],
+              ),
+            ),
+            ?control,
+          ],
+        );
+      },
     );
   }
 
@@ -206,6 +262,139 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
 
       _selectDate(context);
     }
+  }
+
+  /// Update hover state and rebuild only when value changes
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setStateNotDisposed(() {
+      _isHovered = isHovered;
+    });
+  }
+
+  /// Interpolate TextFormFieldStyle for hover animation
+  TextFormFieldStyle _interpolateInputStyle(
+    TextFormFieldStyle fromStyle,
+    TextFormFieldStyle toStyle,
+    double progress,
+  ) {
+    return fromStyle.copyWith(
+      inputStyle:
+          TextStyle.lerp(fromStyle.inputStyle, toStyle.inputStyle, progress) ??
+          (progress < 0.5 ? fromStyle.inputStyle : toStyle.inputStyle),
+      disabledInputStyle:
+          TextStyle.lerp(
+            fromStyle.disabledInputStyle,
+            toStyle.disabledInputStyle,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.disabledInputStyle
+              : toStyle.disabledInputStyle),
+      inputDecoration: _interpolateInputDecoration(
+        fromStyle.inputDecoration,
+        toStyle.inputDecoration,
+        progress,
+      ),
+      borderColor:
+          Color.lerp(fromStyle.borderColor, toStyle.borderColor, progress) ??
+          (progress < 0.5 ? fromStyle.borderColor : toStyle.borderColor),
+      fillColorDisabled:
+          Color.lerp(
+            fromStyle.fillColorDisabled,
+            toStyle.fillColorDisabled,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.fillColorDisabled
+              : toStyle.fillColorDisabled),
+      disabledBorderColor:
+          Color.lerp(
+            fromStyle.disabledBorderColor,
+            toStyle.disabledBorderColor,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.disabledBorderColor
+              : toStyle.disabledBorderColor),
+      focusedBorderColor:
+          Color.lerp(
+            fromStyle.focusedBorderColor,
+            toStyle.focusedBorderColor,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.focusedBorderColor
+              : toStyle.focusedBorderColor),
+      errorColor:
+          Color.lerp(fromStyle.errorColor, toStyle.errorColor, progress) ??
+          (progress < 0.5 ? fromStyle.errorColor : toStyle.errorColor),
+      cupertinoLabelPadding:
+          EdgeInsets.lerp(
+            fromStyle.cupertinoLabelPadding,
+            toStyle.cupertinoLabelPadding,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.cupertinoLabelPadding
+              : toStyle.cupertinoLabelPadding),
+    );
+  }
+
+  /// Interpolate InputDecoration for hover animation
+  InputDecoration _interpolateInputDecoration(
+    InputDecoration fromDecoration,
+    InputDecoration toDecoration,
+    double progress,
+  ) {
+    return fromDecoration.copyWith(
+      isDense: progress < 0.5 ? fromDecoration.isDense : toDecoration.isDense,
+      fillColor:
+          Color.lerp(fromDecoration.fillColor, toDecoration.fillColor, progress),
+      labelStyle: TextStyle.lerp(
+        fromDecoration.labelStyle,
+        toDecoration.labelStyle,
+        progress,
+      ),
+      hintStyle: TextStyle.lerp(
+        fromDecoration.hintStyle,
+        toDecoration.hintStyle,
+        progress,
+      ),
+      errorStyle: TextStyle.lerp(
+        fromDecoration.errorStyle,
+        toDecoration.errorStyle,
+        progress,
+      ),
+      contentPadding: EdgeInsetsGeometry.lerp(
+        fromDecoration.contentPadding,
+        toDecoration.contentPadding,
+        progress,
+      ),
+      enabledBorder:
+          progress < 0.5
+              ? fromDecoration.enabledBorder
+              : toDecoration.enabledBorder,
+      disabledBorder:
+          progress < 0.5
+              ? fromDecoration.disabledBorder
+              : toDecoration.disabledBorder,
+      focusedBorder:
+          progress < 0.5
+              ? fromDecoration.focusedBorder
+              : toDecoration.focusedBorder,
+      errorBorder:
+          progress < 0.5
+              ? fromDecoration.errorBorder
+              : toDecoration.errorBorder,
+      focusedErrorBorder:
+          progress < 0.5
+              ? fromDecoration.focusedErrorBorder
+              : toDecoration.focusedErrorBorder,
+    );
   }
 
   /// Use Material DatePicker to select Date
@@ -290,6 +479,10 @@ class DatePickerFormFieldWidgetState extends AbstractStatefulWidgetState<DatePic
 class DatePickerFormFieldStyle {
   final TextFormFieldStyle inputStyle;
   final BorderRadius? borderRadius;
+  final DatePickerFormFieldHoverStyle? hoverStyle;
+  final MouseCursor mouseCursor;
+  final Duration animationDuration;
+  final Curve animationCurve;
   final DateFormat? dateFormat;
   final bool cancelClearsValue;
   final Color backgroundColor;
@@ -301,6 +494,10 @@ class DatePickerFormFieldStyle {
   const DatePickerFormFieldStyle({
     this.inputStyle = const TextFormFieldStyle(),
     this.borderRadius = const BorderRadius.all(.circular(8)),
+    this.hoverStyle,
+    this.mouseCursor = SystemMouseCursors.click,
+    this.animationDuration = kThemeAnimationDuration,
+    this.animationCurve = Curves.easeOut,
     this.dateFormat,
     this.cancelClearsValue = true,
     this.backgroundColor = Colors.black,
@@ -313,6 +510,10 @@ class DatePickerFormFieldStyle {
   DatePickerFormFieldStyle copyWith({
     TextFormFieldStyle? inputStyle,
     BorderRadius? borderRadius,
+    DatePickerFormFieldHoverStyle? hoverStyle,
+    MouseCursor? mouseCursor,
+    Duration? animationDuration,
+    Curve? animationCurve,
     DateFormat? dateFormat,
     bool? cancelClearsValue,
     Color? backgroundColor,
@@ -323,12 +524,42 @@ class DatePickerFormFieldStyle {
     return DatePickerFormFieldStyle(
       inputStyle: inputStyle ?? this.inputStyle,
       borderRadius: borderRadius ?? this.borderRadius,
+      hoverStyle: hoverStyle ?? this.hoverStyle,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
       dateFormat: dateFormat ?? this.dateFormat,
       cancelClearsValue: cancelClearsValue ?? this.cancelClearsValue,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       headerTextColor: headerTextColor ?? this.headerTextColor,
       bodyTextColor: bodyTextColor ?? this.bodyTextColor,
       buttonTextColor: buttonTextColor ?? this.buttonTextColor,
+    );
+  }
+}
+
+class DatePickerFormFieldHoverStyle {
+  final TextFormFieldStyle? inputStyle;
+  final BorderRadius? borderRadius;
+  final MouseCursor? mouseCursor;
+
+  /// DatePickerFormFieldHoverStyle initialization
+  const DatePickerFormFieldHoverStyle({
+    this.inputStyle,
+    this.borderRadius,
+    this.mouseCursor,
+  });
+
+  /// Create copy of this hover style with changes
+  DatePickerFormFieldHoverStyle copyWith({
+    TextFormFieldStyle? inputStyle,
+    BorderRadius? borderRadius,
+    MouseCursor? mouseCursor,
+  }) {
+    return DatePickerFormFieldHoverStyle(
+      inputStyle: inputStyle ?? this.inputStyle,
+      borderRadius: borderRadius ?? this.borderRadius,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
     );
   }
 }
