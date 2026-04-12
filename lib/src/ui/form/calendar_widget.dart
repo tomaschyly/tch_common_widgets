@@ -184,6 +184,13 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
     final selectedDayTextColor =
         widget.style?.selectedDayTextColor ?? commonTheme?.formStyle.calendarWidgetStyle.selectedDayTextColor ?? defaults.selectedDayTextColor;
     final todayDayColor = widget.style?.todayDayColor ?? commonTheme?.formStyle.calendarWidgetStyle.todayDayColor ?? defaults.todayDayColor;
+    final dayMouseCursor =
+        widget.style?.dayMouseCursor ??
+        commonTheme?.formStyle.calendarWidgetStyle.dayMouseCursor ??
+        defaults.dayMouseCursor;
+    final dayHoverStyle =
+        widget.style?.dayHoverStyle ??
+        commonTheme?.formStyle.calendarWidgetStyle.dayHoverStyle;
 
     final arrowLeftIcon = widget.style?.arrowLeftIcon ?? commonTheme?.formStyle.calendarWidgetStyle.arrowLeftIcon ?? defaults.arrowLeftIcon;
     final arrowRightIcon = widget.style?.arrowRightIcon ?? commonTheme?.formStyle.calendarWidgetStyle.arrowRightIcon ?? defaults.arrowRightIcon;
@@ -289,16 +296,20 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
               physics: const ClampingScrollPhysics(),
               children: _daysInMonth
                   .map((Jiffy day) => _DayWidget(
+                        key: ValueKey(day.millisecondsSinceEpoch),
                         dayTextStyle: dayTextStyle,
                         checkboxColor: checkboxColor,
                         disabledDaysColor: disabledDaysColor,
                         selectedDayColor: selectedDayColor,
                         selectedDayTextColor: selectedDayTextColor,
                         todayDayColor: todayDayColor,
+                        dayMouseCursor: dayMouseCursor,
+                        hoverStyle: dayHoverStyle,
                         day: day,
                         isSelected: _isSelected(day),
                         disabledDay: _isDisabledDay(day),
                         isDifferentMonth: _isDayDifferentMonth(day),
+                        isInteractive: _isInteractiveDay(day),
                         onSelect: _selectDate,
                         checkbox: widget.daysWithCheckbox.any((element) => element.isSame(day, unit: Unit.day)),
                         checkIcon: checkIcon,
@@ -342,6 +353,14 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
   /// Calculate if day is from different month
   bool _isDayDifferentMonth(Jiffy day) {
     return !day.isSame(_displayedMonth, unit: Unit.month);
+  }
+
+  /// Determine if day is interactive based on selection mode and constraints
+  bool _isInteractiveDay(Jiffy day) {
+    return !_isDisabledDay(day) &&
+        !((widget.onSelect == null && widget.singleSelection) ||
+            (widget.onSelectMultiple == null && !widget.singleSelection) ||
+            (widget.staticDate != null && day.isSame(widget.staticDate!, unit: Unit.day)));
   }
 
   /// Select date and update days
@@ -427,41 +446,94 @@ class _CalendarWidgetState extends AbstractStatefulWidgetState<CalendarWidget> {
   }
 }
 
-class _DayWidget extends StatelessWidget {
+class _DayWidget extends StatefulWidget {
   final TextStyle dayTextStyle;
   final Color checkboxColor;
   final Color disabledDaysColor;
   final Color selectedDayColor;
   final Color selectedDayTextColor;
   final Color todayDayColor;
+  final MouseCursor dayMouseCursor;
+  final CalendarDayHoverStyle? hoverStyle;
   final Jiffy day;
   final bool isSelected;
   final bool disabledDay;
   final bool isDifferentMonth;
+  final bool isInteractive;
   final bool checkbox;
   final ValueChanged<Jiffy> onSelect;
   final String? checkIcon;
 
   /// DayWidget initialization
   const _DayWidget({
+    super.key,
     required this.dayTextStyle,
     required this.checkboxColor,
     required this.disabledDaysColor,
     required this.selectedDayColor,
     required this.selectedDayTextColor,
     required this.todayDayColor,
+    this.dayMouseCursor = SystemMouseCursors.click,
+    this.hoverStyle,
     required this.day,
     this.isSelected = false,
     this.disabledDay = false,
     this.isDifferentMonth = false,
+    this.isInteractive = true,
     this.checkbox = false,
     required this.onSelect,
     this.checkIcon,
   });
 
+  /// Create state for widget
+  @override
+  State<StatefulWidget> createState() => _DayWidgetState();
+}
+
+class _DayWidgetState extends State<_DayWidget> {
+  bool _isHovered = false;
+
+  /// Update hover state and rebuild only when value changes
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setState(() {
+      _isHovered = isHovered;
+    });
+  }
+
+  /// Build day widget content
   @override
   Widget build(BuildContext context) {
-    final isToday = day.isSame(Jiffy.now(), unit: Unit.day);
+    final isToday = widget.day.isSame(Jiffy.now(), unit: Unit.day);
+    final dayHoverStyle = widget.hoverStyle;
+    final bool isHoverActive = _isHovered && widget.isInteractive;
+
+    final Color? dayColor =
+        isHoverActive
+            ? dayHoverStyle?.dayColor ?? (widget.isSelected ? widget.selectedDayColor : null)
+            : (widget.isSelected ? widget.selectedDayColor : null);
+    final Color? dayTextColor =
+        isHoverActive
+            ? dayHoverStyle?.dayTextColor ??
+                (widget.isSelected
+                    ? widget.selectedDayTextColor
+                    : (widget.disabledDay || widget.isDifferentMonth) && !widget.isSelected
+                        ? widget.disabledDaysColor
+                        : null)
+            : (widget.isSelected
+                ? widget.selectedDayTextColor
+                : (widget.disabledDay || widget.isDifferentMonth) && !widget.isSelected
+                    ? widget.disabledDaysColor
+                    : null);
+    final Color todayColor =
+        isHoverActive ? dayHoverStyle?.todayDayColor ?? widget.todayDayColor : widget.todayDayColor;
+    final MouseCursor mouseCursor =
+        widget.isInteractive
+            ? (isHoverActive ? dayHoverStyle?.mouseCursor ?? widget.dayMouseCursor : widget.dayMouseCursor)
+            : SystemMouseCursors.basic;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -471,42 +543,40 @@ class _DayWidget extends StatelessWidget {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: !disabledDay ? () => onSelect(day) : null,
+            onHover: _setHoverState,
+            mouseCursor: mouseCursor,
+            onTap: widget.isInteractive ? () => widget.onSelect(widget.day) : null,
             child: Container(
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: isSelected ? selectedDayColor : null,
+                color: dayColor,
                 borderRadius: BorderRadius.circular(6),
-                border: isToday && !isSelected
+                border: isToday && !widget.isSelected
                     ? Border.all(
-                        color: todayDayColor,
+                        color: todayColor,
                         width: 1,
                       )
                     : null,
               ),
               alignment: Alignment.center,
               child: Text(
-                day.dateTime.day.toString(),
-                style: dayTextStyle.copyWith(
-                  color: isSelected
-                      ? selectedDayTextColor
-                      : (disabledDay || isDifferentMonth) && !isSelected
-                          ? disabledDaysColor
-                          : null,
+                widget.day.dateTime.day.toString(),
+                style: widget.dayTextStyle.copyWith(
+                  color: dayTextColor,
                 ),
               ),
             ),
           ),
         ),
         const SizedBox(height: 2),
-        if (checkbox)
+        if (widget.checkbox)
           SvgPicture.asset(
-            checkIcon ?? 'images/check.svg',
-            package: checkIcon != null ? null : 'tch_common_widgets',
+            widget.checkIcon ?? 'images/check.svg',
+            package: widget.checkIcon != null ? null : 'tch_common_widgets',
             width: 14,
             height: 14,
-            colorFilter: ColorFilter.mode(checkboxColor, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(widget.checkboxColor, BlendMode.srcIn),
           ),
       ],
     );
@@ -526,6 +596,8 @@ class CalendarWidgetStyle {
   final Color selectedDayColor;
   final Color selectedDayTextColor;
   final Color todayDayColor;
+  final MouseCursor dayMouseCursor;
+  final CalendarDayHoverStyle? dayHoverStyle;
   final String? arrowLeftIcon;
   final String? arrowRightIcon;
   final String? checkIcon;
@@ -546,6 +618,8 @@ class CalendarWidgetStyle {
     this.selectedDayColor = Colors.green,
     this.selectedDayTextColor = Colors.white,
     this.todayDayColor = Colors.red,
+    this.dayMouseCursor = SystemMouseCursors.click,
+    this.dayHoverStyle,
     this.arrowLeftIcon,
     this.arrowRightIcon,
     this.checkIcon,
@@ -565,6 +639,8 @@ class CalendarWidgetStyle {
     Color? selectedDayColor,
     Color? selectedDayTextColor,
     Color? todayDayColor,
+    MouseCursor? dayMouseCursor,
+    CalendarDayHoverStyle? dayHoverStyle,
     String? arrowLeftIcon,
     String? arrowRightIcon,
     String? checkIcon,
@@ -582,9 +658,41 @@ class CalendarWidgetStyle {
       selectedDayColor: selectedDayColor ?? this.selectedDayColor,
       selectedDayTextColor: selectedDayTextColor ?? this.selectedDayTextColor,
       todayDayColor: todayDayColor ?? this.todayDayColor,
+      dayMouseCursor: dayMouseCursor ?? this.dayMouseCursor,
+      dayHoverStyle: dayHoverStyle ?? this.dayHoverStyle,
       arrowLeftIcon: arrowLeftIcon ?? this.arrowLeftIcon,
       arrowRightIcon: arrowRightIcon ?? this.arrowRightIcon,
       checkIcon: checkIcon ?? this.checkIcon,
+    );
+  }
+}
+
+class CalendarDayHoverStyle {
+  final Color? dayColor;
+  final Color? dayTextColor;
+  final Color? todayDayColor;
+  final MouseCursor? mouseCursor;
+
+  /// CalendarDayHoverStyle initialization
+  const CalendarDayHoverStyle({
+    this.dayColor,
+    this.dayTextColor,
+    this.todayDayColor,
+    this.mouseCursor,
+  });
+
+  /// Create copy if this hover style with changes
+  CalendarDayHoverStyle copyWith({
+    Color? dayColor,
+    Color? dayTextColor,
+    Color? todayDayColor,
+    MouseCursor? mouseCursor,
+  }) {
+    return CalendarDayHoverStyle(
+      dayColor: dayColor ?? this.dayColor,
+      dayTextColor: dayTextColor ?? this.dayTextColor,
+      todayDayColor: todayDayColor ?? this.todayDayColor,
+      mouseCursor: mouseCursor ?? this.mouseCursor,
     );
   }
 }
