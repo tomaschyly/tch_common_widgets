@@ -1,9 +1,9 @@
 ## [0.41.0] - 12.4.2026
 
-* `SelectionFormFieldWidget` add `mouseCursor` style option via `SelectionFormFieldStyle`
-* Add hover-state styling support for `SelectionFormFieldWidget` with `SelectionFormFieldHoverStyle`
-* Hover style can override `inputStyle`, `borderRadius`, and `mouseCursor`
-* Add simple implicit hover animations with `animationDuration` and `animationCurve` in `SelectionFormFieldStyle`
+* Interactive form widgets now follow a more consistent hover/cursor styling approach, aligned with existing button patterns
+* `SelectionFormFieldWidget` and `DatePickerFormFieldWidget` now support hover style overrides, cursor configuration, and implicit hover animations
+* `SwitchToggleWidget` adds hover style support for text and smooth semaphore state transitions
+* `CalendarWidget` day cells now support cursor and hover style customization (without implicit hover animations)
 
 ## [0.40.3] - 10.4.2026
 
