@@ -121,25 +121,30 @@ class SelectionFormFieldWidgetState<T>
     final bool fullWidthMobileOnly =
         commonTheme?.formStyle.fullWidthMobileOnly ?? true;
 
-    TextFormFieldStyle inputStyle = widget.style?.inputStyle ??
+    final baseInputStyle = widget.style?.inputStyle ??
         commonTheme?.formStyle.selectionFormFieldStyle.inputStyle ??
         const TextFormFieldStyle();
 
-    BorderRadius? borderRadius = widget.style?.borderRadius ??
+    final baseBorderRadius = widget.style?.borderRadius ??
         commonTheme?.formStyle.selectionFormFieldStyle.borderRadius;
-    MouseCursor mouseCursor =
+    final baseMouseCursor =
         widget.style?.mouseCursor ??
         commonTheme?.formStyle.selectionFormFieldStyle.mouseCursor ??
         SystemMouseCursors.click;
     final hoverStyle =
         widget.style?.hoverStyle ??
         commonTheme?.formStyle.selectionFormFieldStyle.hoverStyle;
-
-    if (_isHovered && hoverStyle != null) {
-      inputStyle = hoverStyle.inputStyle ?? inputStyle;
-      borderRadius = hoverStyle.borderRadius ?? borderRadius;
-      mouseCursor = hoverStyle.mouseCursor ?? mouseCursor;
-    }
+    final hoverInputStyle = hoverStyle?.inputStyle ?? baseInputStyle;
+    final hoverBorderRadius = hoverStyle?.borderRadius ?? baseBorderRadius;
+    final hoverMouseCursor = hoverStyle?.mouseCursor ?? baseMouseCursor;
+    final animationDuration =
+        widget.style?.animationDuration ??
+        commonTheme?.formStyle.selectionFormFieldStyle.animationDuration ??
+        kThemeAnimationDuration;
+    final animationCurve =
+        widget.style?.animationCurve ??
+        commonTheme?.formStyle.selectionFormFieldStyle.animationCurve ??
+        Curves.easeOut;
 
     final theBoundary = _fieldBoundary;
 
@@ -147,66 +152,87 @@ class SelectionFormFieldWidgetState<T>
       _calculateHeight();
     });
 
-    Widget? control;
-
-    if (theBoundary != null) {
-      control = Material(
-        color: Colors.transparent,
-        child: InkWell(
-          mouseCursor: mouseCursor,
-          onHover: _setHoverState,
-          onTap: () {
-            selectOption(context);
-          },
-          child: SizedBox(
-            width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
-            height: theBoundary.height,
-          ),
-        ),
-      );
-
-      if (borderRadius != null) {
-        control = ClipRRect(
-          borderRadius: borderRadius,
-          child: control,
-        );
-      }
-    }
-
     final theValidations = widget.validations;
+    final isHoverActive = _isHovered && hoverStyle != null;
 
-    return Stack(
-      children: [
-        IgnorePointer(
-          ignoring: true,
-          child: TextFormFieldWidget(
-            key: _fieldKey,
-            style: inputStyle,
-            controller: _controller,
-            focusNode: _focusNode,
-            nextFocus: widget.nextFocus,
-            label: widget.label,
-            prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.suffixIcon,
-            validations: [
-              if (theValidations != null)
-                FormFieldValidation(
-                  validator: (String? value) {
-                    final validated =
-                        validateValidations(theValidations, _value);
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(end: isHoverActive ? 1 : 0),
+      duration: animationDuration,
+      curve: animationCurve,
+      builder: (BuildContext context, double hoverProgress, Widget? child) {
+        final inputStyle = _interpolateInputStyle(
+          baseInputStyle,
+          hoverInputStyle,
+          hoverProgress,
+        );
+        final borderRadius = BorderRadius.lerp(
+          baseBorderRadius,
+          hoverBorderRadius,
+          hoverProgress,
+        );
+        final mouseCursor =
+            hoverProgress < 0.5 ? baseMouseCursor : hoverMouseCursor;
 
-                    _errorText = validated ?? '';
+        Widget? control;
 
-                    return validated == null;
-                  },
-                  errorText: '',
-                  dynamicErrorText: () => _errorText,
-                ),
-            ],
-          ),
-        ),
-        ?control,
-      ],
+        if (theBoundary != null) {
+          control = Material(
+            color: Colors.transparent,
+            child: InkWell(
+              mouseCursor: mouseCursor,
+              onHover: _setHoverState,
+              onTap: () {
+                selectOption(context);
+              },
+              child: SizedBox(
+                width: fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity,
+                height: theBoundary.height,
+              ),
+            ),
+          );
+
+          if (borderRadius != null) {
+            control = ClipRRect(
+              borderRadius: borderRadius,
+              child: control,
+            );
+          }
+        }
+
+        return Stack(
+          children: [
+            IgnorePointer(
+              ignoring: true,
+              child: TextFormFieldWidget(
+                key: _fieldKey,
+                style: inputStyle,
+                controller: _controller,
+                focusNode: _focusNode,
+                nextFocus: widget.nextFocus,
+                label: widget.label,
+                prefixIcon: widget.prefixIcon,
+                suffixIcon: widget.suffixIcon,
+                validations: [
+                  if (theValidations != null)
+                    FormFieldValidation(
+                      validator: (String? value) {
+                        final validated =
+                            validateValidations(theValidations, _value);
+
+                        _errorText = validated ?? '';
+
+                        return validated == null;
+                      },
+                      errorText: '',
+                      dynamicErrorText: () => _errorText,
+                    ),
+                ],
+              ),
+            ),
+            ?control,
+          ],
+        );
+      },
     );
   }
 
@@ -245,6 +271,127 @@ class SelectionFormFieldWidgetState<T>
     setStateNotDisposed(() {
       _isHovered = isHovered;
     });
+  }
+
+  /// Interpolate TextFormFieldStyle for hover animation
+  TextFormFieldStyle _interpolateInputStyle(
+    TextFormFieldStyle fromStyle,
+    TextFormFieldStyle toStyle,
+    double progress,
+  ) {
+    return fromStyle.copyWith(
+      inputStyle:
+          TextStyle.lerp(fromStyle.inputStyle, toStyle.inputStyle, progress) ??
+          (progress < 0.5 ? fromStyle.inputStyle : toStyle.inputStyle),
+      disabledInputStyle:
+          TextStyle.lerp(
+            fromStyle.disabledInputStyle,
+            toStyle.disabledInputStyle,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.disabledInputStyle
+              : toStyle.disabledInputStyle),
+      inputDecoration: _interpolateInputDecoration(
+        fromStyle.inputDecoration,
+        toStyle.inputDecoration,
+        progress,
+      ),
+      borderColor:
+          Color.lerp(fromStyle.borderColor, toStyle.borderColor, progress) ??
+          (progress < 0.5 ? fromStyle.borderColor : toStyle.borderColor),
+      fillColorDisabled:
+          Color.lerp(
+            fromStyle.fillColorDisabled,
+            toStyle.fillColorDisabled,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.fillColorDisabled
+              : toStyle.fillColorDisabled),
+      disabledBorderColor:
+          Color.lerp(
+            fromStyle.disabledBorderColor,
+            toStyle.disabledBorderColor,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.disabledBorderColor
+              : toStyle.disabledBorderColor),
+      focusedBorderColor:
+          Color.lerp(
+            fromStyle.focusedBorderColor,
+            toStyle.focusedBorderColor,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.focusedBorderColor
+              : toStyle.focusedBorderColor),
+      errorColor: Color.lerp(fromStyle.errorColor, toStyle.errorColor, progress) ??
+          (progress < 0.5 ? fromStyle.errorColor : toStyle.errorColor),
+      cupertinoLabelPadding:
+          EdgeInsets.lerp(
+            fromStyle.cupertinoLabelPadding,
+            toStyle.cupertinoLabelPadding,
+            progress,
+          ) ??
+          (progress < 0.5
+              ? fromStyle.cupertinoLabelPadding
+              : toStyle.cupertinoLabelPadding),
+    );
+  }
+
+  /// Interpolate InputDecoration for hover animation
+  InputDecoration _interpolateInputDecoration(
+    InputDecoration fromDecoration,
+    InputDecoration toDecoration,
+    double progress,
+  ) {
+    return fromDecoration.copyWith(
+      isDense: progress < 0.5 ? fromDecoration.isDense : toDecoration.isDense,
+      fillColor:
+          Color.lerp(fromDecoration.fillColor, toDecoration.fillColor, progress),
+      labelStyle: TextStyle.lerp(
+        fromDecoration.labelStyle,
+        toDecoration.labelStyle,
+        progress,
+      ),
+      hintStyle: TextStyle.lerp(
+        fromDecoration.hintStyle,
+        toDecoration.hintStyle,
+        progress,
+      ),
+      errorStyle: TextStyle.lerp(
+        fromDecoration.errorStyle,
+        toDecoration.errorStyle,
+        progress,
+      ),
+      contentPadding: EdgeInsetsGeometry.lerp(
+        fromDecoration.contentPadding,
+        toDecoration.contentPadding,
+        progress,
+      ),
+      enabledBorder:
+          progress < 0.5
+              ? fromDecoration.enabledBorder
+              : toDecoration.enabledBorder,
+      disabledBorder:
+          progress < 0.5
+              ? fromDecoration.disabledBorder
+              : toDecoration.disabledBorder,
+      focusedBorder:
+          progress < 0.5
+              ? fromDecoration.focusedBorder
+              : toDecoration.focusedBorder,
+      errorBorder:
+          progress < 0.5
+              ? fromDecoration.errorBorder
+              : toDecoration.errorBorder,
+      focusedErrorBorder:
+          progress < 0.5
+              ? fromDecoration.focusedErrorBorder
+              : toDecoration.focusedErrorBorder,
+    );
   }
 
   /// Select option using ListDialog
@@ -312,6 +459,8 @@ class SelectionFormFieldStyle {
   final BorderRadius? borderRadius;
   final SelectionFormFieldHoverStyle? hoverStyle;
   final MouseCursor mouseCursor;
+  final Duration animationDuration;
+  final Curve animationCurve;
 
   /// SelectionFormFieldStyle initialization
   const SelectionFormFieldStyle({
@@ -319,6 +468,8 @@ class SelectionFormFieldStyle {
     this.borderRadius = const BorderRadius.all(.circular(8)),
     this.hoverStyle,
     this.mouseCursor = SystemMouseCursors.click,
+    this.animationDuration = kThemeAnimationDuration,
+    this.animationCurve = Curves.easeOut,
   });
 
   /// Create copy of this style with changes
@@ -327,12 +478,16 @@ class SelectionFormFieldStyle {
     BorderRadius? borderRadius,
     SelectionFormFieldHoverStyle? hoverStyle,
     MouseCursor? mouseCursor,
+    Duration? animationDuration,
+    Curve? animationCurve,
   }) {
     return SelectionFormFieldStyle(
       inputStyle: inputStyle ?? this.inputStyle,
       borderRadius: borderRadius ?? this.borderRadius,
       hoverStyle: hoverStyle ?? this.hoverStyle,
       mouseCursor: mouseCursor ?? this.mouseCursor,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
     );
   }
 }

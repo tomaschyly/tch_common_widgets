@@ -3,6 +3,7 @@
 * `SelectionFormFieldWidget` add `mouseCursor` style option via `SelectionFormFieldStyle`
 * Add hover-state styling support for `SelectionFormFieldWidget` with `SelectionFormFieldHoverStyle`
 * Hover style can override `inputStyle`, `borderRadius`, and `mouseCursor`
+* Add simple implicit hover animations with `animationDuration` and `animationCurve` in `SelectionFormFieldStyle`
 
 ## [0.40.3] - 10.4.2026
 
