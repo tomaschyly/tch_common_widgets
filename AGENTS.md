@@ -8,6 +8,8 @@ When releasing a new package version, always update these 3 files together:
 
 1. `pubspec.yaml` - bump `version`.
 2. `CHANGELOG.md` - add a new top entry for the released version.
+   - Focus on important changes, especially breaking changes.
+   - Summarize general changes in broad terms rather than listing every single change in each file/class.
 3. `README.md` - update the dependency snippet version (`tch_common_widgets: ^x.y.z`).
 
 All three files must stay in sync for each release.
