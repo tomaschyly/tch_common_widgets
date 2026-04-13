@@ -1,3 +1,7 @@
+## [0.41.1] - 13.4.2026
+
+* TODO
+
 ## [0.41.0] - 12.4.2026
 
 * Interactive form widgets now follow a more consistent hover/cursor styling approach, aligned with existing button patterns

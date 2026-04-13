@@ -138,6 +138,8 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         widget.style?.borderWidth ??
         commonTheme?.buttonsStyle.buttonStyle.borderWidth ??
         1;
+    Color borderColor =
+        theVariant == ButtonVariant.textOnly ? Colors.transparent : color;
     BorderRadius? borderRadius =
         widget.style?.borderRadius ??
         commonTheme?.buttonsStyle.buttonStyle.borderRadius;
@@ -171,6 +173,8 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         commonTheme?.buttonsStyle.buttonStyle.animationCurve ??
         Curves.easeOut;
     final isHoverActive = isInteractive && _isHovered;
+    Color backgroundColor =
+        theVariant == ButtonVariant.filled ? color : Colors.transparent;
 
     if (isHoverActive && hoverStyle != null) {
       color = hoverStyle.color ?? color;
@@ -180,6 +184,18 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
       theBorderWidth = hoverStyle.borderWidth ?? theBorderWidth;
       borderRadius = hoverStyle.borderRadius ?? borderRadius;
       boxShadow = hoverStyle.boxShadow ?? boxShadow;
+      borderColor = hoverStyle.borderColor ?? color;
+      backgroundColor =
+          hoverStyle.backgroundColor ??
+          (theVariant == ButtonVariant.filled ? color : null) ??
+          backgroundColor;
+    } else {
+      borderColor =
+          theVariant == ButtonVariant.textOnly ? Colors.transparent : color;
+
+      if (theVariant == ButtonVariant.filled) {
+        backgroundColor = color;
+      }
     }
 
     if (theIsLoading) {
@@ -453,7 +469,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
     Widget content = IgnorePointer(
       ignoring: theIsLoading && ignoreInteractionsWhenLoading,
       child: Material(
-        color: theVariant == ButtonVariant.filled ? color : Colors.transparent,
+        color: Colors.transparent,
         child: InkWell(
           onTap: isInteractive ? widget.onTap : null,
           onHover: (isHovered) {
@@ -472,11 +488,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
                 widget.style?.alignment ??
                 commonTheme?.buttonsStyle.buttonStyle.alignment,
             decoration: BoxDecoration(
-              color: Colors.transparent,
+              color: backgroundColor,
               border: Border.all(
-                color: theVariant == ButtonVariant.textOnly
-                    ? Colors.transparent
-                    : color,
+                color: borderColor,
                 width: theBorderWidth,
               ),
               borderRadius: borderRadius,
@@ -604,6 +618,8 @@ class CommonButtonHoverStyle {
   final TextStyle? textStyle;
   final TextStyle? filledTextStyle;
   final Color? color;
+  final Color? backgroundColor;
+  final Color? borderColor;
   final Gradient? gradient;
   final MouseCursor? mouseCursor;
   final Color? iconColor;
@@ -616,6 +632,8 @@ class CommonButtonHoverStyle {
     this.textStyle,
     this.filledTextStyle,
     this.color,
+    this.backgroundColor,
+    this.borderColor,
     this.gradient,
     this.mouseCursor,
     this.iconColor,
@@ -629,6 +647,8 @@ class CommonButtonHoverStyle {
     TextStyle? textStyle,
     TextStyle? filledTextStyle,
     Color? color,
+    Color? backgroundColor,
+    Color? borderColor,
     Gradient? gradient,
     MouseCursor? mouseCursor,
     Color? iconColor,
@@ -640,6 +660,8 @@ class CommonButtonHoverStyle {
       textStyle: textStyle ?? this.textStyle,
       filledTextStyle: filledTextStyle ?? this.filledTextStyle,
       color: color ?? this.color,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      borderColor: borderColor ?? this.borderColor,
       gradient: gradient ?? this.gradient,
       mouseCursor: mouseCursor ?? this.mouseCursor,
       iconColor: iconColor ?? this.iconColor,
