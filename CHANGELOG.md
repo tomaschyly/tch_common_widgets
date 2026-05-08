@@ -4,7 +4,9 @@
 
 ## [0.41.1] - 13.4.2026
 
-* TODO
+* `CommonButtonHoverStyle` adds `backgroundColor` and `borderColor` for more granular hover styling control
+* ButtonWidget hover rendering now uses dedicated background/border color properties instead of relying on primary color
+* Improved transparent color handling for textOnly button variant
 
 ## [0.41.0] - 12.4.2026
 
