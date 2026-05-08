@@ -2,6 +2,11 @@
 
 These instructions apply to the whole repository unless a deeper `AGENTS.md` overrides them.
 
+## Branch safety rule
+
+- For implementation work (any non-planning/non-question-only task), if current branch is `main` or `master`, ask the user first whether to switch to a new `version/*` or `feature/*` branch before making edits.
+- Do not start code changes on `main`/`master` until the user confirms how to proceed.
+
 ## Release versioning rule
 
 When releasing a new package version, always update these 3 files together:

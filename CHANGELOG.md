@@ -1,3 +1,7 @@
+## [0.41.2] - 8.5.2026
+
+* Core compatibility update: `tch_appliable_core` to `^0.38.0`
+
 ## [0.41.1] - 13.4.2026
 
 * TODO
