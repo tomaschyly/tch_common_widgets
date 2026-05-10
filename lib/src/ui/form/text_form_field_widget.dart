@@ -150,6 +150,9 @@ class _TextFormFieldWidgetState
             color:
                 widget.style?.borderColor ??
                 commonTheme?.formStyle.textFormFieldStyle.borderColor,
+            width:
+                widget.style?.borderWidth ??
+                commonTheme?.formStyle.textFormFieldStyle.borderWidth,
           ),
         ),
         disabledBorder: theDecoration.disabledBorder?.copyWith(
@@ -157,6 +160,9 @@ class _TextFormFieldWidgetState
             color:
                 widget.style?.disabledBorderColor ??
                 commonTheme?.formStyle.textFormFieldStyle.disabledBorderColor,
+            width:
+                widget.style?.borderWidth ??
+                commonTheme?.formStyle.textFormFieldStyle.borderWidth,
           ),
         ),
         focusedBorder: theDecoration.focusedBorder?.copyWith(
@@ -164,6 +170,9 @@ class _TextFormFieldWidgetState
             color:
                 widget.style?.focusedBorderColor ??
                 commonTheme?.formStyle.textFormFieldStyle.focusedBorderColor,
+            width:
+                widget.style?.borderWidth ??
+                commonTheme?.formStyle.textFormFieldStyle.borderWidth,
           ),
         ),
         errorBorder: theDecoration.errorBorder?.copyWith(
@@ -171,6 +180,9 @@ class _TextFormFieldWidgetState
             color:
                 widget.style?.errorColor ??
                 commonTheme?.formStyle.textFormFieldStyle.errorColor,
+            width:
+                widget.style?.borderWidth ??
+                commonTheme?.formStyle.textFormFieldStyle.borderWidth,
           ),
         ),
         focusedErrorBorder: theDecoration.focusedErrorBorder?.copyWith(
@@ -178,6 +190,9 @@ class _TextFormFieldWidgetState
             color:
                 widget.style?.errorColor ??
                 commonTheme?.formStyle.textFormFieldStyle.errorColor,
+            width:
+                widget.style?.borderWidth ??
+                commonTheme?.formStyle.textFormFieldStyle.borderWidth,
           ),
         ),
         errorStyle: theDecoration.errorStyle?.copyWith(
@@ -501,6 +516,7 @@ class TextFormFieldStyle {
   final TextInputType? keyboardType;
   final InputDecoration inputDecoration;
   final Color borderColor;
+  final double borderWidth;
   final Color fillColorDisabled;
   final Color disabledBorderColor;
   final Color focusedBorderColor;
@@ -559,6 +575,7 @@ class TextFormFieldStyle {
       errorStyle: TextStyle(fontSize: 16),
     ),
     this.borderColor = Colors.black,
+    this.borderWidth = 1,
     this.fillColorDisabled = Colors.grey,
     this.disabledBorderColor = Colors.grey,
     this.focusedBorderColor = Colors.black,
@@ -585,6 +602,7 @@ class TextFormFieldStyle {
     TextInputType? keyboardType,
     InputDecoration? inputDecoration,
     Color? borderColor,
+    double? borderWidth,
     Color? fillColorDisabled,
     Color? disabledBorderColor,
     Color? focusedBorderColor,
@@ -608,6 +626,7 @@ class TextFormFieldStyle {
       keyboardType: keyboardType ?? this.keyboardType,
       inputDecoration: inputDecoration ?? this.inputDecoration,
       borderColor: borderColor ?? this.borderColor,
+      borderWidth: borderWidth ?? this.borderWidth,
       fillColorDisabled: fillColorDisabled ?? this.fillColorDisabled,
       disabledBorderColor: disabledBorderColor ?? this.disabledBorderColor,
       focusedBorderColor: focusedBorderColor ?? this.focusedBorderColor,

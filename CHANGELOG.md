@@ -1,3 +1,7 @@
+## [0.41.3] - 10.5.2026
+
+* `TextFormFieldStyle` adds `borderWidth` to configure outline thickness across enabled, disabled, focused, and error states
+
 ## [0.41.2] - 8.5.2026
 
 * Core compatibility update: `tch_appliable_core` to `^0.38.0`
