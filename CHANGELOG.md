@@ -1,3 +1,7 @@
+## [0.41.4] - 12.5.2026
+
+* `TextFormFieldStyle` `borderWidth` tweaked as optional
+
 ## [0.41.3] - 10.5.2026
 
 * `TextFormFieldStyle` adds `borderWidth` to configure outline thickness across enabled, disabled, focused, and error states

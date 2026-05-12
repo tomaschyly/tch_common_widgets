@@ -516,7 +516,7 @@ class TextFormFieldStyle {
   final TextInputType? keyboardType;
   final InputDecoration inputDecoration;
   final Color borderColor;
-  final double borderWidth;
+  final double? borderWidth;
   final Color fillColorDisabled;
   final Color disabledBorderColor;
   final Color focusedBorderColor;
@@ -575,7 +575,7 @@ class TextFormFieldStyle {
       errorStyle: TextStyle(fontSize: 16),
     ),
     this.borderColor = Colors.black,
-    this.borderWidth = 1,
+    this.borderWidth,
     this.fillColorDisabled = Colors.grey,
     this.disabledBorderColor = Colors.grey,
     this.focusedBorderColor = Colors.black,
