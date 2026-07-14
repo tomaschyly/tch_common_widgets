@@ -1,3 +1,9 @@
+## [0.42.0] - 14.7.2026
+
+* Flutter and Dart minimum SDK requirements updated to Flutter 3.44 and Dart 3.12
+* Updated direct dependencies to their compatible current versions
+* Removed unused native plugin scaffolding; the package is now Dart-only
+
 ## [0.41.4] - 12.5.2026
 
 * `TextFormFieldStyle` `borderWidth` tweaked as optional
