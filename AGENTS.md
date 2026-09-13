@@ -21,6 +21,13 @@ When releasing a new package version, always update these 3 files together:
 
 All three files must stay in sync for each release.
 
+During every package version bump, check the `pubspec.yaml` `environment` constraints against the Flutter version used by the project. When Flutter is upgraded, update the Dart SDK and Flutter constraints together so they remain synchronized with the toolchain.
+
+Current baseline: Flutter `3.44.9` uses:
+
+- `sdk: ">=3.12.0 <4.0.0"`
+- `flutter: ">=3.44.0"`
+
 ## General coding conventions
 
 ### Imports
