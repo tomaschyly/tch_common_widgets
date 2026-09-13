@@ -138,8 +138,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         widget.style?.borderWidth ??
         commonTheme?.buttonsStyle.buttonStyle.borderWidth ??
         1;
-    Color borderColor =
-        theVariant == ButtonVariant.textOnly ? Colors.transparent : color;
+    Color borderColor = theVariant == ButtonVariant.textOnly
+        ? Colors.transparent
+        : color;
     BorderRadius? borderRadius =
         widget.style?.borderRadius ??
         commonTheme?.buttonsStyle.buttonStyle.borderRadius;
@@ -173,8 +174,17 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
         commonTheme?.buttonsStyle.buttonStyle.animationCurve ??
         Curves.easeOut;
     final isHoverActive = isInteractive && _isHovered;
-    Color backgroundColor =
-        theVariant == ButtonVariant.filled ? color : Colors.transparent;
+    // Transparent variants of hover colors, so hover animations only fade opacity.
+    // Colors.transparent is transparent black and would darken intermediate frames.
+    final transparentBackgroundColor = (hoverStyle?.backgroundColor ?? color)
+        .withValues(alpha: 0);
+    final transparentBorderColor =
+        (hoverStyle?.borderColor ?? hoverStyle?.color ?? color).withValues(
+          alpha: 0,
+        );
+    Color backgroundColor = theVariant == ButtonVariant.filled
+        ? color
+        : transparentBackgroundColor;
 
     if (isHoverActive && hoverStyle != null) {
       color = hoverStyle.color ?? color;
@@ -190,8 +200,9 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
           (theVariant == ButtonVariant.filled ? color : null) ??
           backgroundColor;
     } else {
-      borderColor =
-          theVariant == ButtonVariant.textOnly ? Colors.transparent : color;
+      borderColor = theVariant == ButtonVariant.textOnly
+          ? transparentBorderColor
+          : color;
 
       if (theVariant == ButtonVariant.filled) {
         backgroundColor = color;
@@ -489,10 +500,7 @@ class _ButtonWidgetState extends AbstractStatefulWidgetState<ButtonWidget>
                 commonTheme?.buttonsStyle.buttonStyle.alignment,
             decoration: BoxDecoration(
               color: backgroundColor,
-              border: Border.all(
-                color: borderColor,
-                width: theBorderWidth,
-              ),
+              border: Border.all(color: borderColor, width: theBorderWidth),
               borderRadius: borderRadius,
             ),
             child: inner,
