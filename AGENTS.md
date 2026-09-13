@@ -47,6 +47,7 @@ All three files must stay in sync for each release.
 - If multiple patterns exist, choose the one used in the closest relevant files unless the user explicitly asks otherwise.
 - When adding or moving methods, fields, constants, configuration values, or utilities, place them with related code rather than at the end of the file or the first convenient location.
 - Before editing a file, scan nearby declarations for the existing grouping and order pattern, then preserve it.
+- In a file centered on a primary class, mixin, extension, or other type, declare that primary type before supporting top-level declarations. Place helper data classes, enums, constants, typedefs, and similar supporting declarations after the primary type unless Dart, Flutter, or the file's established structure requires a different order.
 - For cross-file lists or registries that represent the same domain concept, keep their order consistent.
 
 ### Package architecture and public API
@@ -55,6 +56,17 @@ All three files must stay in sync for each release.
 - Keep public exports intentionally curated through `lib/tch_common_widgets.dart`; do not expose internal implementation files unless they are part of the supported package API.
 - Keep helpers inside a component or feature file only when they are used exclusively by that component or feature; otherwise place them with the closest reusable domain code under `lib/src/`.
 - Avoid breaking public constructors, style fields, APIs, and exports without explicit user approval. Document approved breaking changes prominently in `CHANGELOG.md`.
+
+### Button loading state
+
+- When a `ButtonWidget` or `IconButtonWidget` receives a loading value through `isLoading`, do not use the same loading value to disable or guard that button's `onTap` callback.
+- Derive `onTap` only from the action's actual eligibility, such as validation or selection state. Both widgets already prevent taps and display the correct loading UI while `isLoading` is true.
+
+### Build method data processing
+
+- Keep widget build methods focused on composing UI from already prepared values.
+- Prefer preparing and storing derived collections when source data is received instead of sorting, grouping, mapping, filtering, or calculating potentially expensive values during every build.
+- Recompute derived state when its source data changes. Perform transformations in build methods only when they are trivial or depend on the current inherited UI context.
 
 ### TODO ownership format
 
@@ -139,6 +151,10 @@ All three files must stay in sync for each release.
 ### Meeting-focused plan markers
 
 - When a plan has points that need meeting discussion, add a `## Meeting focus` section near the top of the plan.
-- Use the labels `**[DECISION]**`, `**[VERIFY]**`, and `**[BLOCKER]**` for product or architecture choices, validation needs, and work that blocks dependent implementation.
+- Use GitLab-friendly text labels instead of relying on colors or custom styling.
+- Include this label legend in the meeting focus section:
+  - `**[DECISION]**` - needs a product or architecture choice before implementation can be finalized.
+  - `**[VERIFY]**` - needs review or validation but likely does not need a product decision.
+  - `**[BLOCKER]**` - blocks dependent implementation work.
 - Include a short checklist of current focus items, and prefix the matching original checklist items with the same label.
 - Keep the meeting focus list curated; remove or tick items when their source checklist item is resolved.
