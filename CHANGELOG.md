@@ -1,3 +1,8 @@
+## [0.42.1] - 13.9.2026
+
+* Fixed button hover animations briefly darkening outlined and textOnly variants; transparent states now fade from a transparent hover color
+* `IconButtonHoverStyle` adds `backgroundColor` and `borderColor` for hover background and border styling, iconOnly variant included
+
 ## [0.42.0] - 14.7.2026
 
 * Flutter and Dart minimum SDK requirements updated to Flutter 3.44 and Dart 3.12

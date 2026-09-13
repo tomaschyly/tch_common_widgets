@@ -279,10 +279,19 @@ class _IconButtonWidgetState
         widget.style?.boxShadow ??
         commonTheme?.buttonsStyle.iconButtonStyle.boxShadow;
 
+    // Transparent variant of hover background, so hover animation only fades opacity.
+    // Colors.transparent is transparent black and would darken intermediate frames.
+    Color backgroundColor = variant == IconButtonVariant.filled
+        ? color
+        : (hoverStyle?.backgroundColor ?? color).withValues(alpha: 0);
+    Color borderColor = color;
+
     if (isHoverActive && hoverStyle != null) {
       theBorderWidth = hoverStyle.borderWidth ?? theBorderWidth;
       borderRadius = hoverStyle.borderRadius ?? borderRadius;
       boxShadow = hoverStyle.boxShadow ?? boxShadow;
+      backgroundColor = hoverStyle.backgroundColor ?? backgroundColor;
+      borderColor = hoverStyle.borderColor ?? borderColor;
     }
 
     Widget content = IgnorePointer(
@@ -300,13 +309,18 @@ class _IconButtonWidgetState
             curve: animationCurve,
             width: width,
             height: height,
+            // Icon only variant has no border, background is used only for hover.
             decoration: variant == IconButtonVariant.iconOnly
-                ? null
+                ? BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: borderRadius,
+                  )
                 : BoxDecoration(
-                    color: variant == IconButtonVariant.filled
-                        ? color
-                        : Colors.transparent,
-                    border: Border.all(color: color, width: theBorderWidth),
+                    color: backgroundColor,
+                    border: Border.all(
+                      color: borderColor,
+                      width: theBorderWidth,
+                    ),
                     borderRadius: borderRadius,
                     boxShadow: boxShadow,
                   ),
@@ -442,6 +456,8 @@ enum IconButtonVariant { none, outlined, filled, iconOnly }
 
 class IconButtonHoverStyle {
   final Color? color;
+  final Color? backgroundColor;
+  final Color? borderColor;
   final MouseCursor? mouseCursor;
   final Color? iconColor;
   final double? borderWidth;
@@ -451,6 +467,8 @@ class IconButtonHoverStyle {
   /// IconButtonHoverStyle initialization
   const IconButtonHoverStyle({
     this.color,
+    this.backgroundColor,
+    this.borderColor,
     this.mouseCursor,
     this.iconColor,
     this.borderWidth,
@@ -461,6 +479,8 @@ class IconButtonHoverStyle {
   /// Create copy of this hover style with changes
   IconButtonHoverStyle copyWith({
     Color? color,
+    Color? backgroundColor,
+    Color? borderColor,
     MouseCursor? mouseCursor,
     Color? iconColor,
     double? borderWidth,
@@ -469,6 +489,8 @@ class IconButtonHoverStyle {
   }) {
     return IconButtonHoverStyle(
       color: color ?? this.color,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      borderColor: borderColor ?? this.borderColor,
       mouseCursor: mouseCursor ?? this.mouseCursor,
       iconColor: iconColor ?? this.iconColor,
       borderWidth: borderWidth ?? this.borderWidth,
