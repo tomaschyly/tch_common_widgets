@@ -77,6 +77,7 @@ class _TextFormFieldWidgetState
   final _wrapperKey = GlobalKey();
   late FocusNode _focusNode;
   bool _isError = false;
+  bool _isHovered = false;
   final _displayPrefix = ValueNotifier<bool>(true);
   final _displaySuffix = ValueNotifier<bool>(true);
 
@@ -136,6 +137,20 @@ class _TextFormFieldWidgetState
     final theNextFocus = widget.nextFocus;
     final theOnFieldSubmitted = widget.onFieldSubmitted;
 
+    final TextFormFieldHoverStyle? hoverStyle =
+        widget.style?.hoverStyle ??
+        commonTheme?.formStyle.textFormFieldStyle.hoverStyle;
+    final hoverFillColor = hoverStyle?.fillColor;
+    final hoverBorderColor = hoverStyle?.borderColor;
+    final Duration animationDuration =
+        widget.style?.animationDuration ??
+        commonTheme?.formStyle.textFormFieldStyle.animationDuration ??
+        kThemeAnimationDuration;
+    final Curve animationCurve =
+        widget.style?.animationCurve ??
+        commonTheme?.formStyle.textFormFieldStyle.animationCurve ??
+        Curves.easeOut;
+
     InputDecoration theDecoration =
         widget.style?.inputDecoration ??
         commonTheme?.formStyle.textFormFieldStyle.inputDecoration ??
@@ -145,11 +160,13 @@ class _TextFormFieldWidgetState
             commonTheme?.formStyle.textFormFieldStyle.inputDecoration) !=
         null) {
       theDecoration = theDecoration.copyWith(
+        // Focused, error and disabled borders keep their own colors on hover.
         enabledBorder: theDecoration.enabledBorder?.copyWith(
           borderSide: theDecoration.enabledBorder!.borderSide.copyWith(
-            color:
-                widget.style?.borderColor ??
-                commonTheme?.formStyle.textFormFieldStyle.borderColor,
+            color: _isHovered && widget.enabled && hoverBorderColor != null
+                ? hoverBorderColor
+                : (widget.style?.borderColor ??
+                      commonTheme?.formStyle.textFormFieldStyle.borderColor),
             width:
                 widget.style?.borderWidth ??
                 commonTheme?.formStyle.textFormFieldStyle.borderWidth,
@@ -200,6 +217,10 @@ class _TextFormFieldWidgetState
               widget.style?.errorColor ??
               commonTheme?.formStyle.textFormFieldStyle.errorColor,
         ),
+        // InputDecorator hover fade has fixed 15ms duration, so it is disabled in favor of animated hover fill.
+        hoverColor: hoverFillColor != null
+            ? Colors.transparent
+            : theDecoration.hoverColor,
       );
 
       if (commonTheme != null) {
@@ -329,117 +350,146 @@ class _TextFormFieldWidgetState
       textStyle = commonTheme.preProcessTextStyle(textStyle);
     }
 
-    Widget field = TextFormField(
-      autofocus: widget.autofocus,
-      controller: widget.controller,
-      focusNode: _focusNode,
-      onChanged: widget.onChanged,
-      onFieldSubmitted: (String value) {
-        if (theNextFocus != null) {
-          final focusScope = FocusScope.of(context);
-
-          focusScope.unfocus();
-
-          focusScope.requestFocus(theNextFocus);
-        }
-
-        if (theOnFieldSubmitted != null) {
-          theOnFieldSubmitted(value);
-        }
-      },
-      onEditingComplete: widget.onEditingComplete,
-      onTap: widget.onTap,
-      onTapOutside: widget.onTapOutside,
-      onSaved: widget.onSaved,
-      keyboardType: theKeyboardType,
-      textInputAction: theTextInputAction,
-      inputFormatters: theInputFormatters,
-      style: textStyle,
-      decoration: theDecoration.copyWith(
-        labelText: theVariant != TextFormFieldVariant.cupertino
-            ? theLabel
-            : null,
-        prefix: thePrefix != null
-            ? ValueListenableBuilder(
-                valueListenable: _displayPrefix,
-                builder: (context, value, child) {
-                  if (value) {
-                    return thePrefix;
-                  }
-
-                  return SizedBox();
-                },
-              )
-            : null,
-        prefixIcon: thePrefixIcon != null
-            ? ValueListenableBuilder(
-                valueListenable: _displayPrefix,
-                builder: (context, value, child) {
-                  if (value) {
-                    return thePrefixIcon;
-                  }
-
-                  return SizedBox();
-                },
-              )
-            : null,
-        suffix: theSuffix != null
-            ? ValueListenableBuilder(
-                valueListenable: _displaySuffix,
-                builder: (context, value, child) {
-                  if (value) {
-                    return theSuffix;
-                  }
-
-                  return SizedBox();
-                },
-              )
-            : null,
-        suffixIcon: suffixIcon != null
-            ? ValueListenableBuilder(
-                valueListenable: _displaySuffix,
-                builder: (context, value, child) {
-                  if (value) {
-                    return suffixIcon;
-                  }
-
-                  return SizedBox();
-                },
-              )
-            : null,
+    Widget field = TweenAnimationBuilder<double>(
+      tween: Tween<double>(
+        end: _isHovered && widget.enabled && hoverFillColor != null ? 1 : 0,
       ),
-      textCapitalization:
-          (widget.style?.textCapitalization ??
-              commonTheme?.formStyle.textFormFieldStyle.textCapitalization) ??
-          .none,
-      textAlign:
-          (widget.style?.textAlign ??
-              commonTheme?.formStyle.textFormFieldStyle.textAlign) ??
-          .start,
-      minLines: theLines,
-      maxLines: theLines,
-      maxLength: widget.maxLength,
-      maxLengthEnforcement: widget.maxLength != null
-          ? MaxLengthEnforcement.enforced
-          : null,
-      validator: (String? value) {
-        if (theValidations != null) {
-          final validated = validateValidations(theValidations, value);
+      duration: animationDuration,
+      curve: animationCurve,
+      builder: (BuildContext context, double hoverProgress, Widget? child) =>
+          TextFormField(
+            autofocus: widget.autofocus,
+            controller: widget.controller,
+            focusNode: _focusNode,
+            onChanged: widget.onChanged,
+            onFieldSubmitted: (String value) {
+              if (theNextFocus != null) {
+                final focusScope = FocusScope.of(context);
 
-          setStateNotDisposed(() {
-            _isError = validated != null;
-          });
+                focusScope.unfocus();
 
-          return validated;
-        }
+                focusScope.requestFocus(theNextFocus);
+              }
 
-        return null;
-      },
-      autocorrect: widget.autocorrect,
-      enabled: widget.enabled,
-      readOnly: theReadOnly,
-      obscureText: theObscureText,
+              if (theOnFieldSubmitted != null) {
+                theOnFieldSubmitted(value);
+              }
+            },
+            onEditingComplete: widget.onEditingComplete,
+            onTap: widget.onTap,
+            onTapOutside: widget.onTapOutside,
+            onSaved: widget.onSaved,
+            keyboardType: theKeyboardType,
+            textInputAction: theTextInputAction,
+            inputFormatters: theInputFormatters,
+            style: textStyle,
+            decoration: theDecoration.copyWith(
+              // Hover fill fades only opacity of hover color over base fill color.
+              fillColor: hoverFillColor != null
+                  ? Color.alphaBlend(
+                      hoverFillColor.withValues(
+                        alpha: hoverFillColor.a * hoverProgress,
+                      ),
+                      theDecoration.fillColor ?? Colors.transparent,
+                    )
+                  : theDecoration.fillColor,
+              labelText: theVariant != TextFormFieldVariant.cupertino
+                  ? theLabel
+                  : null,
+              prefix: thePrefix != null
+                  ? ValueListenableBuilder(
+                      valueListenable: _displayPrefix,
+                      builder: (context, value, child) {
+                        if (value) {
+                          return thePrefix;
+                        }
+
+                        return SizedBox();
+                      },
+                    )
+                  : null,
+              prefixIcon: thePrefixIcon != null
+                  ? ValueListenableBuilder(
+                      valueListenable: _displayPrefix,
+                      builder: (context, value, child) {
+                        if (value) {
+                          return thePrefixIcon;
+                        }
+
+                        return SizedBox();
+                      },
+                    )
+                  : null,
+              suffix: theSuffix != null
+                  ? ValueListenableBuilder(
+                      valueListenable: _displaySuffix,
+                      builder: (context, value, child) {
+                        if (value) {
+                          return theSuffix;
+                        }
+
+                        return SizedBox();
+                      },
+                    )
+                  : null,
+              suffixIcon: suffixIcon != null
+                  ? ValueListenableBuilder(
+                      valueListenable: _displaySuffix,
+                      builder: (context, value, child) {
+                        if (value) {
+                          return suffixIcon;
+                        }
+
+                        return SizedBox();
+                      },
+                    )
+                  : null,
+            ),
+            textCapitalization:
+                (widget.style?.textCapitalization ??
+                    commonTheme
+                        ?.formStyle
+                        .textFormFieldStyle
+                        .textCapitalization) ??
+                .none,
+            textAlign:
+                (widget.style?.textAlign ??
+                    commonTheme?.formStyle.textFormFieldStyle.textAlign) ??
+                .start,
+            minLines: theLines,
+            maxLines: theLines,
+            maxLength: widget.maxLength,
+            maxLengthEnforcement: widget.maxLength != null
+                ? MaxLengthEnforcement.enforced
+                : null,
+            validator: (String? value) {
+              if (theValidations != null) {
+                final validated = validateValidations(theValidations, value);
+
+                setStateNotDisposed(() {
+                  _isError = validated != null;
+                });
+
+                return validated;
+              }
+
+              return null;
+            },
+            autocorrect: widget.autocorrect,
+            enabled: widget.enabled,
+            readOnly: theReadOnly,
+            obscureText: theObscureText,
+          ),
     );
+
+    // Hover state is tracked only when hover style changes something.
+    if (hoverFillColor != null || hoverBorderColor != null) {
+      field = MouseRegion(
+        onEnter: (event) => _setHoverState(true),
+        onExit: (event) => _setHoverState(false),
+        child: field,
+      );
+    }
 
     Widget content = field;
 
@@ -499,6 +549,17 @@ class _TextFormFieldWidgetState
       }
     }
   }
+
+  /// Update hover state and rebuild only when value changes
+  void _setHoverState(bool isHovered) {
+    if (_isHovered == isHovered) {
+      return;
+    }
+
+    setStateNotDisposed(() {
+      _isHovered = isHovered;
+    });
+  }
 }
 
 enum TextFormFieldVariant { none, material, cupertino }
@@ -521,6 +582,9 @@ class TextFormFieldStyle {
   final Color disabledBorderColor;
   final Color focusedBorderColor;
   final Color errorColor;
+  final TextFormFieldHoverStyle? hoverStyle;
+  final Duration animationDuration;
+  final Curve animationCurve;
   final EdgeInsets cupertinoLabelPadding;
   final List<FormFieldValidation<String>>? validations;
   final List<TextInputFormatter>? inputFormatters;
@@ -580,6 +644,9 @@ class TextFormFieldStyle {
     this.disabledBorderColor = Colors.grey,
     this.focusedBorderColor = Colors.black,
     this.errorColor = Colors.red,
+    this.hoverStyle,
+    this.animationDuration = kThemeAnimationDuration,
+    this.animationCurve = Curves.easeOut,
     this.cupertinoLabelPadding = const .only(left: 8, right: 8, bottom: 8),
     this.validations = const <FormFieldValidation<String>>[],
     this.inputFormatters,
@@ -607,6 +674,9 @@ class TextFormFieldStyle {
     Color? disabledBorderColor,
     Color? focusedBorderColor,
     Color? errorColor,
+    TextFormFieldHoverStyle? hoverStyle,
+    Duration? animationDuration,
+    Curve? animationCurve,
     EdgeInsets? cupertinoLabelPadding,
     List<FormFieldValidation<String>>? validations,
     List<TextInputFormatter>? inputFormatters,
@@ -631,6 +701,9 @@ class TextFormFieldStyle {
       disabledBorderColor: disabledBorderColor ?? this.disabledBorderColor,
       focusedBorderColor: focusedBorderColor ?? this.focusedBorderColor,
       errorColor: errorColor ?? this.errorColor,
+      hoverStyle: hoverStyle ?? this.hoverStyle,
+      animationDuration: animationDuration ?? this.animationDuration,
+      animationCurve: animationCurve ?? this.animationCurve,
       cupertinoLabelPadding:
           cupertinoLabelPadding ?? this.cupertinoLabelPadding,
       validations: validations ?? this.validations,
@@ -640,6 +713,22 @@ class TextFormFieldStyle {
       requiredLabelSuffix: requiredLabelSuffix ?? this.requiredLabelSuffix,
       showRequiredLabelSuffix:
           showRequiredLabelSuffix ?? this.showRequiredLabelSuffix,
+    );
+  }
+}
+
+class TextFormFieldHoverStyle {
+  final Color? fillColor;
+  final Color? borderColor;
+
+  /// TextFormFieldHoverStyle initialization
+  const TextFormFieldHoverStyle({this.fillColor, this.borderColor});
+
+  /// Create copy of this hover style with changes
+  TextFormFieldHoverStyle copyWith({Color? fillColor, Color? borderColor}) {
+    return TextFormFieldHoverStyle(
+      fillColor: fillColor ?? this.fillColor,
+      borderColor: borderColor ?? this.borderColor,
     );
   }
 }

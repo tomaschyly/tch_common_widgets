@@ -1,3 +1,8 @@
+## [0.42.2] - 14.9.2026
+
+* `TextFormFieldStyle` adds `hoverStyle` with new `TextFormFieldHoverStyle` (`fillColor`, `borderColor`) for desktop/web hover styling
+* `TextFormFieldStyle` adds `animationDuration` and `animationCurve`; hover fill fades from a transparent hover color instead of Flutter's fixed near-instant hover fade
+
 ## [0.42.1] - 13.9.2026
 
 * Fixed button hover animations briefly darkening outlined and textOnly variants; transparent states now fade from a transparent hover color
