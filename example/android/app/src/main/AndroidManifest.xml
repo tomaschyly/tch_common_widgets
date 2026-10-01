@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tomaschyly.tch_common_widgets_example">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
    <application
         android:label="tch_common_widgets_example"
         android:icon="@mipmap/ic_launcher">
