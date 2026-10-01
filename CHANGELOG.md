@@ -1,3 +1,9 @@
+## [0.43.0] - 30.9.2026
+
+* Minimum SDK requirements updated to Flutter 3.47 and Dart 3.13. This raises the minimum versions required by consuming applications.
+* Updated `intl` for Flutter 3.47 compatibility.
+* Updated the example app's Android and Apple platform tooling for Flutter 3.47.
+
 ## [0.42.2] - 14.9.2026
 
 * `TextFormFieldStyle` adds `hoverStyle` with new `TextFormFieldHoverStyle` (`fillColor`, `borderColor`) for desktop/web hover styling

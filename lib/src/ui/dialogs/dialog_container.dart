@@ -23,7 +23,8 @@ class DialogContainer extends AbstractStatefulWidget {
   State<StatefulWidget> createState() => _DialogContainerState();
 }
 
-class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer> {
+class _DialogContainerState
+    extends AbstractStatefulWidgetState<DialogContainer> {
   final ScrollController _scrollController = ScrollController();
 
   /// Manually dispose of resources
@@ -39,11 +40,17 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
   Widget buildContent(BuildContext context) {
     final commonTheme = CommonTheme.of(context);
 
-    final bool fullWidthMobileOnly = commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
+    final bool fullWidthMobileOnly =
+        commonTheme?.dialogsStyle.fullWidthMobileOnly ?? true;
     final double dialogWidth =
-        widget.style.dialogWidth ?? commonTheme?.dialogsStyle.dialogWidth ?? (fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity);
-    final double? dialogHeight = widget.style.dialogHeight ?? commonTheme?.dialogsStyle.dialogHeight;
-    final bool stretchContent = widget.style.stretchContent ? true : commonTheme?.dialogsStyle.stretchContent ?? false;
+        widget.style.dialogWidth ??
+        commonTheme?.dialogsStyle.dialogWidth ??
+        (fullWidthMobileOnly ? kPhoneStopBreakpoint : double.infinity);
+    final double? dialogHeight =
+        widget.style.dialogHeight ?? commonTheme?.dialogsStyle.dialogHeight;
+    final bool stretchContent = widget.style.stretchContent
+        ? true
+        : commonTheme?.dialogsStyle.stretchContent ?? false;
 
     final borderRadius = widget.style.borderRadius;
 
@@ -75,10 +82,7 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
         margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
           color: widget.style.backgroundColor,
-          border: Border.all(
-            color: widget.style.color,
-            width: 1,
-          ),
+          border: Border.all(color: widget.style.color, width: 1),
           borderRadius: borderRadius,
         ),
         child: Column(
@@ -86,26 +90,18 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
           children: [
             if (theContentBeforeScroll != null)
               Container(
-                padding: widget.style.dialogPadding.copyWith(
-                  bottom: 0,
-                ),
+                padding: widget.style.dialogPadding.copyWith(bottom: 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: theContentBeforeScroll,
                 ),
               ),
             if (stretchContent)
-              Expanded(
-                child: content,
-              )
+              Expanded(child: content)
             else
-              Flexible(
-                child: content,
-              ),
+              Flexible(child: content),
             Container(
-              padding: widget.style.dialogPadding.copyWith(
-                top: 0,
-              ),
+              padding: widget.style.dialogPadding.copyWith(top: 0),
               child: widget.dialogFooter,
             ),
           ],
@@ -119,16 +115,13 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
         margin: widget.style.dialogMargin,
         decoration: BoxDecoration(
           color: widget.style.backgroundColor,
-          border: Border.all(
-            color: widget.style.color,
-            width: 1,
-          ),
+          border: Border.all(color: widget.style.color, width: 1),
           borderRadius: borderRadius,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (theContentBeforeScroll != null) ...theContentBeforeScroll,
+            ...?theContentBeforeScroll,
             if (stretchContent)
               Expanded(
                 child: Column(
@@ -137,10 +130,7 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
                 ),
               )
             else
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: widget.content,
-              ),
+              Column(mainAxisSize: MainAxisSize.min, children: widget.content),
             widget.dialogFooter,
           ],
         ),
@@ -148,21 +138,14 @@ class _DialogContainerState extends AbstractStatefulWidgetState<DialogContainer>
     }
 
     if (borderRadius != null) {
-      dialog = ClipRRect(
-        borderRadius: borderRadius,
-        child: dialog,
-      );
+      dialog = ClipRRect(borderRadius: borderRadius, child: dialog);
     }
 
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: widget.style.mainAxisAlignment,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Flexible(
-          child: dialog,
-        ),
-      ],
+      children: [Flexible(child: dialog)],
     );
   }
 }
