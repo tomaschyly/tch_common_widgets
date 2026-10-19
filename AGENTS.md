@@ -128,10 +128,19 @@ Current baseline: Flutter `3.47.5` uses:
 - Use those nearby implementations as the primary reference for architecture, naming, state handling, and UI composition decisions.
 - If patterns conflict, prefer the closest feature-equivalent example and call out the choice in your summary.
 
-### Tool fallback (`rg`)
+### IDE tools and reviewability
 
-- Prefer `rg`/`rg --files` for search when available.
-- If `rg` is not available or not working in the current environment, immediately fall back to `grep`/`find` and provide the user with concise `ripgrep` installation instructions for their OS, including at least one web reference.
+- Prefer tools and MCP integrations connected to the IDE/editor currently used for the project so changes, diagnostics, and execution results are easy for the user to inspect there.
+- JetBrains IDEs are the primary workflow. When available and suitable, prefer their IDE/MCP capabilities for symbol navigation, reference searches, refactoring, inspections, formatting, run configurations, and debugging. Confirm that the integration targets the correct project before using it.
+- For edits, use IDE-aware tools when they provide useful refactoring or review support; otherwise use focused file patches that remain easy to review in the IDE's version control diff. Keep changes scoped and preserve unrelated work.
+- When running builds or other validation, prefer the IDE's integrated terminal or run configurations when suitable so the user can inspect the output. Follow the validation requirements below regardless of the execution tool.
+- Other IDEs/editors are supported too: use their equivalent integrations when available. If an IDE integration is unavailable or unsuitable, continue with standard file, search, shell, and debugger tools without requiring the user to switch editors.
+- In the handoff, identify changed files and summarize validation results, including any IDE diagnostics or execution output the user should review. Do not assume external tool output is automatically visible in the IDE.
+
+### Text search fallback
+
+- For plain-text searches outside IDE tools, prefer `rg`/`rg --files`.
+- If `rg` is unavailable or not working, use `grep`/`find` and continue.
 
 ### Validation
 
